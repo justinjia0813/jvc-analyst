@@ -6,6 +6,7 @@
 
 | Skill | 事实来源 | 本地入口 | 工具集角色 | 触发位置 |
 | --- | --- | --- | --- | --- |
+| `prescreen` | 本仓库 | `skills/prescreen/SKILL.md` | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 | `/prescreen` |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | `skills/meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/intake`, `/founder-sync`, `/ref-check` |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | `skills/invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | 运营辅助，不进入投资决策流程 |
 

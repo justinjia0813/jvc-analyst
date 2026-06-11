@@ -14,6 +14,7 @@
 
 | Skill | 来源仓库 | 在本工具集里的作用 |
 | --- | --- | --- |
+| `prescreen` | 本仓库 | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
 
@@ -25,13 +26,21 @@
 .
 ├── CLAUDE.md
 ├── WORKFLOW.md
+├── examples/
+│   └── prescreen-example.md
 ├── library/
 │   └── skill-registry.md
-└── skills/
-    ├── invoice-manager/
-    │   └── SKILL.md
-    └── meeting-notes/
-        └── SKILL.md
+├── scripts/
+│   └── check-prescreen-assets.sh
+├── skills/
+│   ├── invoice-manager/
+│   │   └── SKILL.md
+│   ├── meeting-notes/
+│   │   └── SKILL.md
+│   └── prescreen/
+│       └── SKILL.md
+└── templates/
+    └── prescreen-template.md
 ```
 
 后续项目档案应遵守 [`WORKFLOW.md`](WORKFLOW.md) 定义的结构。保密项目材料应只放在本地 `projects/{company-slug}/00-source/`，不要上传到第三方工具。

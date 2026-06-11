@@ -15,6 +15,7 @@
 | Skill | 来源仓库 | 在本工具集里的作用 |
 | --- | --- | --- |
 | `prescreen` | 本仓库 | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 |
+| `ic-memo` | 本仓库 | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
 
@@ -27,12 +28,16 @@
 ├── CLAUDE.md
 ├── WORKFLOW.md
 ├── examples/
+│   ├── ic-memo-example.md
 │   └── prescreen-example.md
 ├── library/
 │   └── skill-registry.md
 ├── scripts/
+│   ├── check-ic-memo-assets.sh
 │   └── check-prescreen-assets.sh
 ├── skills/
+│   ├── ic-memo/
+│   │   └── SKILL.md
 │   ├── invoice-manager/
 │   │   └── SKILL.md
 │   ├── meeting-notes/
@@ -40,6 +45,7 @@
 │   └── prescreen/
 │       └── SKILL.md
 └── templates/
+    ├── ic-memo-template.md
     └── prescreen-template.md
 ```
 

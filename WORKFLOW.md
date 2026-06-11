@@ -13,14 +13,14 @@
 | `/prescreen` | 给素材，快速过一遍核心问题，输出结构化初筛纪要 | 已建 |
 | `/track-research` | 给赛道名，输出行业图谱 + 可比公司表 | 待建 |
 | `/bear-case` | 给项目素材，输出最锋利的不投理由 | 待建 |
-| `/ic-memo` | 给所有素材，按模板合成 IC memo 初稿 | 待建 |
+| `/ic-memo` | 给所有素材，按模板合成 IC memo 初稿 | 已建 |
 | `/meeting-notes` | 转写文本 + 笔记 → 结构化访谈纪要 .docx | 已有 |
 | `/asr` | 音频/视频 → 转写文本 | 外部依赖，未收录 |
 | `/invoice-manager` | PDF 发票 → OCR → 报销汇总 + 归档 | 已有 |
 
 ---
 
-## 待建 skills 详细说明
+## 核心 skills 详细说明
 
 ### `/prescreen` 初筛
 

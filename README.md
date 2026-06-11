@@ -19,6 +19,7 @@
 | `track-research` | 本仓库 | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 |
 | `comps-dd` | 本仓库 | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 |
 | `market-sizing` | 本仓库 | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 |
+| `roi-modeler` | 本仓库 | 根据五年财务预测、融资稀释和退出情形计算投资回报，输出 Excel。 |
 | `ic-memo` | 本仓库 | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
@@ -37,6 +38,7 @@
 │   ├── ic-memo-example.md
 │   ├── market-sizing-example.md
 │   ├── prescreen-example.md
+│   ├── roi-modeler-example.md
 │   └── track-research-example.md
 ├── library/
 │   └── skill-registry.md
@@ -46,6 +48,7 @@
 │   ├── check-ic-memo-assets.sh
 │   ├── check-market-sizing-assets.sh
 │   ├── check-prescreen-assets.sh
+│   ├── check-roi-modeler-assets.sh
 │   └── check-track-research-assets.sh
 ├── skills/
 │   ├── bull-case/
@@ -62,6 +65,8 @@
 │   │   └── SKILL.md
 │   ├── prescreen/
 │   │   └── SKILL.md
+│   ├── roi-modeler/
+│   │   └── SKILL.md
 │   └── track-research/
 │       └── SKILL.md
 └── templates/
@@ -70,6 +75,7 @@
     ├── ic-memo-template.md
     ├── market-sizing-template.md
     ├── prescreen-template.md
+    ├── roi-modeler-template.md
     └── track-research-template.md
 ```
 

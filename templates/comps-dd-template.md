@@ -1,4 +1,4 @@
-# /comps-dd 竞品尽调 Excel 模板
+# /jvc-comps-dd 竞品尽调 Excel 模板
 
 最终输出文件：`{赛道或项目名}_comps-dd_{YYYYMMDD}.xlsx`
 

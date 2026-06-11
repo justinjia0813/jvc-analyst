@@ -1,4 +1,4 @@
-# /roi-modeler 投资回报 Excel 示例
+# /jvc-roi-modeler 投资回报 Excel 示例
 
 > 示例只展示 workbook 内容结构。真实运行时应输出 `.xlsx`。
 

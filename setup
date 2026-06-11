@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# jvc-analyst setup — register skills with Claude Code / Codex / Agents / OpenClaw / Hermes / Cursor
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SKILLS_DIR="$SCRIPT_DIR/skills"
+
+# All jvc skills to register
+SKILLS=(
+  jvc-prescreen
+  jvc-bull-case
+  jvc-track-research
+  jvc-comps-dd
+  jvc-market-sizing
+  jvc-roi-modeler
+  jvc-bear-case
+  jvc-ic-memo
+  jvc-meeting-notes
+  jvc-invoice-manager
+)
+
+# Platform skill directories
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CODEX_SKILLS="$HOME/.codex/skills"
+AGENTS_SKILLS=".agents/skills"
+OPENCLAW_SKILLS=".openclaw/skills"
+HERMES_SKILLS=".hermes/skills"
+CURSOR_SKILLS=".cursor/skills"
+
+# ─── Helpers ──────────────────────────────────────────────────
+
+_link_or_copy() {
+  local src="$1"
+  local dst="$2"
+  rm -rf "$dst"
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*|Windows_NT)
+      if [ -d "$src" ]; then
+        cp -R "$src" "$dst"
+      else
+        cp -f "$src" "$dst"
+      fi
+      ;;
+    *)
+      ln -snf "$src" "$dst"
+      ;;
+  esac
+}
+
+register_skill() {
+  local skill_name="$1"
+  local target_dir="$2"
+  local src="$SKILLS_DIR/$skill_name"
+
+  if [ ! -d "$src" ]; then
+    echo "  SKIP $skill_name (source not found)"
+    return
+  fi
+
+  mkdir -p "$target_dir"
+  _link_or_copy "$src" "$target_dir/$skill_name"
+}
+
+# ─── Main ─────────────────────────────────────────────────────
+
+echo "jvc-analyst skill installer"
+echo "==========================="
+echo ""
+echo "Source: $SKILLS_DIR"
+echo "Skills: ${#SKILLS[@]}"
+echo ""
+
+# Detect which platforms exist
+INSTALLED=0
+
+# Claude Code (global)
+if [ -d "$CLAUDE_SKILLS" ] || command -v claude >/dev/null 2>&1; then
+  echo "→ Claude Code ($CLAUDE_SKILLS)"
+  mkdir -p "$CLAUDE_SKILLS"
+  for skill in "${SKILLS[@]}"; do
+    register_skill "$skill" "$CLAUDE_SKILLS"
+  done
+  echo "  ✓ ${#SKILLS[@]} skills registered"
+  INSTALLED=1
+fi
+
+# Codex (global)
+if [ -d "$HOME/.codex" ]; then
+  echo "→ Codex ($CODEX_SKILLS)"
+  mkdir -p "$CODEX_SKILLS"
+  for skill in "${SKILLS[@]}"; do
+    register_skill "$skill" "$CODEX_SKILLS"
+  done
+  echo "  ✓ ${#SKILLS[@]} skills registered"
+  INSTALLED=1
+fi
+
+# Project-local platforms (only if in a git repo)
+if git rev-parse --show-toplevel >/dev/null 2>&1; then
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+  for platform_dir in "$AGENTS_SKILLS" "$OPENCLAW_SKILLS" "$HERMES_SKILLS" "$CURSOR_SKILLS"; do
+    full_path="$REPO_ROOT/$platform_dir"
+    parent_dir="$(dirname "$full_path")"
+
+    # Only register if the platform directory parent exists (user has that tool)
+    if [ -d "$parent_dir" ]; then
+      echo "→ $(basename "$parent_dir") ($full_path)"
+      mkdir -p "$full_path"
+      for skill in "${SKILLS[@]}"; do
+        register_skill "$skill" "$full_path"
+      done
+      echo "  ✓ ${#SKILLS[@]} skills registered"
+      INSTALLED=1
+    fi
+  done
+fi
+
+echo ""
+
+if [ "$INSTALLED" -eq 0 ]; then
+  echo "No supported platforms detected."
+  echo ""
+  echo "Manual install: copy or symlink skills/* to your platform's skill directory:"
+  echo "  Claude Code:  ~/.claude/skills/"
+  echo "  Codex:        ~/.codex/skills/"
+  echo "  Agents:       .agents/skills/"
+  echo "  OpenClaw:     .openclaw/skills/"
+  echo "  Hermes:       .hermes/skills/"
+  echo "  Cursor:       .cursor/skills/"
+  exit 1
+fi
+
+echo "Done. Available skills:"
+for skill in "${SKILLS[@]}"; do
+  echo "  /${skill}"
+done
+echo ""
+echo "Try: /jvc-prescreen with a deck to get started."

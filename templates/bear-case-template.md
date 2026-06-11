@@ -1,4 +1,4 @@
-# /bear-case 反向论证
+# /jvc-bear-case 反向论证
 
 > 项目：`{项目名}`
 > 日期：`{YYYY-MM-DD}`

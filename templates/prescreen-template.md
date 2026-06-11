@@ -1,4 +1,4 @@
-# /prescreen 初筛纪要
+# /jvc-prescreen 初筛纪要
 
 > 项目：`{项目名}`
 > 日期：`{YYYY-MM-DD}`

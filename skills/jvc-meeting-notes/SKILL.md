@@ -1,0 +1,93 @@
+---
+name: jvc-meeting-notes
+description: |
+  访谈纪要生成：根据会议逐字稿、用户随笔和会议基本信息生成结构化 Word 访谈纪要，作为创始人访谈、客户访谈、专家访谈和背调电话的事实层入口。
+  Use when user says '访谈纪要', '会议纪要', '整理逐字稿', 'meeting notes', '生成纪要'.
+integrated_from: https://github.com/justinjia0813/meeting-notes
+---
+
+# /jvc-meeting-notes — 访谈纪要生成
+
+`/jvc-meeting-notes` 是 `jvc-analyst` 内置的事实层生成器。它把 AI 转写逐字稿和用户随笔融合成结构化 `.docx`，供后续 `/jvc-prescreen`、项目访谈笔记或 `/jvc-ic-memo` 引用。
+
+## 输入
+
+- AI 转写逐字稿或会议纯文本
+- 用户随笔、补充判断、现场观察
+- 会议日期、线上/线下、项目名称
+- 可选：希望强调的章节或必须保留的原话
+
+## 输出
+
+`.docx` Word 文件，命名规则：
+
+`{YYYYMMDD}_{项目名称}_访谈纪要.docx`
+
+模板位于：
+
+`skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
+
+## 结构
+
+默认六段式：
+
+1. 公司基本情况
+2. 公司核心技术
+3. 公司核心团队
+4. 公司核心产品
+5. 商业化进展
+6. 融资情况
+
+## 生成流程
+
+1. 先把逐字稿和随笔整理成 JSON，保留事实、原话和不确定项。
+2. 确认 JSON 中包含 `title`、`filename`、`sections`。
+3. 运行：
+
+```bash
+python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
+  --output output/20260611_项目名称_访谈纪要.docx
+```
+
+如需显式指定模板：
+
+```bash
+python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
+  --template skills/jvc-meeting-notes/templates/访谈纪要模板.docx \
+  --output output/20260611_项目名称_访谈纪要.docx
+```
+
+## JSON 骨架
+
+```json
+{
+  "title": "2026/06/11 线上 访谈{项目名称}",
+  "filename": "20260611_项目名称_访谈纪要.docx",
+  "sections": [
+    {
+      "heading": "一、公司基本情况",
+      "content": "公司简介..."
+    },
+    {
+      "heading": "二、公司核心技术",
+      "subsections": [
+        {"heading": "技术路线", "content": "..."}
+      ]
+    }
+  ]
+}
+```
+
+## 质量红线
+
+- `.docx` 是事实层材料，不要静默加入投资结论。
+- 创始人未经验证的陈述保留为事实来源，不改写成已验证事实。
+- 用户随笔中的疑问、迟疑、反常观察不能丢，必要时标 `[用户观察]` 或 `[待交叉验证]`。
+- 输出文件必须是 `.docx` 文件，不要把 `--output` 传成目录后误以为目录就是交付物。
+- 生成后应确认文件存在；重要纪要建议抽查打开。
+
+## 依赖
+
+```bash
+python3 -m pip install -r skills/jvc-meeting-notes/requirements.txt
+```

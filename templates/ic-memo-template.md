@@ -1,4 +1,4 @@
-# /ic-memo 投决备忘录
+# /jvc-ic-memo 投决备忘录
 
 > 项目：`{项目名}`
 > 日期：`{YYYY-MM-DD}`

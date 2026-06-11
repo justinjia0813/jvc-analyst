@@ -1,268 +1,141 @@
-# vc-analyst 工具集说明（v0）
+# jvc-analyst — VC 投资经理工具集
 
-> 这是一个 VC 投资经理的个人工具箱，不是自动化流水线。
+> 一个 VC 投资经理的个人工具箱，不是自动化流水线。
 > 流程由你把控，建档、归档、决策都是你自己做。每个 skill 独立调用，按需取用。
 > 适用范围：Pre-seed ~ Series B、人民币基金、中国市场。
+
+## 安装
+
+```bash
+git clone https://github.com/justinjia0813/jvc-analyst.git && cd jvc-analyst && ./setup
+```
+
+`setup` 会自动检测本机已有的 AI 编码平台，将 skills 注册到对应目录：
+
+| 平台 | 目录 |
+|------|------|
+| Claude Code | `~/.claude/skills/` |
+| Codex | `~/.codex/skills/` |
+| Agents | `.agents/skills/` |
+| OpenClaw | `.openclaw/skills/` |
+| Hermes | `.hermes/skills/` |
+| Cursor | `.cursor/skills/` |
+
+安装完成后即可在对话中通过 `/jvc-prescreen`、`/jvc-bear-case` 等 slash command 调用。
 
 ---
 
 ## 工具总览
 
-| skill | 一句话 | 状态 |
+| skill | 一句话 | 输出格式 |
+|-------|--------|---------|
+| `/jvc-prescreen` | 给素材，快速过一遍核心问题，输出结构化初筛纪要 | Markdown |
+| `/jvc-bull-case` | 给项目素材，输出投资亮点 + 待验证项 | Markdown |
+| `/jvc-track-research` | 给细分赛道，快速构建产业知识图谱 | Markdown |
+| `/jvc-comps-dd` | 调研竞争对手和可比公司 | Excel (.xlsx) |
+| `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模 | Excel (.xlsx) |
+| `/jvc-roi-modeler` | 计算投资回报、融资稀释、IRR/MOIC | Excel (.xlsx) |
+| `/jvc-bear-case` | 三角色反方论证，输出最锋利的不投理由 | Markdown |
+| `/jvc-ic-memo` | 汇总所有素材，合成十段式 IC memo 初稿 | Markdown |
+| `/jvc-meeting-notes` | 转写 + 笔记 → 结构化访谈纪要 .docx | DOCX |
+| `/jvc-invoice-manager` | PDF 发票 → OCR → 报销汇总 + 归档 | Excel + PDF archive |
+
+**外部前置能力**：
+
+| skill | 一句话 | 来源 |
 |-------|--------|------|
-| `/prescreen` | 给素材，快速过一遍核心问题，输出结构化初筛纪要 | 已建 |
-| `/bull-case` | 给项目素材，输出最锋利的投资亮点 | 已建 |
-| `/track-research` | 给细分赛道，快速构建产业知识图谱 | 已建 |
-| `/comps-dd` | 调研竞争对手，输出上市公司和初创公司对比 Excel | 已建 |
-| `/market-sizing` | 针对细分赛道做市场规模建模，输出 Excel | 已建 |
-| `/roi-modeler` | 计算投资回报和融资稀释，输出 Excel | 已建 |
-| `/bear-case` | 给项目素材，输出最锋利的不投理由 | 已建 |
-| `/ic-memo` | 给所有素材，按模板合成 IC memo 初稿 | 已建 |
-| `/meeting-notes` | 转写文本 + 笔记 → 结构化访谈纪要 .docx | 已有 |
-| `/asr` | 音频/视频 → 转写文本 | 外部依赖，未收录 |
-| `/invoice-manager` | PDF 发票 → OCR → 报销汇总 + 归档 | 已有 |
+| `/asr` | 音频/视频 → 本地转写文本 | 仍视为外部本地转写能力 |
 
 ---
 
-## 核心 skills 详细说明
+## 各 skill 详细说明
 
-### `/prescreen` 初筛
+每个 skill 的完整 prompt 和约束见 `skills/jvc-*/SKILL.md`。以下是速查摘要。
 
-**场景**：拿到一份 deck 或项目素材，30 分钟内判断值不值得花时间深入。
+### `/jvc-prescreen` 初筛
 
-**输入**：
-- deck（PDF / 图片 / 文本摘要）
-- 可选：你的初步印象或已知信息
+- 输入：deck / 项目素材
+- 做什么：按 7 个维度（市场/痛点/方案/团队/时机/商业模式/显性风险）过一遍
+- 输出：事实摘要 + 各维度判断 + bear case 雏形 + 关键问题清单
 
-**LLM 做什么**：
-- 从素材中提取事实，按 5–7 个核心维度过一遍：
-  1. 市场：目标市场有多大？增长由什么驱动？
-  2. 痛点：解决的问题是否真实、紧迫、高频？
-  3. 方案：产品/技术路线是否成立？与现有方案差异在哪？
-  4. 团队：创始团队为什么能做这件事？（背景、资源、认知）
-  5. 时机：为什么是现在？政策/技术/需求侧发生了什么变化？
-  6. 商业模式：怎么赚钱？单位经济有没有初步可行性？
-  7. 显性风险：一眼能看到的硬伤（监管、依赖、竞争格局）
-- 对每个维度给出"素材里说了什么 → 缺什么 → 初步判断"
+### `/jvc-bull-case` 投资亮点
 
-**输出**：结构化初筛纪要，包含：
-- 一页事实摘要
-- 各维度判断（附证据标注）
-- **必须有**：bear case 雏形（至少 2 条）
-- **必须有**：继续深入需要回答的关键问题清单
+- 输入：deck、prescreen、访谈纪要、公开资料
+- 做什么：从行业趋势/技术节点/团队优势/商业化进展四个层面提炼亮点
+- 输出：每条亮点附论据 + 待验证项，可直接迁入 IC memo
 
----
+### `/jvc-track-research` 产业知识图谱
 
-### `/track-research` 产业知识图谱
+- 输入：细分赛道名称
+- 做什么：联网搜索，输出行业定义→简史→技术路线→产业链→趋势→玩家→监管→投资问题
+- 输出：结构化 Markdown，可衔接 `/jvc-comps-dd` 和 `/jvc-market-sizing`
 
-**场景**：对某个细分赛道需要快速建立认知框架，学习行业简史、技术路线、产业趋势，并形成后续 comps、市场规模、投资问题的输入。
+### `/jvc-comps-dd` 竞品尽调
 
-**输入**：
-- 细分赛道名称 / 关键词
-- 可选：你已知的玩家、技术路线、关注环节或地域范围
+- 输入：目标项目或赛道
+- 做什么：搜集上市公司和初创公司，按直接竞品/可比/上下游/海外标杆分类
+- 输出：Excel（companies / segmentation / sources / coverage_notes 四个 sheet）
 
-**LLM 做什么**：
-- 输出结构化产业知识图谱
-- 覆盖：行业定义与边界 → 行业简史 → 技术路线 → 产业链图谱 → 产业趋势 → 关键玩家 → 监管/政策/标准 → 投资相关问题
-- 明确哪些判断是事实、哪些是推测、哪些仍需补证据
+### `/jvc-market-sizing` 市场规模建模
 
-**输出**：
-- 产业知识图谱 Markdown
-- 后续可进入 `/comps-dd`、`/market-sizing`、`/bull-case`、`/bear-case` 的问题清单
-- **硬约束**：所有数据点标注来源；找不到来源标 `[未核实]`；不编造市场规模数字或玩家数据
+- 输入：细分赛道定义、地域、客群、场景
+- 做什么：同时建 Top-Down 和 Bottom-Up 两套模型 + 正交性检查 + 对账
+- 输出：Excel（assumptions / top_down / bottom_up / reconciliation / orthogonality_check / sources）
 
----
+### `/jvc-roi-modeler` 投资回报模型
 
-### `/bull-case` 投资亮点
+- 输入：投资条款 + 财务预测 + 后续融资假设 + 退出假设
+- 做什么：逐轮计算稀释 → 三情形退出 → MOIC/IRR → 敏感性分析
+- 输出：Excel（investment_terms / financial_forecast / financing_dilution / ownership / exit_scenarios / returns / sensitivity / sources）
 
-**场景**：你已经有项目素材，需要把“为什么值得认真看”的正向论点压成投委会能讨论的亮点。
+### `/jvc-bear-case` 反向论证
 
-**输入**：
-- deck、prescreen、访谈纪要、客户反馈、公开资料
-- 可选：用户已有的正向直觉或想强调的投资主线
+- 输入：项目分析材料
+- 做什么：扮演挑剔LP / 竞品CEO / 怀疑论同行三种角色找茬
+- 输出：至少 3 条反对论点，每条附可证伪条件
 
-**LLM 做什么**：
-- 从四个固定层面提炼投资亮点：
-  1. 行业趋势
-  2. 技术节点
-  3. 团队优势
-  4. 商业化进展
-- 每个层面同时给出标题级亮点和正文级论证
-- 正文级论证必须包含事实依据、判断论点、仍需验证
+### `/jvc-ic-memo` 投决备忘录
 
-**输出**：Markdown 投资亮点稿，可迁移到 `/ic-memo` 的投资逻辑部分。
+- 输入：所有前序素材 + 你的核心投资逻辑
+- 做什么：按十段结构合成 memo 初稿（交易摘要→公司→市场→产品→团队→财务→投资逻辑→风险→估值→待决）
+- 输出：完整 Markdown 初稿，风险篇幅 ≥ 投资逻辑篇幅
 
-**硬约束**：
-- 不写“建议投资”“必投”等终局判断
-- 每个亮点必须有来源标签；没有证据的亮点放入“待验证亮点”
-- 每个亮点都要写清楚最需要补的反证或验证材料
+### `/jvc-meeting-notes` 访谈纪要
 
----
+- 输入：AI 转写逐字稿、用户随笔、会议日期、线上/线下、项目名称
+- 做什么：融合逐字稿与随笔，按六段式结构生成 Word 访谈纪要
+- 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_访谈纪要.docx`
+- 来源：已整合自 `meeting-notes` repo，脚本和模板位于 `skills/jvc-meeting-notes/`
 
-### `/comps-dd` 竞品尽调
+### `/jvc-invoice-manager` 发票整理
 
-**场景**：需要系统了解目标项目面对哪些竞争者、可比公司、上下游参照，以及不同公司的技术路线、产品、商业化和估值状态。
-
-**输入**：
-- 目标项目或细分赛道
-- 可选：已知竞品名单、`/track-research` 产出、用户关注地区
-
-**LLM 做什么**：
-- 国内为主，海外巨头/龙头为辅
-- 同时覆盖上市公司和初创公司
-- 区分直接竞品、可比公司、上下游参照和海外标杆
-- 收集公司名称、国家/地区、技术路线、产品、最近一年收入、最新估值/市值等关键字段
-
-**输出**：Excel workbook（`.xlsx`），包含 `companies`、`segmentation`、`sources`、`coverage_notes`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
-
-**硬约束**：
-- 最近一年收入、最新估值、市值必须标来源和日期
-- 上市公司市值和初创公司融资估值不得混为同一口径
-- 找不到数据标 `[未披露]` 或 `[未核实]`，不补数字
-
----
-
-### `/market-sizing` 市场规模建模
-
-**场景**：用户给出一个细分赛道，需要估算 TAM/SAM/SOM，并把市场规模拆成可复核的模型。
-
-**输入**：
-- 细分赛道定义、地域范围、目标客户、应用场景
-- 可选：`/track-research`、`/comps-dd`、用户已有假设
-
-**LLM 做什么**：
-- 同时建立自上而下和自下而上两套模型
-- 对每个条目明确口径、年份、币种、来源
-- 检查条目是否正交，避免复算、多算
-- 对两种方法的差异做 reconciliation
-
-**输出**：Excel workbook（`.xlsx`），包含 `assumptions`、`top_down`、`bottom_up`、`reconciliation`、`orthogonality_check`、`sources`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
-
-**硬约束**：
-- 分项必须正交；重叠时必须说明扣除或唯一归属方式
-- 不编造市场规模、渗透率、价格、客户数
-- TAM/SAM/SOM 不混写，所有数字必须有来源或标 `[未核实]`
-
----
-
-### `/roi-modeler` 投资回报模型
-
-**场景**：需要根据本轮投资条款、未来五年财务预测、后续融资稀释和目标退出年，测算单笔投资的回报区间。
-
-**输入**：
-- 投资金额、投前/投后估值、初始持股
-- 未来五年收入、毛利、EBITDA、现金消耗等预测
-- 后续融资金额、估值、跟投与稀释假设
-- 保守/中性/乐观三种退出情形的估值倍数或退出估值
-
-**LLM 做什么**：
-- 逐轮计算融资稀释和最终持股
-- 对保守/中性/乐观三情形计算退出回款、MOIC、IRR
-- 保留过程数据和关键敏感变量
-
-**输出**：Excel workbook（`.xlsx`），包含 `investment_terms`、`financial_forecast`、`financing_dilution`、`exit_scenarios`、`ownership`、`returns`、`sensitivity`、`sources`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
-
-**硬约束**：
-- 不用最终持股倒推，必须逐轮计算稀释
-- 退出倍数、财务预测、后续融资假设必须有来源或标 `[未核实]`
-- 不输出“值得投/不值得投”，只输出回报区间、驱动因素和敏感项
-
----
-
-### `/bear-case` 反向论证
-
-**场景**：你已经看了不少材料，需要有人系统性地站在反方替你想。
-
-**输入**：
-- 项目的现有分析材料（prescreen、尽调笔记、deck 等）
-- 可选：你目前最犹豫的点
-
-**LLM 做什么**：
-- 扮演三种反方角色，各写 1–2 条最锋利的论点：
-  - **挑剔 LP**：这个案子的回报/风险比在基金组合里说不说得通？
-  - **竞品 CEO**：如果我是竞争对手，我怎么赢他？他最怕什么？
-  - **怀疑论同行**：这个团队/市场/时机，历史上类似的故事是怎么死的？
-- 每条论点附具体论据或类比案例
-
-**输出**：
-- 至少 3 条不同维度的反对论点
-- 每条标注"可证伪性"——如果这条担忧不成立，需要什么证据来打消
-- **硬约束**：不做平衡——这个环节的任务就是找茬，不需要"但另一方面"
-
----
-
-### `/ic-memo` 投决备忘录
-
-**场景**：尽调基本完成，需要把所有素材合成一份正式的 IC memo 初稿供你修改。
-
-**输入**：
-- 项目相关的所有素材（deck、prescreen、尽调笔记、bear-case、背调、赛道研究等）
-- 你的核心投资逻辑（几句话就行，LLM 来展开）
-
-**LLM 做什么**：
-- 按标准结构合成 memo 初稿：
-  1. **交易摘要**：一段话说清楚这是什么、要多少钱、估值多少、用来做什么
-  2. **公司概况**：成立时间、阶段、核心数据
-  3. **市场与竞争**：引用赛道研究，定位公司在图谱中的位置
-  4. **产品与技术**：做什么、怎么做、壁垒在哪
-  5. **团队**：核心人背景、为什么是他们
-  6. **财务与单位经济**：已有数据 + 关键假设
-  7. **投资逻辑**：为什么投（你给的核心逻辑 + LLM 补充论据）
-  8. **风险与反方观点**：直接引用 bear-case 产出
-  9. **估值与条款**：摆事实（可比、历史轮次），不下结论
-  10. **待决事项**：还缺什么信息、还有什么需要投决会讨论
-
-**输出**：完整 memo Markdown 初稿
-
-**硬约束**：
-- "风险与反方观点"篇幅不少于"投资逻辑"
-- 所有数字可追溯到素材来源
-- 不出现没有证据的修饰词
-- 不出现"建议投资"/"不建议"等终局判断——memo 是决策材料，不是决策本身
-
----
-
-## 已有 skills
-
-### `/asr` + `/meeting-notes` 访谈转写链
-
-标准用法：录音 → `/asr` 转写 → `/meeting-notes` 生成 6 段式 .docx（公司概览/核心技术/团队/产品/商业化/融资）
-
-- `/asr` 当前视为外部本地工具/前置能力，不在本仓库收录实现。使用前需要确认本机转写命令可用。
-- 仓库：https://github.com/justinjia0813/meeting-notes
-- 依赖：`python-docx`
-- 输出文件名：`{date}_{project}_访谈纪要.docx`
-
-适用于：创始人访谈、行业专家访谈、背调电话等所有需要纪要的场景。
-
-### `/invoice-manager` 差旅报销
-
-- 仓库：https://github.com/justinjia0813/invoice-manager
-- 用法：PDF 发票 → `process_invoices.py` OCR → 复核 → `generate_summary.py --month YYYY-MM` → Excel + 归档
-- 依赖：poppler、tesseract（系统）+ openpyxl、pdf2image、pytesseract（Python）
-- 与投资流程无关，出差回来用。
+- 输入：PDF 发票目录、用户确认后的费用信息、归属项目、报销人、月份
+- 做什么：OCR 识别发票，复核后生成报销汇总 Excel，并按行程归档 PDF
+- 输出：`archive/{YYYY-MM}_报销汇总.xlsx` 与行程 PDF 归档目录
+- 来源：已整合自 `invoice-manager` repo，脚本和模板位于 `skills/jvc-invoice-manager/`
 
 ---
 
 ## 项目档案目录约定（参考）
 
-你自己建档，下面是推荐结构，skill 产出物对应的归档位置已标出：
+你自己建档。推荐结构，skill 产出物归档位置已标出：
 
 ```
 projects/{company-slug}/
-├── 00-source/              # 只读区：deck、财务表、转写、meeting-notes .docx
-├── 01-prescreen.md         # ← /prescreen 产出
-├── 02-dd-notes.md          # 你自己的尽调笔记（自由格式）
-├── 03-founder-sync.md      # 你自己的访谈判断层笔记
-├── 04-bear-case.md         # ← /bear-case 产出
-├── 05-comps-dd.xlsx        # ← /comps-dd 产出
-├── 05-market-sizing.xlsx   # ← /market-sizing 产出
-├── 05-roi-modeler.xlsx     # ← /roi-modeler 产出
-├── 06-ic-memo.md           # ← /ic-memo 产出
+├── 00-source/              # 只读区：deck、财务表、转写、/jvc-meeting-notes .docx
+├── 01-prescreen.md         # ← /jvc-prescreen
+├── 02-dd-notes.md          # 你自己的尽调笔记
+├── 03-founder-sync.md      # 你自己的访谈笔记
+├── 04-bull-case.md         # ← /jvc-bull-case
+├── 04-bear-case.md         # ← /jvc-bear-case
+├── 05-comps-dd.xlsx        # ← /jvc-comps-dd
+├── 05-market-sizing.xlsx   # ← /jvc-market-sizing
+├── 05-roi-modeler.xlsx     # ← /jvc-roi-modeler
+├── 06-ic-memo.md           # ← /jvc-ic-memo
 └── 99-decision.md          # 你自己写的最终决策
 
 tracks/{track-slug}/
-├── landscape.md            # ← /track-research 产出
-├── comps-dd.xlsx           # ← /comps-dd 赛道竞品表
-└── market-sizing.xlsx      # ← /market-sizing 赛道规模模型
+├── landscape.md            # ← /jvc-track-research
+├── comps-dd.xlsx           # ← /jvc-comps-dd（赛道级）
+└── market-sizing.xlsx      # ← /jvc-market-sizing（赛道级）
 ```

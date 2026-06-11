@@ -1,4 +1,4 @@
-# /bull-case 投资亮点
+# /jvc-bull-case 投资亮点
 
 > 项目：`{项目名}`
 > 日期：`{YYYY-MM-DD}`

@@ -1,4 +1,4 @@
-# /market-sizing 市场规模建模 Excel 示例
+# /jvc-market-sizing 市场规模建模 Excel 示例
 
 > 示例只展示 workbook 内容结构。真实运行时应输出 `.xlsx`。
 

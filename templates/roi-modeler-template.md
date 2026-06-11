@@ -1,4 +1,4 @@
-# /roi-modeler 投资回报 Excel 模板
+# /jvc-roi-modeler 投资回报 Excel 模板
 
 最终输出文件：`{项目名}_roi-modeler_{YYYYMMDD}.xlsx`
 

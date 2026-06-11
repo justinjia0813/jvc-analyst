@@ -1,31 +1,40 @@
-# vc-analyst
+# jvc-analyst
 
-`vc-analyst` 是一个本地优先的早期 VC 尽调工具集，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
+`jvc-analyst` 是一个本地优先的早期 VC 尽调工具集，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
 
-这个工具集不替人做投资决策。它负责结构化证据、暴露缺口、准备问题，并让项目档案可以在不同对话中恢复上下文。
+这个工具集不替人做投资决策。它负责结构化证据、暴露缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放到同一个可安装的 skill 工具集中。
+
+## 安装
+
+```bash
+git clone https://github.com/justinjia0813/jvc-analyst.git
+cd jvc-analyst
+./setup
+```
+
+`setup` 会把 `skills/jvc-*` 注册到本机已检测到的平台 skill 目录中，例如 `~/.codex/skills/` 和 `~/.claude/skills/`。
 
 ## 当前范围
 
 - Pre-seed 到 Series B 项目的档案目录约定
-- Markdown 与 Excel 并行的工作流环节：prescreen、bull-case、bear-case、track-research、comps-dd、market-sizing、roi-modeler、IC memo
-- 内部 skill 与外部 skill 的统一入口索引
+- Markdown 与 Excel 并行的投资工作流：prescreen、bull-case、bear-case、track-research、comps-dd、market-sizing、roi-modeler、IC memo
+- 内置会议纪要生成：原 `meeting-notes` repo 已整合为 `/jvc-meeting-notes`
+- 内置发票整理：原 `invoice-manager` repo 已整合为 `/jvc-invoice-manager`
 
-## 已收录 Skills
+## Skills
 
-| Skill | 来源仓库 | 在本工具集里的作用 |
+| Skill | 作用 | 输出 |
 | --- | --- | --- |
-| `prescreen` | 本仓库 | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 |
-| `bull-case` | 本仓库 | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 |
-| `bear-case` | 本仓库 | 从挑剔 LP、竞品 CEO、怀疑论同行三个视角提炼最强反方论证和可证伪风险假设。 |
-| `track-research` | 本仓库 | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 |
-| `comps-dd` | 本仓库 | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 |
-| `market-sizing` | 本仓库 | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 |
-| `roi-modeler` | 本仓库 | 根据五年财务预测、融资稀释和退出情形计算投资回报，输出 Excel。 |
-| `ic-memo` | 本仓库 | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 |
-| `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
-| `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
-
-本地收录入口见 [`library/skill-registry.md`](library/skill-registry.md) 和 [`skills/`](skills/)。
+| `jvc-prescreen` | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 | Markdown |
+| `jvc-bull-case` | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 | Markdown |
+| `jvc-bear-case` | 从挑剔 LP、竞品 CEO、怀疑论同行三个视角提炼反方论证和可证伪风险假设。 | Markdown |
+| `jvc-track-research` | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 | Markdown |
+| `jvc-comps-dd` | 调研竞争对手和可比公司，输出上市公司与初创公司对比表。 | Excel |
+| `jvc-market-sizing` | 针对细分赛道做自上而下和自下而上市场规模建模。 | Excel |
+| `jvc-roi-modeler` | 根据五年财务预测、融资稀释和退出情形计算投资回报。 | Excel |
+| `jvc-ic-memo` | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 | Markdown |
+| `jvc-meeting-notes` | 把逐字稿和用户笔记整理成结构化 Word 访谈纪要。 | DOCX |
+| `jvc-invoice-manager` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | Excel + PDF archive |
 
 ## 仓库结构
 
@@ -34,62 +43,26 @@
 ├── CLAUDE.md
 ├── WORKFLOW.md
 ├── examples/
-│   ├── bear-case-example.md
-│   ├── bull-case-example.md
-│   ├── comps-dd-example.md
-│   ├── comps-dd-example.xlsx
-│   ├── ic-memo-example.md
-│   ├── market-sizing-example.md
-│   ├── market-sizing-example.xlsx
-│   ├── prescreen-example.md
-│   ├── roi-modeler-example.md
-│   ├── roi-modeler-example.xlsx
-│   └── track-research-example.md
 ├── library/
 │   └── skill-registry.md
 ├── scripts/
-│   ├── check-bear-case-assets.sh
-│   ├── check-bull-case-assets.sh
-│   ├── check-comps-dd-assets.sh
+│   ├── check-jvc-assets.sh
 │   ├── check-excel-workbooks.sh
-│   ├── check-ic-memo-assets.sh
-│   ├── check-market-sizing-assets.sh
-│   ├── check-prescreen-assets.sh
-│   ├── check-review-fixes.sh
-│   ├── check-roi-modeler-assets.sh
-│   ├── check-track-research-assets.sh
 │   ├── generate-workbook.py
 │   └── validate-workbook.py
 ├── skills/
-│   ├── bear-case/
-│   │   └── SKILL.md
-│   ├── bull-case/
-│   │   └── SKILL.md
-│   ├── comps-dd/
-│   │   └── SKILL.md
-│   ├── ic-memo/
-│   │   └── SKILL.md
-│   ├── invoice-manager/
-│   │   └── SKILL.md
-│   ├── market-sizing/
-│   │   └── SKILL.md
-│   ├── meeting-notes/
-│   │   └── SKILL.md
-│   ├── prescreen/
-│   │   └── SKILL.md
-│   ├── roi-modeler/
-│   │   └── SKILL.md
-│   └── track-research/
-│       └── SKILL.md
-└── templates/
-    ├── bear-case-template.md
-    ├── bull-case-template.md
-    ├── comps-dd-template.md
-    ├── ic-memo-template.md
-    ├── market-sizing-template.md
-    ├── prescreen-template.md
-    ├── roi-modeler-template.md
-    └── track-research-template.md
+│   ├── jvc-bear-case/
+│   ├── jvc-bull-case/
+│   ├── jvc-comps-dd/
+│   ├── jvc-ic-memo/
+│   ├── jvc-invoice-manager/
+│   ├── jvc-market-sizing/
+│   ├── jvc-meeting-notes/
+│   ├── jvc-prescreen/
+│   ├── jvc-roi-modeler/
+│   └── jvc-track-research/
+├── templates/
+└── setup
 ```
 
-后续项目档案应遵守 [`WORKFLOW.md`](WORKFLOW.md) 定义的结构。保密项目材料应只放在本地 `projects/{company-slug}/00-source/`，不要上传到第三方工具。
+后续项目档案应遵守 [`WORKFLOW.md`](WORKFLOW.md) 定义的结构。保密项目材料只放在本地 `projects/{company-slug}/00-source/`，不要上传到第三方工具。

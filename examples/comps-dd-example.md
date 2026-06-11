@@ -1,4 +1,4 @@
-# /comps-dd 竞品尽调 Excel 示例
+# /jvc-comps-dd 竞品尽调 Excel 示例
 
 > 示例只展示 workbook 内容结构。真实运行时应输出 `.xlsx`。
 

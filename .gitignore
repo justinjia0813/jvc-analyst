@@ -1,0 +1,17 @@
+.DS_Store
+
+# Local confidential deal materials and generated outputs
+projects/
+tracks/
+output/
+outputs/
+archive/
+input/
+
+# Runtime / temporary files
+*.log
+*.tmp
+*.bak
+__pycache__/
+.venv/
+venv/

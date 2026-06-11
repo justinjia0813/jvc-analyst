@@ -1,6 +1,6 @@
 ---
 name: ic-memo
-description: 将 deck、prescreen、尽调笔记、bear case、访谈纪要、赛道研究等材料合成为 IC memo Markdown 初稿；不替用户决策，不输出终局投资建议。
+description: Use when 需要将 deck、prescreen、尽调笔记、bear case、访谈纪要、赛道研究等材料合成为 IC memo Markdown 初稿，且不输出终局投资建议
 ---
 
 # /ic-memo 投决备忘录

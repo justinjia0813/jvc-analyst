@@ -32,6 +32,7 @@ require_file "templates/ic-memo-template.md"
 require_file "examples/ic-memo-example.md"
 
 require_text "skills/ic-memo/SKILL.md" "name: ic-memo"
+require_text "skills/ic-memo/SKILL.md" "description: Use when"
 require_text "skills/ic-memo/SKILL.md" "templates/ic-memo-template.md"
 require_text "skills/ic-memo/SKILL.md" "风险与反方观点"
 require_text "skills/ic-memo/SKILL.md" "不替用户决策"

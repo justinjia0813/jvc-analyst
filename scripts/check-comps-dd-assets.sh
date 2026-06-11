@@ -21,6 +21,9 @@ require_text() {
 require_file "skills/comps-dd/SKILL.md"
 require_file "templates/comps-dd-template.md"
 require_file "examples/comps-dd-example.md"
+require_file "examples/comps-dd-example.xlsx"
+require_file "scripts/generate-workbook.py"
+require_file "scripts/validate-workbook.py"
 
 require_text "skills/comps-dd/SKILL.md" "name: comps-dd"
 require_text "skills/comps-dd/SKILL.md" ".xlsx"
@@ -30,6 +33,8 @@ require_text "skills/comps-dd/SKILL.md" "国内为主"
 require_text "skills/comps-dd/SKILL.md" "海外龙头"
 require_text "skills/comps-dd/SKILL.md" "最近一年收入"
 require_text "skills/comps-dd/SKILL.md" "最新估值"
+require_text "skills/comps-dd/SKILL.md" "scripts/generate-workbook.py"
+require_text "skills/comps-dd/SKILL.md" "scripts/validate-workbook.py"
 
 require_text "templates/comps-dd-template.md" "# /comps-dd 竞品尽调 Excel 模板"
 require_text "templates/comps-dd-template.md" "## Sheet: companies"

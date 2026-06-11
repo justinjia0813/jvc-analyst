@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- |
 | `prescreen` | 本仓库 | `skills/prescreen/SKILL.md` | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 | `/prescreen` |
 | `bull-case` | 本仓库 | `skills/bull-case/SKILL.md` | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 | `/bull-case` |
+| `bear-case` | 本仓库 | `skills/bear-case/SKILL.md` | 从挑剔 LP、竞品 CEO、怀疑论同行三个视角提炼最强反方论证和可证伪风险假设。 | `/bear-case` |
 | `track-research` | 本仓库 | `skills/track-research/SKILL.md` | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 | `/track-research` |
 | `comps-dd` | 本仓库 | `skills/comps-dd/SKILL.md` | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 | `/comps-dd` |
 | `market-sizing` | 本仓库 | `skills/market-sizing/SKILL.md` | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 | `/market-sizing` |

@@ -1,6 +1,6 @@
 ---
 name: meeting-notes
-description: 根据逐字稿和用户笔记生成结构化 Word 访谈纪要。在 vc-analyst 中，它是创始人访谈、客户访谈、背调电话的事实层入口。
+description: Use when 需要根据逐字稿和用户笔记生成结构化 Word 访谈纪要，作为创始人访谈、客户访谈、背调电话的事实层入口
 source_repo: https://github.com/justinjia0813/meeting-notes
 ---
 

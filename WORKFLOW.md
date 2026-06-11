@@ -16,7 +16,7 @@
 | `/comps-dd` | 调研竞争对手，输出上市公司和初创公司对比 Excel | 已建 |
 | `/market-sizing` | 针对细分赛道做市场规模建模，输出 Excel | 已建 |
 | `/roi-modeler` | 计算投资回报和融资稀释，输出 Excel | 已建 |
-| `/bear-case` | 给项目素材，输出最锋利的不投理由 | 待建 |
+| `/bear-case` | 给项目素材，输出最锋利的不投理由 | 已建 |
 | `/ic-memo` | 给所有素材，按模板合成 IC memo 初稿 | 已建 |
 | `/meeting-notes` | 转写文本 + 笔记 → 结构化访谈纪要 .docx | 已有 |
 | `/asr` | 音频/视频 → 转写文本 | 外部依赖，未收录 |
@@ -113,7 +113,7 @@
 - 区分直接竞品、可比公司、上下游参照和海外标杆
 - 收集公司名称、国家/地区、技术路线、产品、最近一年收入、最新估值/市值等关键字段
 
-**输出**：Excel workbook（`.xlsx`），包含 `companies`、`segmentation`、`sources`、`coverage_notes`。
+**输出**：Excel workbook（`.xlsx`），包含 `companies`、`segmentation`、`sources`、`coverage_notes`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
 
 **硬约束**：
 - 最近一年收入、最新估值、市值必须标来源和日期
@@ -136,7 +136,7 @@
 - 检查条目是否正交，避免复算、多算
 - 对两种方法的差异做 reconciliation
 
-**输出**：Excel workbook（`.xlsx`），包含 `assumptions`、`top_down`、`bottom_up`、`reconciliation`、`orthogonality_check`、`sources`。
+**输出**：Excel workbook（`.xlsx`），包含 `assumptions`、`top_down`、`bottom_up`、`reconciliation`、`orthogonality_check`、`sources`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
 
 **硬约束**：
 - 分项必须正交；重叠时必须说明扣除或唯一归属方式
@@ -160,7 +160,7 @@
 - 对保守/中性/乐观三情形计算退出回款、MOIC、IRR
 - 保留过程数据和关键敏感变量
 
-**输出**：Excel workbook（`.xlsx`），包含 `investment_terms`、`financial_forecast`、`financing_dilution`、`exit_scenarios`、`ownership`、`returns`、`sensitivity`、`sources`。
+**输出**：Excel workbook（`.xlsx`），包含 `investment_terms`、`financial_forecast`、`financing_dilution`、`exit_scenarios`、`ownership`、`returns`、`sensitivity`、`sources`。使用 `scripts/generate-workbook.py` 从模板生成，用 `scripts/validate-workbook.py` 校验结构后交付。
 
 **硬约束**：
 - 不用最终持股倒推，必须逐轮计算稀释
@@ -255,10 +255,14 @@ projects/{company-slug}/
 ├── 02-dd-notes.md          # 你自己的尽调笔记（自由格式）
 ├── 03-founder-sync.md      # 你自己的访谈判断层笔记
 ├── 04-bear-case.md         # ← /bear-case 产出
+├── 05-comps-dd.xlsx        # ← /comps-dd 产出
+├── 05-market-sizing.xlsx   # ← /market-sizing 产出
+├── 05-roi-modeler.xlsx     # ← /roi-modeler 产出
 ├── 06-ic-memo.md           # ← /ic-memo 产出
 └── 99-decision.md          # 你自己写的最终决策
 
 tracks/{track-slug}/
 ├── landscape.md            # ← /track-research 产出
-└── comparables.md          # ← /track-research 产出
+├── comps-dd.xlsx           # ← /comps-dd 赛道竞品表
+└── market-sizing.xlsx      # ← /market-sizing 赛道规模模型
 ```

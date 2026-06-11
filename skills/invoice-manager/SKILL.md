@@ -1,6 +1,6 @@
 ---
 name: invoice-manager
-description: OCR 识别 PDF 发票，生成报销汇总 Excel，并归档差旅票据。在 vc-analyst 中，它是运营辅助，不进入投资决策流程。
+description: Use when 需要 OCR 识别 PDF 发票、生成报销汇总 Excel 并归档差旅票据；这是运营辅助，不进入投资决策流程
 source_repo: https://github.com/justinjia0813/invoice-manager
 ---
 

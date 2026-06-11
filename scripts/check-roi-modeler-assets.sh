@@ -21,6 +21,9 @@ require_text() {
 require_file "skills/roi-modeler/SKILL.md"
 require_file "templates/roi-modeler-template.md"
 require_file "examples/roi-modeler-example.md"
+require_file "examples/roi-modeler-example.xlsx"
+require_file "scripts/generate-workbook.py"
+require_file "scripts/validate-workbook.py"
 
 require_text "skills/roi-modeler/SKILL.md" "name: roi-modeler"
 require_text "skills/roi-modeler/SKILL.md" ".xlsx"
@@ -31,6 +34,8 @@ require_text "skills/roi-modeler/SKILL.md" "中性"
 require_text "skills/roi-modeler/SKILL.md" "乐观"
 require_text "skills/roi-modeler/SKILL.md" "MOIC"
 require_text "skills/roi-modeler/SKILL.md" "IRR"
+require_text "skills/roi-modeler/SKILL.md" "scripts/generate-workbook.py"
+require_text "skills/roi-modeler/SKILL.md" "scripts/validate-workbook.py"
 
 require_text "templates/roi-modeler-template.md" "# /roi-modeler 投资回报 Excel 模板"
 require_text "templates/roi-modeler-template.md" "## Sheet: investment_terms"

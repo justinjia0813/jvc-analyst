@@ -42,6 +42,12 @@ description: Use when 需要针对细分赛道做 TAM/SAM/SOM 市场规模建模
 - `orthogonality_check`
 - `sources`
 
+生成与校验流程：
+
+1. 先用 `python3 scripts/generate-workbook.py templates/market-sizing-template.md output/{细分赛道}_market-sizing_{YYYYMMDD}.xlsx` 生成空 workbook。
+2. 按 sheet 字段填入模型、公式、来源和正交检查，不要改 sheet 名或第一行字段名。
+3. 交付前运行 `python3 scripts/validate-workbook.py output/{细分赛道}_market-sizing_{YYYYMMDD}.xlsx templates/market-sizing-template.md`，确认 workbook 结构仍符合模板。
+
 ## 反馈迭代空间
 
 真实项目跑完后，优先调整：

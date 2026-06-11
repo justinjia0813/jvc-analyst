@@ -23,6 +23,7 @@ require_file "templates/prescreen-template.md"
 require_file "examples/prescreen-example.md"
 
 require_text "skills/prescreen/SKILL.md" "name: prescreen"
+require_text "skills/prescreen/SKILL.md" "description: Use when"
 require_text "skills/prescreen/SKILL.md" "templates/prescreen-template.md"
 require_text "skills/prescreen/SKILL.md" "bear case"
 require_text "skills/prescreen/SKILL.md" "[未核实]"

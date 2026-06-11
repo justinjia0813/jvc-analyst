@@ -7,7 +7,7 @@
 ## 当前范围
 
 - Pre-seed 到 Series B 项目的档案目录约定
-- Markdown 与 Excel 并行的工作流环节：prescreen、bull-case、track-research、comps-dd、market-sizing、roi-modeler、IC memo
+- Markdown 与 Excel 并行的工作流环节：prescreen、bull-case、bear-case、track-research、comps-dd、market-sizing、roi-modeler、IC memo
 - 内部 skill 与外部 skill 的统一入口索引
 
 ## 已收录 Skills
@@ -16,6 +16,7 @@
 | --- | --- | --- |
 | `prescreen` | 本仓库 | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 |
 | `bull-case` | 本仓库 | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 |
+| `bear-case` | 本仓库 | 从挑剔 LP、竞品 CEO、怀疑论同行三个视角提炼最强反方论证和可证伪风险假设。 |
 | `track-research` | 本仓库 | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 |
 | `comps-dd` | 本仓库 | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 |
 | `market-sizing` | 本仓库 | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 |
@@ -33,24 +34,35 @@
 ├── CLAUDE.md
 ├── WORKFLOW.md
 ├── examples/
+│   ├── bear-case-example.md
 │   ├── bull-case-example.md
 │   ├── comps-dd-example.md
+│   ├── comps-dd-example.xlsx
 │   ├── ic-memo-example.md
 │   ├── market-sizing-example.md
+│   ├── market-sizing-example.xlsx
 │   ├── prescreen-example.md
 │   ├── roi-modeler-example.md
+│   ├── roi-modeler-example.xlsx
 │   └── track-research-example.md
 ├── library/
 │   └── skill-registry.md
 ├── scripts/
+│   ├── check-bear-case-assets.sh
 │   ├── check-bull-case-assets.sh
 │   ├── check-comps-dd-assets.sh
+│   ├── check-excel-workbooks.sh
 │   ├── check-ic-memo-assets.sh
 │   ├── check-market-sizing-assets.sh
 │   ├── check-prescreen-assets.sh
+│   ├── check-review-fixes.sh
 │   ├── check-roi-modeler-assets.sh
-│   └── check-track-research-assets.sh
+│   ├── check-track-research-assets.sh
+│   ├── generate-workbook.py
+│   └── validate-workbook.py
 ├── skills/
+│   ├── bear-case/
+│   │   └── SKILL.md
 │   ├── bull-case/
 │   │   └── SKILL.md
 │   ├── comps-dd/
@@ -70,6 +82,7 @@
 │   └── track-research/
 │       └── SKILL.md
 └── templates/
+    ├── bear-case-template.md
     ├── bull-case-template.md
     ├── comps-dd-template.md
     ├── ic-memo-template.md

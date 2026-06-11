@@ -21,6 +21,9 @@ require_text() {
 require_file "skills/market-sizing/SKILL.md"
 require_file "templates/market-sizing-template.md"
 require_file "examples/market-sizing-example.md"
+require_file "examples/market-sizing-example.xlsx"
+require_file "scripts/generate-workbook.py"
+require_file "scripts/validate-workbook.py"
 
 require_text "skills/market-sizing/SKILL.md" "name: market-sizing"
 require_text "skills/market-sizing/SKILL.md" ".xlsx"
@@ -29,6 +32,8 @@ require_text "skills/market-sizing/SKILL.md" "自下而上"
 require_text "skills/market-sizing/SKILL.md" "正交"
 require_text "skills/market-sizing/SKILL.md" "复算"
 require_text "skills/market-sizing/SKILL.md" "多算"
+require_text "skills/market-sizing/SKILL.md" "scripts/generate-workbook.py"
+require_text "skills/market-sizing/SKILL.md" "scripts/validate-workbook.py"
 
 require_text "templates/market-sizing-template.md" "# /market-sizing 市场规模建模 Excel 模板"
 require_text "templates/market-sizing-template.md" "## Sheet: assumptions"

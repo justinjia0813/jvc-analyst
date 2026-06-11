@@ -1,6 +1,6 @@
 ---
 name: prescreen
-description: 对 deck、项目摘要、访谈纪要或公开素材做早期项目初筛，输出带证据标注的结构化初筛纪要、bear case 雏形和后续问题清单。
+description: Use when 需要对 deck、项目摘要、访谈纪要或公开素材做早期项目初筛，并输出带证据标注的结构化初筛纪要、bear case 雏形和后续问题清单
 ---
 
 # /prescreen 初筛

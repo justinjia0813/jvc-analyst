@@ -10,6 +10,7 @@
 | `bull-case` | 本仓库 | `skills/bull-case/SKILL.md` | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 | `/bull-case` |
 | `track-research` | 本仓库 | `skills/track-research/SKILL.md` | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 | `/track-research` |
 | `comps-dd` | 本仓库 | `skills/comps-dd/SKILL.md` | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 | `/comps-dd` |
+| `market-sizing` | 本仓库 | `skills/market-sizing/SKILL.md` | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 | `/market-sizing` |
 | `ic-memo` | 本仓库 | `skills/ic-memo/SKILL.md` | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 | `/ic-memo` |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | `skills/meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/intake`, `/founder-sync`, `/ref-check` |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | `skills/invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | 运营辅助，不进入投资决策流程 |

@@ -18,6 +18,7 @@
 | `bull-case` | 本仓库 | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 |
 | `track-research` | 本仓库 | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 |
 | `comps-dd` | 本仓库 | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 |
+| `market-sizing` | 本仓库 | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 |
 | `ic-memo` | 本仓库 | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
@@ -34,6 +35,7 @@
 │   ├── bull-case-example.md
 │   ├── comps-dd-example.md
 │   ├── ic-memo-example.md
+│   ├── market-sizing-example.md
 │   ├── prescreen-example.md
 │   └── track-research-example.md
 ├── library/
@@ -42,6 +44,7 @@
 │   ├── check-bull-case-assets.sh
 │   ├── check-comps-dd-assets.sh
 │   ├── check-ic-memo-assets.sh
+│   ├── check-market-sizing-assets.sh
 │   ├── check-prescreen-assets.sh
 │   └── check-track-research-assets.sh
 ├── skills/
@@ -53,6 +56,8 @@
 │   │   └── SKILL.md
 │   ├── invoice-manager/
 │   │   └── SKILL.md
+│   ├── market-sizing/
+│   │   └── SKILL.md
 │   ├── meeting-notes/
 │   │   └── SKILL.md
 │   ├── prescreen/
@@ -63,6 +68,7 @@
     ├── bull-case-template.md
     ├── comps-dd-template.md
     ├── ic-memo-template.md
+    ├── market-sizing-template.md
     ├── prescreen-template.md
     └── track-research-template.md
 ```

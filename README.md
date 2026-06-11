@@ -7,8 +7,8 @@
 ## 当前范围
 
 - Pre-seed 到 Series B 项目的档案目录约定
-- Markdown 优先的工作流环节：intake、prescreen、模块化 DD、founder sync、bear case、ref check、IC memo、decision archive、retro
-- 高频相邻工作的外部 skill 收录表
+- Markdown 与 Excel 并行的工作流环节：prescreen、bull-case、track-research、comps-dd、market-sizing、roi-modeler、IC memo
+- 内部 skill 与外部 skill 的统一入口索引
 
 ## 已收录 Skills
 

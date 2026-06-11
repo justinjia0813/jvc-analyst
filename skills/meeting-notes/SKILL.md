@@ -1,41 +1,41 @@
 ---
 name: meeting-notes
-description: Generate structured Word interview notes from transcript text and user notes. In vc-analyst, use this as the fact-layer intake for founder meetings, customer calls, and reference checks.
+description: 根据逐字稿和用户笔记生成结构化 Word 访谈纪要。在 vc-analyst 中，它是创始人访谈、客户访谈、背调电话的事实层入口。
 source_repo: https://github.com/justinjia0813/meeting-notes
 ---
 
 # Meeting Notes
 
-`meeting-notes` is an external skill collected into `vc-analyst` as a reusable fact-layer generator.
+`meeting-notes` 是 `vc-analyst` 收录的外部 skill，用作可复用的事实层生成器。
 
-## Canonical Source
+## 事实来源
 
-- Repository: <https://github.com/justinjia0813/meeting-notes>
-- Role: AI transcript + user notes -> structured interview memo `.docx`
-- Dependency: `python-docx`
-- Output naming: `{YYYYMMDD}_{project}_访谈纪要.docx`
+- 仓库：<https://github.com/justinjia0813/meeting-notes>
+- 作用：AI 转写逐字稿 + 用户笔记 -> 结构化访谈纪要 `.docx`
+- 依赖：`python-docx`
+- 输出命名：`{YYYYMMDD}_{project}_访谈纪要.docx`
 
-## vc-analyst Integration
+## vc-analyst 接入方式
 
-Use this skill when an investment workflow starts from a meeting transcript, founder call, customer interview, or reference-check conversation.
+当投资工作流从会议逐字稿、创始人电话、客户访谈、背调对话开始时，使用这个 skill。
 
-Standard chain:
+标准链路：
 
-1. Use `/asr` to turn audio or video into transcript text when needed.
-2. Use `meeting-notes` to generate the structured `.docx` memo.
-3. Store the `.docx` under `projects/{company-slug}/00-source/`.
-4. Extract only the relevant facts into the active Markdown file:
+1. 如果输入是音频或视频，先用 `/asr` 转成逐字稿。
+2. 用 `meeting-notes` 生成结构化 `.docx` 纪要。
+3. 将 `.docx` 放入 `projects/{company-slug}/00-source/`。
+4. 只把相关事实提取到当前 Markdown 文件：
    - `/intake` -> project fact card
    - `/founder-sync` -> `03-founder-sync.md`
    - `/ref-check` -> `05-ref-check.md`
 
-## Boundary
+## 边界
 
-The `.docx` output is a fact layer. Do not use it to silently add investment conclusions.
+`.docx` 输出是事实层，不要在里面静默加入投资结论。
 
-Interpretation belongs in the project archive and must preserve the source label:
+解读应写入项目档案，并保留来源标签：
 
-- `[创始人自述]` for unverified founder claims
-- `[客户访谈]` for customer statements
-- `[待交叉验证]` for single-source claims
-- `[推测]` for analyst inference
+- `[创始人自述]`：未经外部验证的创始人说法
+- `[客户访谈]`：客户访谈中的陈述
+- `[待交叉验证]`：单一信源声明
+- `[推测]`：分析者推断

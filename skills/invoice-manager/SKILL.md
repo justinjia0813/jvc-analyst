@@ -1,34 +1,34 @@
 ---
 name: invoice-manager
-description: OCR PDF invoices, generate reimbursement summary Excel, and archive travel invoices. In vc-analyst, this is an operations helper and is outside the investment decision workflow.
+description: OCR 识别 PDF 发票，生成报销汇总 Excel，并归档差旅票据。在 vc-analyst 中，它是运营辅助，不进入投资决策流程。
 source_repo: https://github.com/justinjia0813/invoice-manager
 ---
 
 # Invoice Manager
 
-`invoice-manager` is an external skill collected into `vc-analyst` for VC operations work after travel or month-end reimbursement.
+`invoice-manager` 是 `vc-analyst` 收录的外部 skill，用于出差后或月底报销周期的 VC 运营工作。
 
-## Canonical Source
+## 事实来源
 
-- Repository: <https://github.com/justinjia0813/invoice-manager>
-- Role: PDF invoice OCR -> reviewed invoice JSON -> reimbursement summary Excel + archived PDFs
-- System dependencies: `poppler`, `tesseract`, `tesseract-lang`
-- Python dependencies: `openpyxl`, `pdf2image`, `pytesseract`
+- 仓库：<https://github.com/justinjia0813/invoice-manager>
+- 作用：PDF 发票 OCR -> 复核后的发票 JSON -> 报销汇总 Excel + PDF 自动归档
+- 系统依赖：`poppler`、`tesseract`、`tesseract-lang`
+- Python 依赖：`openpyxl`、`pdf2image`、`pytesseract`
 
-## vc-analyst Integration
+## vc-analyst 接入方式
 
-Use this skill only for operational expense organization.
+这个 skill 只用于运营报销整理。
 
-Standard chain:
+标准链路：
 
-1. Put invoice PDFs into the upstream skill's `input/` folder.
-2. Run OCR to produce an intermediate invoice JSON file.
-3. Review date, amount, location, expense type, seller, and project name.
-4. Generate the monthly reimbursement summary and archive PDFs.
-5. Use the same `projects/{company-slug}` slug when a trip maps to a tracked investment project.
+1. 将发票 PDF 放入上游 skill 的 `input/` 目录。
+2. 运行 OCR，得到中间态发票 JSON。
+3. 复核日期、金额、地点、费用类型、销售方、项目名。
+4. 生成月度报销汇总表，并归档 PDF。
+5. 如果某次出差对应已跟踪项目，归档命名使用同一个 `projects/{company-slug}` slug。
 
-## Boundary
+## 边界
 
-This skill is not part of the investment decision flow.
+这个 skill 不属于投资决策流程。
 
-It can help maintain clean travel and project-operation records, but invoice data should not be used as diligence evidence unless the user explicitly provides it as project source material and it is copied into the project's `00-source/` archive.
+它可以帮助维护差旅和项目运营记录，但发票数据不应被当作尽调证据。除非用户明确把它作为项目原始素材提供，并复制进对应项目的 `00-source/` 归档。

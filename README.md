@@ -1,25 +1,25 @@
 # vc-analyst
 
-`vc-analyst` is a local-first toolkit for early-stage VC diligence workflows in China-market RMB funds.
+`vc-analyst` 是一个本地优先的早期 VC 尽调工具集，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
 
-The toolkit does not make investment decisions. It structures evidence, exposes gaps, prepares questions, and keeps project archives recoverable across conversations.
+这个工具集不替人做投资决策。它负责结构化证据、暴露缺口、准备问题，并让项目档案可以在不同对话中恢复上下文。
 
-## Current Scope
+## 当前范围
 
-- Project archive conventions for Pre-seed to Series B diligence
-- Markdown-first workflow stages: intake, prescreen, modular DD, founder sync, bear case, ref check, IC memo, decision archive, retro
-- External skill registry for adjacent high-frequency work
+- Pre-seed 到 Series B 项目的档案目录约定
+- Markdown 优先的工作流环节：intake、prescreen、模块化 DD、founder sync、bear case、ref check、IC memo、decision archive、retro
+- 高频相邻工作的外部 skill 收录表
 
-## Included Skills
+## 已收录 Skills
 
-| Skill | Source repo | Role in this toolkit |
+| Skill | 来源仓库 | 在本工具集里的作用 |
 | --- | --- | --- |
-| `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | Converts interview transcripts and user notes into structured Word meeting notes for `/intake`, `/founder-sync`, and `/ref-check`. |
-| `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | Handles travel invoice OCR, reimbursement summary generation, and trip archive organization as an operations helper. |
+| `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
+| `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
 
-See [`library/skill-registry.md`](library/skill-registry.md) and [`skills/`](skills/) for the local registry entries.
+本地收录入口见 [`library/skill-registry.md`](library/skill-registry.md) 和 [`skills/`](skills/)。
 
-## Repository Layout
+## 仓库结构
 
 ```text
 .
@@ -34,4 +34,4 @@ See [`library/skill-registry.md`](library/skill-registry.md) and [`skills/`](ski
         └── SKILL.md
 ```
 
-Future project archives should follow the structure defined in [`WORKFLOW.md`](WORKFLOW.md). Confidential deal materials belong under local `projects/{company-slug}/00-source/` and should not be uploaded to third-party tools.
+后续项目档案应遵守 [`WORKFLOW.md`](WORKFLOW.md) 定义的结构。保密项目材料应只放在本地 `projects/{company-slug}/00-source/`，不要上传到第三方工具。

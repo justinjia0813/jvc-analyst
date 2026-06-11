@@ -1,17 +1,17 @@
 # Skill Registry
 
-This registry lists external skills collected into the `vc-analyst` toolkit.
+这里记录 `vc-analyst` 已收录的外部 skills。
 
-The source repositories remain the canonical implementation. This repository keeps only workflow-level integration notes so the VC toolkit can route work without copying code that may drift.
+外部仓库仍然是实现代码的事实来源。本仓库只保存工作流层面的接入说明，避免复制一份未来会漂移的代码。
 
-| Skill | Canonical source | Local entry | Toolkit role | Invocation points |
+| Skill | 事实来源 | 本地入口 | 工具集角色 | 触发位置 |
 | --- | --- | --- | --- | --- |
-| `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | `skills/meeting-notes/SKILL.md` | Turn transcript text plus user notes into a structured `.docx` interview memo. | `/intake`, `/founder-sync`, `/ref-check` |
-| `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | `skills/invoice-manager/SKILL.md` | OCR travel invoices, generate reimbursement summary Excel, and archive PDFs by trip/project. | Operations helper, outside investment decision flow |
+| `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | `skills/meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/intake`, `/founder-sync`, `/ref-check` |
+| `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | `skills/invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | 运营辅助，不进入投资决策流程 |
 
-## Integration Rules
+## 接入规则
 
-- Keep source materials local. Do not upload pitch decks, transcripts, financial files, or founder communication records to third-party web tools.
-- Treat `meeting-notes` output as fact-layer material. Any interpretation, uncertainty, evasive answer, or diligence gap belongs in the corresponding project Markdown file.
-- Treat `invoice-manager` as operational infrastructure. It may reference a project slug for archive naming, but it should not affect investment judgment.
-- If the external skill implementation changes, update the registry entry and `WORKFLOW.md` link instead of pasting the upstream code into this repository.
+- 原始材料保持本地存放。不要把 BP、逐字稿、财务文件、创始人沟通记录上传到第三方网页工具。
+- `meeting-notes` 的输出视为事实层材料。任何解读、不确定性、回避回答、尽调缺口，都写入对应项目 Markdown 文件。
+- `invoice-manager` 只作为运营基础设施。它可以在归档命名中引用项目 slug，但不参与投资判断。
+- 外部 skill 实现发生变化时，只更新 registry 和 `WORKFLOW.md` 的链接/说明，不把上游代码粘贴进本仓库。

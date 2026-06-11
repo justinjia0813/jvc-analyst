@@ -16,6 +16,7 @@
 | --- | --- | --- |
 | `prescreen` | 本仓库 | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 |
 | `bull-case` | 本仓库 | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 |
+| `track-research` | 本仓库 | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 |
 | `ic-memo` | 本仓库 | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 |
 | `meeting-notes` | <https://github.com/justinjia0813/meeting-notes> | 把访谈逐字稿和用户笔记整理成结构化 Word 纪要，服务 `/intake`、`/founder-sync`、`/ref-check`。 |
 | `invoice-manager` | <https://github.com/justinjia0813/invoice-manager> | 作为运营辅助，处理差旅发票 OCR、报销汇总表生成、按行程归档。 |
@@ -31,13 +32,15 @@
 ├── examples/
 │   ├── bull-case-example.md
 │   ├── ic-memo-example.md
-│   └── prescreen-example.md
+│   ├── prescreen-example.md
+│   └── track-research-example.md
 ├── library/
 │   └── skill-registry.md
 ├── scripts/
 │   ├── check-bull-case-assets.sh
 │   ├── check-ic-memo-assets.sh
-│   └── check-prescreen-assets.sh
+│   ├── check-prescreen-assets.sh
+│   └── check-track-research-assets.sh
 ├── skills/
 │   ├── bull-case/
 │   │   └── SKILL.md
@@ -47,12 +50,15 @@
 │   │   └── SKILL.md
 │   ├── meeting-notes/
 │   │   └── SKILL.md
-│   └── prescreen/
+│   ├── prescreen/
+│   │   └── SKILL.md
+│   └── track-research/
 │       └── SKILL.md
 └── templates/
     ├── bull-case-template.md
     ├── ic-memo-template.md
-    └── prescreen-template.md
+    ├── prescreen-template.md
+    └── track-research-template.md
 ```
 
 后续项目档案应遵守 [`WORKFLOW.md`](WORKFLOW.md) 定义的结构。保密项目材料应只放在本地 `projects/{company-slug}/00-source/`，不要上传到第三方工具。

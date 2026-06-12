@@ -4,6 +4,7 @@ set -euo pipefail
 scripts/check-jvc-assets.sh
 scripts/check-excel-workbooks.sh
 python3 scripts/check-docx-template-customization.py
+python3 scripts/check-docx-format-consistency.py
 
 python3 -m py_compile \
   scripts/generate-workbook.py \

@@ -97,12 +97,38 @@ def _style_exists(doc, style_name):
 def extract_style_hints(doc):
     """Use existing template paragraphs as style hints before clearing them."""
     paragraphs = [p for p in doc.paragraphs if p.text.strip()]
-    hints = {
-        'title': paragraphs[0].style.name if len(paragraphs) > 0 else None,
-        'section': paragraphs[1].style.name if len(paragraphs) > 1 else None,
-        'body': paragraphs[2].style.name if len(paragraphs) > 2 else None,
-        'subsection': paragraphs[5].style.name if len(paragraphs) > 5 else None,
+    hints = {}
+
+    preferred = {
+        'title': 'JVC Note Title',
+        'section': 'JVC Section Heading',
+        'body': 'JVC Body',
+        'subsection': 'JVC Subsection Heading',
     }
+    for role, style_name in preferred.items():
+        if _style_exists(doc, style_name):
+            hints[role] = style_name
+
+    positional = {
+        'title': 0,
+        'section': 1,
+        'body': 2,
+    }
+    for role, index in positional.items():
+        if role not in hints and len(paragraphs) > index:
+            hints[role] = paragraphs[index].style.name
+
+    if 'subsection' not in hints:
+        known = {hints.get('title'), hints.get('section'), hints.get('body')}
+        for paragraph in paragraphs[3:]:
+            if paragraph.style.name not in known:
+                hints['subsection'] = paragraph.style.name
+                break
+        if 'subsection' not in hints and len(paragraphs) > 5:
+            hints['subsection'] = paragraphs[5].style.name
+        elif 'subsection' not in hints and len(paragraphs) > 4:
+            hints['subsection'] = paragraphs[4].style.name
+
     return {key: value for key, value in hints.items() if _style_exists(doc, value)}
 
 

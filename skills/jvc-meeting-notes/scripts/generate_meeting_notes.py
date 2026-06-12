@@ -9,6 +9,10 @@
 3. `skills/jvc-meeting-notes/templates/custom.docx`
 4. 中性默认模板 `skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
 
+默认模板使用 meeting-notes 标准版式：A4、上/下 2.54cm、左/右 3.17cm、
+Normal 段落、run 级 Times New Roman + KaiTi 字体。自定义模板如果提供命名
+样式，则优先保留用户模板样式；如果只提供 Normal，则使用同一套直接字体格式。
+
 sections.json 格式：
 {
   "title": "2026/03/23 线上 访谈{深安锂能}",
@@ -136,10 +140,11 @@ def add_paragraph(doc, text, style_hints, style_key, alignment, fallback_size, f
     style_name = style_hints.get(style_key)
     if not style_name and _style_exists(doc, 'Normal'):
         style_name = 'Normal'
-    paragraph = doc.add_paragraph(style=style_name) if style_name else doc.add_paragraph()
+    use_direct_formatting = not style_name or style_name == 'Normal'
+    paragraph = doc.add_paragraph() if use_direct_formatting else doc.add_paragraph(style=style_name)
     paragraph.alignment = alignment
     run = paragraph.add_run(text)
-    if not style_name:
+    if use_direct_formatting:
         set_run_font(run, size=fallback_size, bold=fallback_bold)
     return paragraph
 

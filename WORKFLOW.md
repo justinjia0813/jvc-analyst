@@ -35,9 +35,10 @@ git clone https://github.com/justinjia0813/jvc-analyst.git && cd jvc-analyst && 
 | `/jvc-comps-dd` | 调研竞争对手和可比公司 | Excel (.xlsx) |
 | `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模 | Excel (.xlsx) |
 | `/jvc-roi-modeler` | 计算投资回报、融资稀释、IRR/MOIC | Excel (.xlsx) |
-| `/jvc-bear-case` | 三角色反方论证，输出最锋利的不投理由 | Markdown |
+| `/jvc-bear-case` | 四角色反方论证，输出最锋利的不投理由 | Markdown |
 | `/jvc-ic-memo` | 汇总所有素材，合成十段式 IC memo 初稿 | Markdown |
 | `/jvc-meeting-notes` | 转写 + 笔记 → 结构化访谈纪要 .docx | DOCX |
+| `/jvc-talk-notes` | 高管/客户访谈 → 问答式访谈纪要 .docx | DOCX |
 | `/jvc-invoice-manager` | PDF 发票 → OCR → 报销汇总 + 归档 | Excel + PDF archive |
 
 **外部前置能力**：
@@ -91,8 +92,8 @@ git clone https://github.com/justinjia0813/jvc-analyst.git && cd jvc-analyst && 
 ### `/jvc-bear-case` 反向论证
 
 - 输入：项目分析材料
-- 做什么：扮演挑剔LP / 竞品CEO / 怀疑论同行三种角色找茬
-- 输出：至少 3 条反对论点，每条附可证伪条件
+- 做什么：扮演挑剔LP / 竞品CEO / 怀疑论同行 / IC boss 四种角色找茬
+- 输出：至少 4 条反对论点，每条附可证伪条件
 
 ### `/jvc-ic-memo` 投决备忘录
 
@@ -106,6 +107,13 @@ git clone https://github.com/justinjia0813/jvc-analyst.git && cd jvc-analyst && 
 - 做什么：融合逐字稿与随笔，按六段式结构生成 Word 访谈纪要
 - 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_访谈纪要.docx`
 - 来源：已整合自 `meeting-notes` repo，脚本和模板位于 `skills/jvc-meeting-notes/`
+
+### `/jvc-talk-notes` 问答式访谈纪要
+
+- 输入：高管访谈、客户访谈、专家访谈逐字稿，用户随笔，会议日期，受访人角色
+- 做什么：按一问一答制整理问题、回答摘要、关键原话、事实标签、待验证点
+- 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_{受访人角色}_问答纪要.docx`
+- 来源：复用 `skills/jvc-meeting-notes/` 下的 Word 生成脚本和模板
 
 ### `/jvc-invoice-manager` 发票整理
 
@@ -122,7 +130,7 @@ git clone https://github.com/justinjia0813/jvc-analyst.git && cd jvc-analyst && 
 
 ```
 projects/{company-slug}/
-├── 00-source/              # 只读区：deck、财务表、转写、/jvc-meeting-notes .docx
+├── 00-source/              # 只读区：deck、财务表、转写、/jvc-meeting-notes 或 /jvc-talk-notes .docx
 ├── 01-prescreen.md         # ← /jvc-prescreen
 ├── 02-dd-notes.md          # 你自己的尽调笔记
 ├── 03-founder-sync.md      # 你自己的访谈笔记

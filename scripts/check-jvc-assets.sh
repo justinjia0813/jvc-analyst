@@ -88,9 +88,13 @@ done
 require_file "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
 require_file "skills/jvc-meeting-notes/templates/访谈纪要模板.docx"
 require_file "skills/jvc-meeting-notes/requirements.txt"
+require_file "scripts/check-docx-template-customization.py"
 require_text "skills/jvc-meeting-notes/SKILL.md" "integrated_from: https://github.com/justinjia0813/meeting-notes"
+require_text "skills/jvc-meeting-notes/SKILL.md" "JVC_DOCX_TEMPLATE"
+require_text "skills/jvc-meeting-notes/SKILL.md" "templates/custom.docx"
 require_text "skills/jvc-talk-notes/SKILL.md" "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
 require_text "skills/jvc-talk-notes/SKILL.md" "问答纪要"
+require_text "skills/jvc-talk-notes/SKILL.md" "JVC_DOCX_TEMPLATE"
 
 require_file "skills/jvc-invoice-manager/scripts/process_invoices.py"
 require_file "skills/jvc-invoice-manager/scripts/generate_summary.py"

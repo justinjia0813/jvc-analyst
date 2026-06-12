@@ -15,3 +15,6 @@ input/
 __pycache__/
 .venv/
 venv/
+
+# User-provided local Word templates
+skills/jvc-meeting-notes/templates/custom.docx

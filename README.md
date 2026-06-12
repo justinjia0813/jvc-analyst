@@ -136,14 +136,35 @@ cd jvc-analyst
 - 输入：AI 转写逐字稿、用户随笔、会议日期、线上/线下、项目名称。
 - 做什么：融合逐字稿与随笔，按六段式结构生成 Word 访谈纪要。
 - 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_访谈纪要.docx`。
-- 来源：已整合自 `meeting-notes` repo，脚本和模板位于 `skills/jvc-meeting-notes/`。
+- 来源：已整合自 `meeting-notes` repo，脚本和中性默认模板位于 `skills/jvc-meeting-notes/`。
 
 ### `/jvc-talk-notes` 问答式访谈纪要
 
 - 输入：高管访谈、客户访谈、专家访谈逐字稿，用户随笔，会议日期，受访人角色。
 - 做什么：按一问一答制整理问题、回答摘要、关键原话、事实标签、待验证点。
 - 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_{受访人角色}_问答纪要.docx`。
-- 来源：复用 `skills/jvc-meeting-notes/` 下的 Word 生成脚本和模板。
+- 来源：复用 `skills/jvc-meeting-notes/` 下的 Word 生成脚本和模板解析逻辑。
+
+## Word 模板定制
+
+`jvc-meeting-notes` 和 `jvc-talk-notes` 不绑定任何基金或机构的 Word 模板。仓库内默认模板是中性公开模板，公众用户可以用自己的 `.docx` 模板覆盖。
+
+模板解析顺序：
+
+1. 命令行参数：`--template path/to/template.docx`
+2. 环境变量：`JVC_DOCX_TEMPLATE=/path/to/template.docx`
+3. 本地放置：`skills/jvc-meeting-notes/templates/custom.docx`
+4. 默认模板：`skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
+
+生成器会从模板中保留页面设置、样式、页眉和页脚，清空正文占位内容后写入新的纪要正文。如果模板里有示例段落，脚本会按前几个非空段落抽取标题、章节、正文和子标题样式；如果没有示例段落，则使用模板的 `Normal` 样式。`templates/custom.docx` 已被 `.gitignore` 忽略，适合放用户自己的机构模板，不会误提交到 public repo。
+
+示例：
+
+```bash
+python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
+  --template ~/Documents/my-firm-template.docx \
+  --output output/20260612_项目名称_访谈纪要.docx
+```
 
 ### `/jvc-invoice-manager` 发票整理
 
@@ -193,6 +214,7 @@ tracks/{track-slug}/
 ├── scripts/
 │   ├── check-jvc-assets.sh
 │   ├── check-talk-notes-assets.sh
+│   ├── check-docx-template-customization.py
 │   ├── check-excel-workbooks.sh
 │   ├── generate-workbook.py
 │   └── validate-workbook.py
@@ -217,5 +239,6 @@ tracks/{track-slug}/
 ```bash
 bash scripts/check-jvc-assets.sh
 bash scripts/check-talk-notes-assets.sh
+python3 scripts/check-docx-template-customization.py
 bash scripts/check-excel-workbooks.sh
 ```

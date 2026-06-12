@@ -28,6 +28,14 @@ description: Use when user says '高管访谈', '客户访谈', '专家访谈', 
 - `skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
 - `skills/jvc-meeting-notes/requirements.txt`
 
+默认 Word 模板是中性公开模板。用户可用三种方式替换成自己的机构模板：
+
+1. 运行时传 `--template path/to/template.docx`
+2. 设置 `JVC_DOCX_TEMPLATE=/path/to/template.docx`
+3. 放置本地文件 `skills/jvc-meeting-notes/templates/custom.docx`
+
+生成器会保留用户模板的页面设置、样式、页眉和页脚，再写入新的问答纪要正文。如果模板里有示例段落，会按前几个非空段落抽取标题、章节、正文和子标题样式；否则使用模板的 `Normal` 样式。
+
 ## 结构
 
 默认四段式：
@@ -85,6 +93,7 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 - 客户需求必须区分当前使用、试点、意向和假设性需求。
 - 模糊回答、回避、前后矛盾和无来源数字都要标出。
 - 用户疑问和观察必须和受访者回答分开记录。
+- 不要把个人或机构专属 Word 模板提交为 public 默认模板。
 - 不要把它写成销售会议总结、投资 memo 或投资建议。
 
 ## 依赖

@@ -141,7 +141,7 @@ cd jvc-analyst
 ### `/jvc-talk-notes` 问答式访谈纪要
 
 - 输入：高管访谈、客户访谈、专家访谈逐字稿，用户随笔，会议日期，受访人角色。
-- 做什么：按一问一答制整理问题、回答摘要、对应事实层维度、关键原话、事实标签、待验证点，并在末尾生成事实层索引。
+- 做什么：按一问一答制整理问题标题、完整回答、对应事实层维度和待验证点；完整回答需保留核心信息、筛去重复和无信息量 ad-libs，并在末尾生成事实层索引。
 - 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_{受访人角色}_问答纪要.docx`。
 - 来源：复用 `skills/jvc-meeting-notes/` 下的 Word 生成脚本和模板解析逻辑。
 
@@ -149,7 +149,7 @@ cd jvc-analyst
 
 `jvc-meeting-notes` 和 `jvc-talk-notes` 不绑定任何基金或机构的 Word 模板。仓库内默认模板是中性公开模板，公众用户可以用自己的 `.docx` 模板覆盖。
 
-默认模板采用内置 meeting-notes 标准版式：A4 页面，页边距为上/下 2.54cm、左/右 3.17cm；标题居中 18pt 加粗；章节标题 10pt 加粗；正文和问答小标题 10pt 常规；正文两端对齐，并启用 `doNotExpandShiftReturn` 避免手动换行短行被强行拉满；段落使用 `Normal` 并通过 run 级字体格式呈现，保证 `/jvc-meeting-notes` 和 `/jvc-talk-notes` 视觉一致，只改变文字编排结构。
+默认模板采用内置 meeting-notes 标准版式：A4 页面，页边距为上/下 2.54cm、左/右 3.17cm；标题居中 18pt 加粗；章节标题 10pt 加粗；正文和问答小标题 10pt 常规；段前/段后 0、单倍行距；正文两端对齐，并启用 `doNotExpandShiftReturn` 避免手动换行短行被强行拉满；段落使用 `Normal` 并通过 run 级字体格式呈现，保证 `/jvc-meeting-notes` 和 `/jvc-talk-notes` 视觉一致，只改变文字编排结构。
 
 模板解析顺序：
 

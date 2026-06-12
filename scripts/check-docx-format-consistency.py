@@ -18,6 +18,7 @@ DEFAULT_TEMPLATE = ROOT / "skills/jvc-meeting-notes/templates/访谈纪要模板
 EXPECTED_PAGE = (21.0, 29.7)
 EXPECTED_MARGINS = (2.54, 2.54, 3.17, 3.17)
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+EXPECTED_SPACING = {"before": "0", "after": "0", "line": "240", "lineRule": "auto"}
 EXPECTED_SECTION_XML = {
     "pgSz": {"w": "11906", "h": "16838"},
     "pgMar": {
@@ -151,6 +152,8 @@ def assert_role_format(paragraph: ET.Element, expected: tuple[str, str, str, boo
     assert jc is not None and w_attr(jc, "val") == expected_jc, (
         f"{label} {role} alignment mismatch"
     )
+    spacing = p_pr.find(f"{W}spacing")
+    assert_attrs(spacing, EXPECTED_SPACING, f"{label} {role} paragraph spacing")
 
     run = first_text_run(paragraph)
     r_pr = run.find(f"{W}rPr")
@@ -218,7 +221,10 @@ def main() -> int:
                     {
                         "heading": "二、问答纪要",
                         "subsections": [
-                            {"heading": "Q1：客户如何使用？", "content": "问题：...\n回答摘要：..."},
+                            {
+                                "heading": "Q1：客户如何使用？",
+                                "content": "完整回答：测试回答。\n对应事实层维度：客户\n待验证点：无明显待验证点。",
+                            },
                         ],
                     },
                 ],

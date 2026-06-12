@@ -10,9 +10,10 @@
 4. 中性默认模板 `skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
 
 默认模板使用 meeting-notes 标准版式：A4、上/下 2.54cm、左/右 3.17cm、
-标题居中，正文两端对齐，Normal 段落、run 级 Times New Roman + KaiTi 字体，
-并启用 doNotExpandShiftReturn，避免手动换行短行被强行拉满。自定义模板如果
-提供命名样式，则优先保留用户模板样式；如果只提供 Normal，则使用同一套直接字体格式。
+标题居中，正文两端对齐，段前/段后 0、单倍行距，Normal 段落、run 级
+Times New Roman + KaiTi 字体，并启用 doNotExpandShiftReturn，避免手动换行
+短行被强行拉满。自定义模板如果提供命名样式，则优先保留用户模板样式；
+如果只提供 Normal，则使用同一套直接字体格式。
 
 sections.json 格式：
 {
@@ -106,6 +107,14 @@ def ensure_non_expanding_justify(doc):
         compat.append(OxmlElement('w:doNotExpandShiftReturn'))
 
 
+def apply_paragraph_layout(paragraph, alignment):
+    paragraph.alignment = alignment
+    paragraph_format = paragraph.paragraph_format
+    paragraph_format.space_before = Pt(0)
+    paragraph_format.space_after = Pt(0)
+    paragraph_format.line_spacing = 1.0
+
+
 def _style_exists(doc, style_name):
     if not style_name:
         return False
@@ -160,7 +169,7 @@ def add_paragraph(doc, text, style_hints, style_key, alignment, fallback_size, f
         style_name = 'Normal'
     use_direct_formatting = not style_name or style_name == 'Normal'
     paragraph = doc.add_paragraph() if use_direct_formatting else doc.add_paragraph(style=style_name)
-    paragraph.alignment = alignment
+    apply_paragraph_layout(paragraph, alignment)
     run = paragraph.add_run(text)
     if use_direct_formatting:
         set_run_font(run, size=fallback_size, bold=fallback_bold)

@@ -27,7 +27,9 @@ integrated_from: https://github.com/justinjia0813/meeting-notes
 
 `skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
 
-用户可自定义 `.docx` 模板。生成器会抽取模板中的页面设置、样式、页眉和页脚，清空正文占位内容后写入新的纪要正文。如果模板里有示例段落，脚本会按前几个非空段落抽取标题、章节、正文和子标题样式；如果没有示例段落，则使用模板的 `Normal` 样式。模板解析顺序：
+默认模板采用内置 meeting-notes 标准版式：A4 页面，页边距为上/下 2.54cm、左/右 3.17cm；标题居中 18pt 加粗；章节标题 10pt 加粗；正文和子标题 10pt 常规；段前/段后 0、单倍行距；正文两端对齐，并启用 `doNotExpandShiftReturn` 避免手动换行短行被强行拉满；段落使用 `Normal` 并通过 run 级字体格式呈现。
+
+用户可自定义 `.docx` 模板。生成器会抽取模板中的页面设置、样式、页眉和页脚，清空正文占位内容后写入新的纪要正文。如果模板里有示例段落，脚本会按前几个非空段落抽取标题、章节、正文和子标题样式；如果模板只提供 `Normal` 样式，则按默认 meeting-notes 标准直接写入标题、章节、正文和子标题的字体格式。模板解析顺序：
 
 1. 命令行 `--template path/to/template.docx`
 2. 环境变量 `JVC_DOCX_TEMPLATE=/path/to/template.docx`

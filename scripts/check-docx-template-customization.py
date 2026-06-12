@@ -35,7 +35,10 @@ def make_data(path: Path) -> None:
             {
                 "heading": "二、问答纪要",
                 "subsections": [
-                    {"heading": "Q1：问题", "content": "回答摘要：测试。"},
+                    {
+                        "heading": "Q1：问题",
+                        "content": "完整回答：测试。\n对应事实层维度：其他\n待验证点：无明显待验证点。",
+                    },
                 ],
             },
         ],

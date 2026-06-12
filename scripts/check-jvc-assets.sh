@@ -70,8 +70,10 @@ fi
 
 require_file "setup"
 require_text "README.md" "# jvc-analyst"
-require_text "WORKFLOW.md" "# jvc-analyst"
+require_text "README.md" "## 工具总览"
+require_text "README.md" "## 项目档案目录约定"
 require_text "CLAUDE.md" "jvc-analyst"
+reject_path "WORKFLOW.md"
 
 for legacy in \
   prescreen bull-case bear-case track-research comps-dd market-sizing roi-modeler ic-memo meeting-notes talk-notes invoice-manager

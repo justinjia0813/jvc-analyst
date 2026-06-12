@@ -149,7 +149,7 @@ cd jvc-analyst
 
 `jvc-meeting-notes` 和 `jvc-talk-notes` 不绑定任何基金或机构的 Word 模板。仓库内默认模板是中性公开模板，公众用户可以用自己的 `.docx` 模板覆盖。
 
-默认模板采用内置 meeting-notes 标准版式：A4 页面，页边距为上/下 2.54cm、左/右 3.17cm；标题居中 18pt 加粗；章节标题 10pt 加粗；正文和问答小标题 10pt 常规；段落使用 `Normal` 并通过 run 级字体格式呈现，保证 `/jvc-meeting-notes` 和 `/jvc-talk-notes` 视觉一致，只改变文字编排结构。
+默认模板采用内置 meeting-notes 标准版式：A4 页面，页边距为上/下 2.54cm、左/右 3.17cm；标题居中 18pt 加粗；章节标题 10pt 加粗；正文和问答小标题 10pt 常规；正文两端对齐，并启用 `doNotExpandShiftReturn` 避免手动换行短行被强行拉满；段落使用 `Normal` 并通过 run 级字体格式呈现，保证 `/jvc-meeting-notes` 和 `/jvc-talk-notes` 视觉一致，只改变文字编排结构。
 
 模板解析顺序：
 

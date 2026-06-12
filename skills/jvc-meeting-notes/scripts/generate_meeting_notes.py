@@ -10,8 +10,9 @@
 4. 中性默认模板 `skills/jvc-meeting-notes/templates/访谈纪要模板.docx`
 
 默认模板使用 meeting-notes 标准版式：A4、上/下 2.54cm、左/右 3.17cm、
-Normal 段落、run 级 Times New Roman + KaiTi 字体。自定义模板如果提供命名
-样式，则优先保留用户模板样式；如果只提供 Normal，则使用同一套直接字体格式。
+标题居中，正文两端对齐，Normal 段落、run 级 Times New Roman + KaiTi 字体，
+并启用 doNotExpandShiftReturn，避免手动换行短行被强行拉满。自定义模板如果
+提供命名样式，则优先保留用户模板样式；如果只提供 Normal，则使用同一套直接字体格式。
 
 sections.json 格式：
 {
@@ -41,6 +42,7 @@ from pathlib import Path
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
 BASE = Path(__file__).resolve().parent.parent
@@ -86,6 +88,22 @@ def set_run_font(run, cn_font='KaiTi', en_font='Times New Roman', size=Pt(10), b
         rFonts = rPr.makeelement(qn('w:rFonts'), {})
         rPr.insert(0, rFonts)
     rFonts.set(qn('w:eastAsia'), cn_font)
+
+
+def get_or_add_child(parent, tag):
+    child = parent.find(qn(f'w:{tag}'))
+    if child is None:
+        child = OxmlElement(f'w:{tag}')
+        parent.append(child)
+    return child
+
+
+def ensure_non_expanding_justify(doc):
+    """Keep justified paragraphs readable when text contains manual line breaks."""
+    settings = doc.settings.element
+    compat = get_or_add_child(settings, 'compat')
+    if compat.find(qn('w:doNotExpandShiftReturn')) is None:
+        compat.append(OxmlElement('w:doNotExpandShiftReturn'))
 
 
 def _style_exists(doc, style_name):
@@ -152,6 +170,7 @@ def add_paragraph(doc, text, style_hints, style_key, alignment, fallback_size, f
 def create_document(data, template_path, output_path):
     """基于模板创建会议纪要文档"""
     doc = Document(template_path)
+    ensure_non_expanding_justify(doc)
     style_hints = extract_style_hints(doc)
 
     # 清空正文段落（保留页眉页脚和样式）

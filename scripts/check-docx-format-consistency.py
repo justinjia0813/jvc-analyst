@@ -86,6 +86,11 @@ def document_root(path: Path) -> ET.Element:
         return ET.fromstring(archive.read("word/document.xml"))
 
 
+def settings_root(path: Path) -> ET.Element:
+    with ZipFile(path) as archive:
+        return ET.fromstring(archive.read("word/settings.xml"))
+
+
 def w_attr(element: ET.Element, name: str) -> str | None:
     return element.get(f"{W}{name}")
 
@@ -128,6 +133,13 @@ def assert_standard_section_xml(path: Path) -> None:
     header_refs = sect.findall(f"{W}headerReference")
     assert len(header_refs) == 1, f"expected one empty default header reference, got {len(header_refs)}"
     assert w_attr(header_refs[0], "type") == "default", "header reference should be default"
+
+
+def assert_non_expanding_justify_setting(path: Path) -> None:
+    settings = settings_root(path)
+    assert settings.find(f".//{W}compat/{W}doNotExpandShiftReturn") is not None, (
+        "two-sided alignment should not expand lines ending with manual line breaks"
+    )
 
 
 def assert_role_format(paragraph: ET.Element, expected: tuple[str, str, str, bool], label: str) -> None:
@@ -221,6 +233,7 @@ def main() -> int:
             assert page == EXPECTED_PAGE, f"{label} page size mismatch: {page}"
             assert margins == EXPECTED_MARGINS, f"{label} margin mismatch: {margins}"
             assert_standard_section_xml(path)
+            assert_non_expanding_justify_setting(path)
             assert_standard_paragraph_xml(path, label)
             styles = nonempty_styles(path)
             assert set(styles) == {"Normal"}, f"{label} should use only Normal paragraphs: {styles}"

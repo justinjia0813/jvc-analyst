@@ -1,0 +1,30 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">jvc-analyst GitHub hero</title>
+  <desc id="desc">A warm editorial GitHub hero image for jvc-analyst, a local-first VC diligence skill suite.</desc>
+  <rect width="1280" height="640" fill="#F8F3EA"/>
+  <rect x="52" y="52" width="1176" height="536" rx="24" fill="#FCFAF5" stroke="#D8CDC1" stroke-width="2"/>
+  <path d="M880 88C959 109 1024 158 1068 224C1117 298 1131 387 1105 473C1088 529 1059 560 1059 560H1228V88H880Z" fill="#E8D9CB"/>
+  <path d="M932 196C983 195 1031 217 1063 254C1098 294 1108 348 1091 398C1073 452 1023 487 966 486C910 485 862 451 843 400C822 345 837 287 879 247C894 232 913 204 932 196Z" fill="#253B32"/>
+  <path d="M928 275C954 255 993 258 1014 286C1032 310 1029 343 1010 365C989 390 951 392 927 369C904 347 902 308 928 275Z" fill="#F8F3EA"/>
+  <path d="M963 301H995M979 285V336" stroke="#A46A50" stroke-width="8" stroke-linecap="round"/>
+  <text x="96" y="179" fill="#161514" font-family="Snell Roundhand, Apple Chancery, Brush Script MT, Segoe Script, cursive" font-size="124" font-weight="500" letter-spacing="0">JVC</text>
+  <text x="97" y="246" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="72" font-weight="500" letter-spacing="0">analyst</text>
+  <text x="100" y="310" fill="#3C3D39" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="500" letter-spacing="0">Local-first diligence skills for RMB funds.</text>
+  <text x="100" y="356" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="0">Structure materials, surface gaps, prepare IC work.</text>
+  <g>
+    <rect x="100" y="435" width="250" height="76" rx="10" fill="#F0E7DD" stroke="#D4C4B7"/>
+    <text x="126" y="468" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="24" font-weight="600" letter-spacing="0">Prescreen</text>
+    <text x="126" y="497" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="16" letter-spacing="0">7-dimension memo</text>
+  </g>
+  <g>
+    <rect x="372" y="435" width="250" height="76" rx="10" fill="#F0E7DD" stroke="#D4C4B7"/>
+    <text x="398" y="468" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="24" font-weight="600" letter-spacing="0">Diligence</text>
+    <text x="398" y="497" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="16" letter-spacing="0">comps, sizing, returns</text>
+  </g>
+  <g>
+    <rect x="644" y="435" width="250" height="76" rx="10" fill="#F0E7DD" stroke="#D4C4B7"/>
+    <text x="670" y="468" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="24" font-weight="600" letter-spacing="0">IC Memo</text>
+    <text x="670" y="497" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="16" letter-spacing="0">balanced risk memo</text>
+  </g>
+  <path d="M102 394C218 375 365 371 510 384C623 395 721 415 866 389" stroke="#A46A50" stroke-width="6" stroke-linecap="round"/>
+</svg>

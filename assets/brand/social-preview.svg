@@ -1,0 +1,16 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">jvc-analyst social preview</title>
+  <desc id="desc">A social preview image with a signature JVC mark and concise positioning for the jvc-analyst GitHub repository.</desc>
+  <rect width="1200" height="630" fill="#161514"/>
+  <rect x="54" y="54" width="1092" height="522" rx="26" fill="#F8F3EA"/>
+  <path d="M851 54H1146V576H948C1000 531 1028 471 1029 405C1030 286 959 182 851 54Z" fill="#E7D4C5"/>
+  <path d="M831 195C873 159 941 163 977 208C1013 252 1006 319 964 356C920 394 852 390 816 346C779 300 786 233 831 195Z" fill="#253B32"/>
+  <path d="M864 244H932M898 210V314" stroke="#F8F3EA" stroke-width="11" stroke-linecap="round"/>
+  <text x="96" y="190" fill="#161514" font-family="Snell Roundhand, Apple Chancery, Brush Script MT, Segoe Script, cursive" font-size="136" font-weight="500" letter-spacing="0">JVC</text>
+  <text x="100" y="276" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="78" font-weight="500" letter-spacing="0">analyst</text>
+  <text x="102" y="342" fill="#3C3D39" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="30" font-weight="500" letter-spacing="0">A local-first skill suite for early-stage VC diligence.</text>
+  <text x="102" y="398" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="0">China market. RMB funds. Evidence-first memos, comps,</text>
+  <text x="102" y="434" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="0">market sizing, return models, and meeting notes.</text>
+  <path d="M102 473C223 452 371 449 516 464C642 477 758 500 906 469" stroke="#A46A50" stroke-width="7" stroke-linecap="round"/>
+  <text x="102" y="535" fill="#253B32" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="0">jvc-prescreen / jvc-comps-dd / jvc-market-sizing / jvc-ic-memo</text>
+</svg>

@@ -16,6 +16,7 @@ SKILLS=(
   jvc-bear-case
   jvc-ic-memo
   jvc-meeting-notes
+  jvc-talk-notes
   jvc-invoice-manager
 )
 

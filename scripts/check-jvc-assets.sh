@@ -35,7 +35,7 @@ require_text() {
 }
 
 reject_backticked_legacy_slash_commands() {
-  local pattern='`/(prescreen|bull-case|bear-case|track-research|comps-dd|market-sizing|roi-modeler|ic-memo|meeting-notes|invoice-manager)`'
+  local pattern='`/(prescreen|bull-case|bear-case|track-research|comps-dd|market-sizing|roi-modeler|ic-memo|meeting-notes|talk-notes|invoice-manager)`'
   if rg -n "$pattern" --glob '*.md' .; then
     echo "found legacy slash command without jvc- prefix" >&2
     return 1
@@ -60,6 +60,7 @@ skills=(
   jvc-roi-modeler
   jvc-ic-memo
   jvc-meeting-notes
+  jvc-talk-notes
   jvc-invoice-manager
 )
 
@@ -69,11 +70,13 @@ fi
 
 require_file "setup"
 require_text "README.md" "# jvc-analyst"
-require_text "WORKFLOW.md" "# jvc-analyst"
+require_text "README.md" "## 工具总览"
+require_text "README.md" "## 项目档案目录约定"
 require_text "CLAUDE.md" "jvc-analyst"
+reject_path "WORKFLOW.md"
 
 for legacy in \
-  prescreen bull-case bear-case track-research comps-dd market-sizing roi-modeler ic-memo meeting-notes invoice-manager
+  prescreen bull-case bear-case track-research comps-dd market-sizing roi-modeler ic-memo meeting-notes talk-notes invoice-manager
 do
   reject_path "skills/${legacy}"
 done
@@ -86,6 +89,8 @@ require_file "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
 require_file "skills/jvc-meeting-notes/templates/访谈纪要模板.docx"
 require_file "skills/jvc-meeting-notes/requirements.txt"
 require_text "skills/jvc-meeting-notes/SKILL.md" "integrated_from: https://github.com/justinjia0813/meeting-notes"
+require_text "skills/jvc-talk-notes/SKILL.md" "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
+require_text "skills/jvc-talk-notes/SKILL.md" "问答纪要"
 
 require_file "skills/jvc-invoice-manager/scripts/process_invoices.py"
 require_file "skills/jvc-invoice-manager/scripts/generate_summary.py"

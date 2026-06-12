@@ -1,8 +1,37 @@
 # jvc-analyst
 
+<p align="center">
+  <img src="assets/brand/github-hero.svg" alt="jvc-analyst: local-first VC diligence skills for RMB funds" width="100%">
+</p>
+
+<p align="center">
+  <a href="#安装"><img alt="Install locally" src="https://img.shields.io/badge/install-local--first-253B32?style=flat-square"></a>
+  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-11%20jvc--skills-A46A50?style=flat-square"></a>
+  <a href="#使用原则"><img alt="Evidence-first" src="https://img.shields.io/badge/method-evidence--first-161514?style=flat-square"></a>
+  <a href="#维护检查"><img alt="Checks" src="https://img.shields.io/badge/checks-shell%20%2B%20workbook-5F635B?style=flat-square"></a>
+</p>
+
 `jvc-analyst` 是一个本地优先的早期 VC 尽调工具箱，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
 
 它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放进同一个可安装的 skill 集合。
+
+## 适合谁
+
+- 面向中国市场、人民币基金、Pre-seed 到 Series B 项目的投资人和研究协作者。
+- 需要把 deck、访谈、公开资料、竞品、市场规模和投资回报放进同一套本地工作流的人。
+- 希望 AI 帮忙整理证据和问题，但不希望 AI 自动替代判断、建档和投决的人。
+
+## 品牌与 PR 素材
+
+仓库内置一组 GitHub 友好的 SVG 素材，可直接用于 README、仓库 Social preview、PR 描述或项目介绍页。
+
+| 素材 | 文件 | 用途 |
+| --- | --- | --- |
+| 签名字体 JVC 标识 | `assets/brand/jvc-signature-logo.svg` | 项目标识、页眉、PR 开头 |
+| GitHub README hero | `assets/brand/github-hero.svg` | README 顶部横幅 |
+| Social preview | `assets/brand/social-preview.svg` | GitHub 仓库社交预览图 |
+
+视觉方向：签名字体感的 `JVC` 主标，搭配克制的编辑型 serif 标题、温暖纸色背景、墨黑正文和少量赤陶/墨绿强调。它借鉴 Claude 官网那种安静、留白、可信的字体气质，但不复刻 Anthropic/Claude 的品牌资产。
 
 ## 安装
 
@@ -151,6 +180,11 @@ tracks/{track-slug}/
 
 ```text
 .
+├── assets/
+│   └── brand/
+│       ├── github-hero.svg
+│       ├── jvc-signature-logo.svg
+│       └── social-preview.svg
 ├── CLAUDE.md
 ├── README.md
 ├── examples/

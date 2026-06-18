@@ -18,6 +18,7 @@ Times New Roman + KaiTi 字体，并启用 doNotExpandShiftReturn，避免手动
 sections.json 格式：
 {
   "title": "2026/03/23 线上 访谈{深安锂能}",
+  "interviewee": "深安锂能",
   "sections": [
     {
       "heading": "一、公司基本情况",
@@ -34,10 +35,14 @@ sections.json 格式：
     ...
   ]
 }
+
+当 `--output` 是目录时，默认输出文件名为：
+`【YYYY年MM月DD日访谈】访谈对象.docx`
 """
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from docx import Document
@@ -51,6 +56,31 @@ DEFAULT_TEMPLATE = BASE / 'templates' / '访谈纪要模板.docx'
 CUSTOM_TEMPLATE = BASE / 'templates' / 'custom.docx'
 DEFAULT_OUTPUT = BASE / 'output'
 TEMPLATE_ENV = 'JVC_DOCX_TEMPLATE'
+
+
+DATE_KEYS = (
+    'interview_date',
+    'meeting_date',
+    'date',
+    '访谈日期',
+    '会议日期',
+    '日期',
+)
+TARGET_KEYS = (
+    'interviewee',
+    'interview_target',
+    'target',
+    '访谈对象',
+    '受访对象',
+    '受访人',
+    '项目名称',
+    'project_name',
+    'project',
+    'company_name',
+    'company',
+    '公司',
+    '项目',
+)
 
 
 def resolve_template_path(explicit_template=None):
@@ -74,6 +104,74 @@ def resolve_template_path(explicit_template=None):
     if not DEFAULT_TEMPLATE.exists():
         raise FileNotFoundError(f'默认模板不存在: {DEFAULT_TEMPLATE}')
     return DEFAULT_TEMPLATE
+
+
+def _first_nonempty(data, keys):
+    for key in keys:
+        value = data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ''
+
+
+def _extract_date_text(data):
+    candidates = [_first_nonempty(data, DATE_KEYS), str(data.get('title', ''))]
+    for candidate in candidates:
+        if not candidate:
+            continue
+
+        separated = re.search(
+            r'(?P<year>\d{4})[年/\-.](?P<month>\d{1,2})[月/\-.](?P<day>\d{1,2})日?',
+            candidate,
+        )
+        if separated:
+            year = int(separated.group('year'))
+            month = int(separated.group('month'))
+            day = int(separated.group('day'))
+            return f'{year:04d}年{month:02d}月{day:02d}日'
+
+        compact = re.search(r'(?<!\d)(?P<year>\d{4})(?P<month>\d{2})(?P<day>\d{2})(?!\d)', candidate)
+        if compact:
+            year = int(compact.group('year'))
+            month = int(compact.group('month'))
+            day = int(compact.group('day'))
+            return f'{year:04d}年{month:02d}月{day:02d}日'
+
+    return ''
+
+
+def _extract_target_text(data):
+    target = _first_nonempty(data, TARGET_KEYS)
+    if target:
+        return target
+
+    title = str(data.get('title', ''))
+    bracketed = re.search(r'[{\uff5b](.*?)[}\uff5d]', title)
+    if bracketed and bracketed.group(1).strip():
+        return bracketed.group(1).strip()
+
+    return ''
+
+
+def _safe_filename_part(text):
+    cleaned = re.sub(r'[/\\:]', ' ', text)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned or '访谈对象'
+
+
+def default_output_filename(data):
+    date_text = _extract_date_text(data)
+    target_text = _extract_target_text(data)
+    if date_text and target_text:
+        return f'【{date_text}访谈】{_safe_filename_part(target_text)}.docx'
+
+    filename = data.get('filename', '访谈纪要.docx')
+    if not isinstance(filename, str) or not filename.strip():
+        filename = '访谈纪要.docx'
+    filename = filename.strip()
+    if not filename.endswith('.docx'):
+        filename += '.docx'
+    return filename
 
 
 def set_run_font(run, cn_font='KaiTi', en_font='Times New Roman', size=Pt(10), bold=False):
@@ -271,7 +369,7 @@ def main():
         output_path = args.output
     else:
         os.makedirs(args.output, exist_ok=True)
-        filename = data.get('filename', '访谈纪要.docx')
+        filename = default_output_filename(data)
         output_path = os.path.join(args.output, filename)
 
     create_document(data, template, output_path)

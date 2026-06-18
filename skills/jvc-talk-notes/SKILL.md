@@ -20,7 +20,9 @@ description: Use when user says '高管访谈', '客户访谈', '专家访谈', 
 
 生成 `.docx` Word 文件，命名规则：
 
-`{YYYYMMDD}_{项目名称}_{受访人角色}_问答纪要.docx`
+`【YYYY年MM月DD日访谈】{访谈对象}.docx`
+
+这里的 `{访谈对象}` 优先写具体受访人；如果只知道公司、项目或客户名称，就写该公司/项目/客户名称。用户口头说的 `year/month/day` 在真实文件名中落为 `YYYY年MM月DD日`，不要使用 `/`，避免被系统识别为路径分隔符。
 
 复用现有 meeting-notes 资产：
 
@@ -67,7 +69,8 @@ description: Use when user says '高管访谈', '客户访谈', '专家访谈', 
 ```json
 {
   "title": "2026/06/12 线上 客户访谈{项目名称}",
-  "filename": "20260612_项目名称_客户_问答纪要.docx",
+  "interviewee": "访谈对象",
+  "filename": "【2026年06月12日访谈】访谈对象.docx",
   "sections": [
     {"heading": "一、访谈基本信息", "content": "日期、形式、项目、受访人角色、访谈目的。"},
     {
@@ -90,7 +93,7 @@ description: Use when user says '高管访谈', '客户访谈', '专家访谈', 
 
 ```bash
 python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
-  --output output/20260612_项目名称_客户_问答纪要.docx
+  --output output
 ```
 
 ## 质量红线

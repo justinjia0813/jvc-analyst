@@ -135,14 +135,14 @@ cd jvc-analyst
 
 - 输入：AI 转写逐字稿、用户随笔、会议日期、线上/线下、项目名称。
 - 做什么：融合逐字稿与随笔，按六段式结构生成 Word 访谈纪要。
-- 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_访谈纪要.docx`。
+- 输出：`.docx` 文件，命名为 `【YYYY年MM月DD日访谈】{访谈对象}.docx`。
 - 来源：已整合自 `meeting-notes` repo，脚本和中性默认模板位于 `skills/jvc-meeting-notes/`。
 
 ### `/jvc-talk-notes` 问答式访谈纪要
 
 - 输入：高管访谈、客户访谈、专家访谈逐字稿，用户随笔，会议日期，受访人角色。
 - 做什么：按一问一答制整理问题标题、完整回答、对应事实层维度和待验证点；完整回答需保留核心信息、筛去重复和无信息量 ad-libs，并在末尾生成事实层索引。
-- 输出：`.docx` 文件，命名为 `{YYYYMMDD}_{项目名称}_{受访人角色}_问答纪要.docx`。
+- 输出：`.docx` 文件，命名为 `【YYYY年MM月DD日访谈】{访谈对象}.docx`。
 - 来源：复用 `skills/jvc-meeting-notes/` 下的 Word 生成脚本和模板解析逻辑。
 
 ## Word 模板定制
@@ -165,7 +165,7 @@ cd jvc-analyst
 ```bash
 python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
   --template ~/Documents/my-firm-template.docx \
-  --output output/20260612_项目名称_访谈纪要.docx
+  --output output
 ```
 
 ### `/jvc-invoice-manager` 发票整理
@@ -216,6 +216,8 @@ tracks/{track-slug}/
 ├── scripts/
 │   ├── check-jvc-assets.sh
 │   ├── check-talk-notes-assets.sh
+│   ├── check-docx-filename-rule.py
+│   ├── check-docx-format-consistency.py
 │   ├── check-docx-template-customization.py
 │   ├── check-excel-workbooks.sh
 │   ├── generate-workbook.py
@@ -243,5 +245,6 @@ bash scripts/check-jvc-assets.sh
 bash scripts/check-talk-notes-assets.sh
 python3 scripts/check-docx-template-customization.py
 python3 scripts/check-docx-format-consistency.py
+python3 scripts/check-docx-filename-rule.py
 bash scripts/check-excel-workbooks.sh
 ```

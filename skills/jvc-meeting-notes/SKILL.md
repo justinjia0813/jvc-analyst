@@ -21,7 +21,9 @@ integrated_from: https://github.com/justinjia0813/meeting-notes
 
 `.docx` Word 文件，命名规则：
 
-`{YYYYMMDD}_{项目名称}_访谈纪要.docx`
+`【YYYY年MM月DD日访谈】{访谈对象}.docx`
+
+这里的 `{访谈对象}` 通常是项目、公司或受访人名称；如果用户给的是 `year/month/day`，在真实文件名中使用 `YYYY年MM月DD日`，不要使用 `/`，避免被系统识别为路径分隔符。
 
 默认模板是中性公开模板，不包含任何基金或机构品牌：
 
@@ -50,12 +52,12 @@ integrated_from: https://github.com/justinjia0813/meeting-notes
 ## 生成流程
 
 1. 先把逐字稿和随笔整理成 JSON，保留事实、原话和不确定项。
-2. 确认 JSON 中包含 `title`、`filename`、`sections`。
+2. 确认 JSON 中包含 `title`、`interviewee`、`filename`、`sections`；`filename` 使用 `【YYYY年MM月DD日访谈】{访谈对象}.docx`。
 3. 运行：
 
 ```bash
 python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
-  --output output/20260611_项目名称_访谈纪要.docx
+  --output output
 ```
 
 如需显式指定用户自己的模板：
@@ -63,7 +65,7 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 ```bash
 python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
   --template path/to/your-template.docx \
-  --output output/20260611_项目名称_访谈纪要.docx
+  --output output
 ```
 
 ## JSON 骨架
@@ -71,7 +73,8 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 ```json
 {
   "title": "2026/06/11 线上 访谈{项目名称}",
-  "filename": "20260611_项目名称_访谈纪要.docx",
+  "interviewee": "项目名称或访谈对象",
+  "filename": "【2026年06月11日访谈】项目名称或访谈对象.docx",
   "sections": [
     {
       "heading": "一、公司基本情况",
@@ -92,7 +95,7 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 - `.docx` 是事实层材料，不要静默加入投资结论。
 - 创始人未经验证的陈述保留为事实来源，不改写成已验证事实。
 - 用户随笔中的疑问、迟疑、反常观察不能丢，必要时标 `[用户观察]` 或 `[待交叉验证]`。
-- 输出文件必须是 `.docx` 文件，不要把 `--output` 传成目录后误以为目录就是交付物。
+- 输出文件必须是 `.docx` 文件；如果 `--output` 传目录，生成器会按 `【YYYY年MM月DD日访谈】{访谈对象}.docx` 在目录内生成具体文件，生成后必须确认该 `.docx` 存在。
 - 不要把任何个人或机构专属模板当作 public 默认模板；用户模板只通过 `--template`、`JVC_DOCX_TEMPLATE` 或本地 `custom.docx` 引入。
 - 生成后应确认文件存在；重要纪要建议抽查打开。
 

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "reviewer": "Justin Jia",
+  "reviewed_at": "2026-06-20",
+  "approvals": [
+    {
+      "capability": "file_read",
+      "decision": "approved",
+      "scope": "Read local skill sources, templates, examples, JSON fixtures, DOCX templates, PDF invoices, and workbook files supplied by the operator.",
+      "reason": "The suite is local-first and must inspect user-provided diligence inputs and package fixtures.",
+      "expires_at": "2026-12-31",
+      "evidence": "reports/trust_report.md",
+      "target_enforcement": "metadata-only; operator controls local file selection"
+    },
+    {
+      "capability": "file_write",
+      "decision": "approved",
+      "scope": "Write generated Markdown, XLSX, DOCX, JSON, and copied PDF archive artifacts to explicit output paths or package-local output/archive directories.",
+      "reason": "Workbook, interview-note, and invoice-archive skills produce local files as their primary output contract.",
+      "expires_at": "2026-12-31",
+      "evidence": "reports/trust_report.md",
+      "target_enforcement": "metadata-only; scripts require explicit paths or package-local output directories"
+    },
+    {
+      "capability": "subprocess",
+      "decision": "approved",
+      "scope": "Run repository validation scripts and local document/workbook generation commands.",
+      "reason": "The package validation path depends on local CLI checks and deterministic generation scripts.",
+      "expires_at": "2026-12-31",
+      "evidence": "reports/trust_report.md",
+      "target_enforcement": "metadata-only; no remote inline execution is permitted"
+    }
+  ]
+}

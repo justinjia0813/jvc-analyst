@@ -1,0 +1,32 @@
+{
+  "name": "jvc-analyst",
+  "version": "0.2.0",
+  "owner": "Justin Jia",
+  "updated_at": "2026-06-20",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "context_budget_tier": "production",
+  "review_cadence": "quarterly",
+  "target_platforms": [
+    "codex",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "factory_components": [
+    "skills",
+    "templates",
+    "scripts",
+    "evals",
+    "reports",
+    "security"
+  ],
+  "output_contracts": [
+    "Markdown diligence notes",
+    "Excel workbooks",
+    "DOCX interview notes",
+    "Excel plus PDF invoice archive"
+  ],
+  "rollback_boundary": "Revert the governance commit or restore the previous skill package from Git history; raw project materials and local custom templates are outside the package boundary."
+}

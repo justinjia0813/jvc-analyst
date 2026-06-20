@@ -6,8 +6,12 @@ scripts/check-excel-workbooks.sh
 python3 scripts/check-docx-template-customization.py
 python3 scripts/check-docx-format-consistency.py
 python3 scripts/check-docx-filename-rule.py
+python3 scripts/check-skill-evals.py
+python3 scripts/check-governance.py
 
 python3 -m py_compile \
+  scripts/check-governance.py \
+  scripts/check-skill-evals.py \
   scripts/generate-workbook.py \
   scripts/validate-workbook.py \
   skills/jvc-meeting-notes/scripts/generate_meeting_notes.py \

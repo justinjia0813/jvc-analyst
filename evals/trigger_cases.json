@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "description": "Route evaluation fixtures for jvc skills. These cases document expected skill activation and near-neighbor boundaries; scripts/check-skill-evals.py validates fixture integrity and source-contract coverage.",
+  "cases": [
+    {
+      "id": "prescreen-deck-quick-review",
+      "prompt": "帮我快速过一遍这个 deck，做项目初筛，按市场、痛点、方案、团队、时机、商业模式和显性风险输出关键问题。",
+      "expected_skill": "jvc-prescreen",
+      "prompt_signals": ["deck", "项目初筛", "市场", "显性风险"],
+      "skill_contract_signals": ["项目初筛", "七维度过筛", "Bear case 雏形", "关键问题清单"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "ic-memo is for full investment committee synthesis after multiple prior materials exist; this is a quick screen."
+        }
+      ]
+    },
+    {
+      "id": "talk-notes-qna-transcript",
+      "prompt": "把这段客户访谈逐字稿整理成一问一答的 Word 问答纪要，回答要保留完整回答、对应事实层维度和待验证点。",
+      "expected_skill": "jvc-talk-notes",
+      "prompt_signals": ["一问一答", "问答纪要", "完整回答", "待验证点"],
+      "skill_contract_signals": ["问答纪要", "完整回答", "subsections.heading", "事实层索引"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-meeting-notes",
+          "why_not": "meeting-notes is the six-section fact note; this prompt asks for Q&A structure and complete answers."
+        }
+      ]
+    },
+    {
+      "id": "meeting-notes-six-section-founder-call",
+      "prompt": "根据这次创始人访谈逐字稿和我的现场随笔，生成结构化 Word 访谈纪要，按公司基本情况、技术、团队、产品、商业化、融资情况整理。",
+      "expected_skill": "jvc-meeting-notes",
+      "prompt_signals": ["访谈纪要", "公司基本情况", "融资情况"],
+      "skill_contract_signals": ["默认六段式", "公司基本情况", "融资情况", "generate_meeting_notes.py"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-talk-notes",
+          "why_not": "talk-notes should trigger when the user explicitly wants Q&A structure."
+        }
+      ]
+    },
+    {
+      "id": "bull-case-positive-arguments",
+      "prompt": "基于 deck 和访谈纪要，提炼这个项目为什么值得认真看的 bull case，按行业趋势、技术节点、团队优势、商业化进展写投资亮点和待验证项。",
+      "expected_skill": "jvc-bull-case",
+      "prompt_signals": ["bull case", "投资亮点", "待验证项"],
+      "skill_contract_signals": ["投资亮点", "待验证项", "不写\"建议投资\""],
+      "near_neighbors": [
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "ic-memo synthesizes all prior materials into a ten-section memo; this prompt asks only for positive arguments."
+        }
+      ]
+    },
+    {
+      "id": "bear-case-adversarial-review",
+      "prompt": "基于这些项目材料做反向论证，扮演挑剔 LP、竞品 CEO、怀疑论同行和 IC boss，输出为什么不投以及可证伪条件。",
+      "expected_skill": "jvc-bear-case",
+      "prompt_signals": ["反向论证", "挑剔 LP", "IC boss", "可证伪条件"],
+      "skill_contract_signals": ["四角色攻击", "IC boss", "可证伪条件", "不做平衡"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-bull-case",
+          "why_not": "bull-case extracts positive investment arguments; this prompt asks for adversarial no-invest arguments."
+        }
+      ]
+    },
+    {
+      "id": "ic-memo-full-synthesis",
+      "prompt": "把 prescreen、bull case、bear case、赛道研究、竞品和回报模型合成一版 IC memo 初稿，风险篇幅不能少于投资逻辑。",
+      "expected_skill": "jvc-ic-memo",
+      "prompt_signals": ["IC memo", "风险篇幅", "投资逻辑"],
+      "skill_contract_signals": ["十段结构", "风险与反方观点", "风险与反方观点」的篇幅是否不少于第 7 章"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-bull-case",
+          "why_not": "bull-case only extracts positive arguments and must not produce the full investment committee memo."
+        }
+      ]
+    },
+    {
+      "id": "track-research-sector-map",
+      "prompt": "帮我做一个玻璃基板赛道研究，先讲行业定义、行业简史、技术路线、产业链图谱、政策趋势和关键玩家。",
+      "expected_skill": "jvc-track-research",
+      "prompt_signals": ["赛道研究", "行业简史", "技术路线", "产业链图谱"],
+      "skill_contract_signals": ["行业简史", "技术路线", "产业链图谱", "关键玩家分层"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-comps-dd",
+          "why_not": "comps-dd should trigger when the user asks for competitors/comparable companies and an Excel workbook."
+        }
+      ]
+    },
+    {
+      "id": "comps-dd-competitor-workbook",
+      "prompt": "围绕这个项目做竞品分析，找直接竞品、可比公司、上下游参照和海外标杆，最后输出 Excel 工作簿。",
+      "expected_skill": "jvc-comps-dd",
+      "prompt_signals": ["竞品分析", "可比公司", "Excel 工作簿"],
+      "skill_contract_signals": ["竞品尽调", "上市公司和初创公司", "generate-workbook.py", "validate-workbook.py"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "track-research builds the sector map; this prompt asks for company comparison output."
+        }
+      ]
+    },
+    {
+      "id": "market-sizing-workbook",
+      "prompt": "测算这个细分赛道市场规模，要同时做 TAM/SAM/SOM 的自上而下和自下而上模型，并输出 Excel。",
+      "expected_skill": "jvc-market-sizing",
+      "prompt_signals": ["市场规模", "TAM/SAM/SOM", "自上而下", "自下而上"],
+      "skill_contract_signals": ["TAM/SAM/SOM", "Top-Down", "Bottom-Up", "正交性检查"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "track-research can discuss market trends, but it does not own the Excel market-sizing model."
+        }
+      ]
+    },
+    {
+      "id": "roi-modeler-return-workbook",
+      "prompt": "根据本轮条款、后续融资稀释、三种退出情形和财务预测，做 MOIC/IRR 回报测算 Excel。",
+      "expected_skill": "jvc-roi-modeler",
+      "prompt_signals": ["本轮条款", "融资稀释", "MOIC/IRR", "Excel"],
+      "skill_contract_signals": ["逐轮稀释计算", "MOIC", "IRR", "敏感性分析"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-market-sizing",
+          "why_not": "market-sizing estimates market size; this prompt asks for investment return modeling."
+        }
+      ]
+    },
+    {
+      "id": "explain-market-sizing-terms-no-route",
+      "prompt": "给实习生解释 TAM、SAM、SOM 分别是什么意思，举一个简单例子即可。",
+      "expected_skill": null,
+      "prompt_signals": ["解释", "TAM", "SAM", "SOM"],
+      "should_not_trigger": ["jvc-market-sizing"],
+      "no_route_reason": "This is a teaching request, not a reusable market-sizing workbook task."
+    },
+    {
+      "id": "invoice-operational-boundary",
+      "prompt": "整理这个月差旅发票，OCR 识别 PDF，人工复核后生成报销汇总 Excel，并按项目归档。",
+      "expected_skill": "jvc-invoice-manager",
+      "prompt_signals": ["发票", "OCR", "PDF", "报销汇总 Excel"],
+      "skill_contract_signals": ["发票整理", "人工确认", "运营辅助", "不进入投资决策流程"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-comps-dd",
+          "why_not": "comps-dd is diligence research; invoice-manager is operational filing and must not enter investment judgment."
+        }
+      ]
+    }
+  ]
+}

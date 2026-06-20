@@ -1,6 +1,6 @@
 # /jvc-market-sizing 市场规模建模 Excel 模板
 
-最终输出文件：`{细分赛道}_market-sizing_{YYYYMMDD}.xlsx`
+最终输出文件：`{细分赛道}_jvc-market-sizing_{YYYYMMDD}.xlsx`
 
 ## Workbook Rules
 

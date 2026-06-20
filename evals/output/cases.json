@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "description": "Deterministic output-contract checks for the first jvc skill eval pass. These are fixture checks, not model-executed evidence.",
+  "cases": [
+    {
+      "id": "prescreen-markdown-contract",
+      "skill": "jvc-prescreen",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "examples/prescreen-example.md"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 一页事实摘要"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 七维初筛判断"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## Bear Case 雏形"},
+        {"type": "contains_any", "path": "examples/prescreen-example.md", "texts": ["[未核实]", "[需要用户提供]"]},
+        {"type": "not_contains_any", "path": "examples/prescreen-example.md", "texts": ["建议投资", "不建议投资"]}
+      ]
+    },
+    {
+      "id": "track-research-markdown-contract",
+      "skill": "jvc-track-research",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "examples/track-research-example.md"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 行业定义与边界"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 行业简史"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 技术路线"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 产业趋势"},
+        {"type": "contains_any", "path": "examples/track-research-example.md", "texts": ["[公开资料:", "[示例素材", "[未核实]"]},
+        {"type": "not_contains_any", "path": "examples/track-research-example.md", "texts": ["万亿级市场"]}
+      ]
+    },
+    {
+      "id": "bull-case-markdown-contract",
+      "skill": "jvc-bull-case",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "examples/bull-case-example.md"},
+        {"type": "contains", "path": "examples/bull-case-example.md", "text": "## 标题级亮点"},
+        {"type": "contains", "path": "examples/bull-case-example.md", "text": "## 正文级亮点"},
+        {"type": "contains", "path": "examples/bull-case-example.md", "text": "## 待验证亮点"},
+        {"type": "contains_any", "path": "examples/bull-case-example.md", "texts": ["仍需验证", "[推测]", "[未核实]"]},
+        {"type": "not_contains_any", "path": "examples/bull-case-example.md", "texts": ["建议投资", "必投"]}
+      ]
+    },
+    {
+      "id": "bear-case-four-role-contract",
+      "skill": "jvc-bear-case",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "contains", "path": "templates/bear-case-template.md", "text": "IC boss"},
+        {"type": "contains", "path": "examples/bear-case-example.md", "text": "## 4. IC boss 视角"},
+        {"type": "contains", "path": "examples/bear-case-example.md", "text": "IP 和市场口径不清"},
+        {"type": "not_contains_any", "path": "examples/bear-case-example.md", "texts": ["但另一方面", "建议投资"]}
+      ]
+    },
+    {
+      "id": "ic-memo-markdown-contract",
+      "skill": "jvc-ic-memo",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "examples/ic-memo-example.md"},
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 交易摘要"},
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 投资逻辑"},
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 风险与反方观点"},
+        {"type": "contains_any", "path": "examples/ic-memo-example.md", "texts": ["[需要用户提供]", "[未核实]"]},
+        {"type": "not_contains_any", "path": "examples/ic-memo-example.md", "texts": ["建议投资", "不建议投资"]}
+      ]
+    },
+    {
+      "id": "comps-dd-workbook-contract",
+      "skill": "jvc-comps-dd",
+      "artifact_family": "excel",
+      "assertions": [
+        {"type": "file_exists", "path": "templates/comps-dd-template.md"},
+        {"type": "contains", "path": "templates/comps-dd-template.md", "text": "{赛道或项目名}_jvc-comps-dd_{YYYYMMDD}.xlsx"},
+        {"type": "workbook_sheets", "path": "examples/comps-dd-example.xlsx", "sheets": ["companies", "segmentation", "sources", "coverage_notes"]}
+      ]
+    },
+    {
+      "id": "market-sizing-workbook-contract",
+      "skill": "jvc-market-sizing",
+      "artifact_family": "excel",
+      "assertions": [
+        {"type": "file_exists", "path": "templates/market-sizing-template.md"},
+        {"type": "contains", "path": "templates/market-sizing-template.md", "text": "{细分赛道}_jvc-market-sizing_{YYYYMMDD}.xlsx"},
+        {"type": "workbook_sheets", "path": "examples/market-sizing-example.xlsx", "sheets": ["assumptions", "top_down", "bottom_up", "reconciliation", "orthogonality_check", "sources"]}
+      ]
+    },
+    {
+      "id": "roi-modeler-workbook-contract",
+      "skill": "jvc-roi-modeler",
+      "artifact_family": "excel",
+      "assertions": [
+        {"type": "file_exists", "path": "templates/roi-modeler-template.md"},
+        {"type": "contains", "path": "templates/roi-modeler-template.md", "text": "{项目名}_jvc-roi-modeler_{YYYYMMDD}.xlsx"},
+        {"type": "workbook_sheets", "path": "examples/roi-modeler-example.xlsx", "sheets": ["investment_terms", "financial_forecast", "financing_dilution", "ownership", "exit_scenarios", "returns", "sensitivity", "sources"]}
+      ]
+    },
+    {
+      "id": "meeting-notes-docx-contract",
+      "skill": "jvc-meeting-notes",
+      "artifact_family": "docx",
+      "assertions": [
+        {"type": "file_exists", "path": "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"},
+        {"type": "file_exists", "path": "skills/jvc-meeting-notes/templates/访谈纪要模板.docx"},
+        {"type": "contains", "path": "skills/jvc-meeting-notes/SKILL.md", "text": "【YYYY年MM月DD日访谈】{访谈对象}.docx"},
+        {"type": "contains", "path": "skills/jvc-meeting-notes/SKILL.md", "text": "doNotExpandShiftReturn"},
+        {"type": "contains", "path": "skills/jvc-meeting-notes/SKILL.md", "text": "默认六段式"}
+      ]
+    },
+    {
+      "id": "talk-notes-docx-contract",
+      "skill": "jvc-talk-notes",
+      "artifact_family": "docx",
+      "assertions": [
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "完整回答"},
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "对应事实层维度"},
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "待验证点"},
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "subsections.heading"},
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "不要输出"},
+        {"type": "contains", "path": "skills/jvc-talk-notes/SKILL.md", "text": "回答摘要"}
+      ]
+    },
+    {
+      "id": "invoice-manager-operational-boundary",
+      "skill": "jvc-invoice-manager",
+      "artifact_family": "excel_pdf_archive",
+      "assertions": [
+        {"type": "file_exists", "path": "skills/jvc-invoice-manager/scripts/process_invoices.py"},
+        {"type": "file_exists", "path": "skills/jvc-invoice-manager/scripts/generate_summary.py"},
+        {"type": "file_exists", "path": "skills/jvc-invoice-manager/templates/报销模板.xlsx"},
+        {"type": "contains", "path": "skills/jvc-invoice-manager/SKILL.md", "text": "人工确认"},
+        {"type": "contains", "path": "skills/jvc-invoice-manager/SKILL.md", "text": "PDF 原件只复制"},
+        {"type": "contains", "path": "skills/jvc-invoice-manager/SKILL.md", "text": "不进入投资决策流程"}
+      ]
+    }
+  ]
+}

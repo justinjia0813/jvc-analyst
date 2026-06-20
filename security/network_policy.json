@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "default_policy": "deny network access from packaged scripts unless explicitly listed",
+  "network_capable_scripts": [],
+  "notes": [
+    "jvc-track-research, jvc-comps-dd, and jvc-market-sizing may require agent-mediated web search at runtime, but this repository currently ships no network-capable script.",
+    "If future scripts call remote APIs, add allowed_hosts, allowed_path_prefixes, auth_mode, timeout_seconds, and custom_host_policy before team distribution."
+  ]
+}

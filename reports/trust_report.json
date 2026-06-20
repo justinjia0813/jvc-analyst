@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "package": "jvc-analyst",
+  "generated_at": "2026-06-20",
+  "mode": "production-governance",
+  "package_sha256": "3596a9761e94062cfa3a1e74acbc099c1ca02041303891a1abe6d39b574a67f9",
+  "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
+  "secret_scan": {
+    "status": "pass",
+    "patterns_checked": ["OPENAI_API_KEY", "sk-", "github_pat_", "ghp_", "password", "secret"]
+  },
+  "network_policy": {
+    "status": "pass",
+    "policy_file": "security/network_policy.json",
+    "network_capable_scripts": []
+  },
+  "permission_policy": {
+    "status": "pass",
+    "policy_file": "security/permission_policy.json",
+    "approved_capabilities": ["file_read", "file_write", "subprocess"]
+  },
+  "dependency_review": {
+    "status": "warn",
+    "notes": [
+      "Python requirements are present for DOCX and invoice skills, but some dependencies are not version-pinned.",
+      "Homebrew dependencies for OCR are documented but not machine-pinned."
+    ]
+  },
+  "script_inventory": [
+    {"path": "scripts/check-governance.py", "interface": "cli", "help_surface": "none", "capabilities": ["file_read"]},
+    {"path": "scripts/check-skill-evals.py", "interface": "cli", "help_surface": "none", "capabilities": ["file_read"]},
+    {"path": "scripts/generate-workbook.py", "interface": "cli", "help_surface": "argparse", "capabilities": ["file_read", "file_write"]},
+    {"path": "scripts/validate-workbook.py", "interface": "cli", "help_surface": "argparse", "capabilities": ["file_read"]},
+    {"path": "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py", "interface": "cli", "help_surface": "argparse", "capabilities": ["file_read", "file_write"]},
+    {"path": "skills/jvc-invoice-manager/scripts/process_invoices.py", "interface": "cli", "help_surface": "manual", "capabilities": ["file_read", "file_write", "ocr"]},
+    {"path": "skills/jvc-invoice-manager/scripts/generate_summary.py", "interface": "cli", "help_surface": "manual", "capabilities": ["file_read", "file_write", "copy_pdf"]}
+  ],
+  "warnings": [
+    "Invoice scripts use manual sys.argv parsing rather than argparse --help.",
+    "Model-executed eval evidence is missing evidence.",
+    "Runtime permission probes for packaged adapters are missing evidence because no dist package is generated in this local pass."
+  ],
+  "release_rule": "No high-risk secrets or unrestricted remote inline execution detected. Production governance can proceed with warnings; do not claim governed public release readiness."
+}

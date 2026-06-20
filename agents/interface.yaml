@@ -1,0 +1,35 @@
+interface:
+  display_name: "jvc-analyst"
+  short_description: "Local-first VC diligence skill suite for RMB early-stage workflows"
+  default_prompt: "Use the jvc skill suite to structure local venture diligence materials into evidence-first notes, workbooks, DOCX interview records, and operating archives."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "codex"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths:
+      - "skills/jvc-prescreen/SKILL.md"
+      - "skills/jvc-bull-case/SKILL.md"
+      - "skills/jvc-bear-case/SKILL.md"
+      - "skills/jvc-track-research/SKILL.md"
+      - "skills/jvc-comps-dd/SKILL.md"
+      - "skills/jvc-market-sizing/SKILL.md"
+      - "skills/jvc-roi-modeler/SKILL.md"
+      - "skills/jvc-ic-memo/SKILL.md"
+      - "skills/jvc-meeting-notes/SKILL.md"
+      - "skills/jvc-talk-notes/SKILL.md"
+      - "skills/jvc-invoice-manager/SKILL.md"
+  execution:
+    context: "local"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source"

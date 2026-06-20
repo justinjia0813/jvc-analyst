@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "package": {
+    "name": "jvc-analyst",
+    "version": "0.2.0",
+    "owner": "Justin Jia",
+    "maturity_tier": "production",
+    "review_cadence": "quarterly",
+    "target_platforms": ["codex", "claude", "generic"]
+  },
+  "semantic_contract": {
+    "job_to_be_done": "Help an early-stage VC operator structure local project materials into evidence-first diligence artifacts without replacing investment judgment.",
+    "should_trigger": [
+      "User asks for jvc-prefixed diligence skills",
+      "User asks to structure project decks, interviews, market sizing, comps, return models, IC memo drafts, or invoice archives using this toolkit"
+    ],
+    "should_not_trigger": [
+      "Pure teaching or explanation requests with no reusable output artifact",
+      "Final investment decision making",
+      "Uploading private deal materials to third-party web tools",
+      "General accounting workflows outside jvc-invoice-manager boundaries"
+    ],
+    "trust_boundary": "Local-first repository. Raw deal materials stay local; shipped scripts may read/write local files but do not include network-capable code."
+  },
+  "skills": [
+    {
+      "name": "jvc-prescreen",
+      "job": "Turn a deck or early project material into a structured first-pass screen.",
+      "outputs": ["Markdown prescreen note"],
+      "near_neighbors": ["jvc-ic-memo", "jvc-bull-case"],
+      "failure_modes": ["Unsourced numbers", "Premature invest/pass recommendation", "Generic risk wording"]
+    },
+    {
+      "name": "jvc-bull-case",
+      "job": "Extract positive investment arguments with evidence and verification gaps.",
+      "outputs": ["Markdown bull-case note"],
+      "near_neighbors": ["jvc-bear-case", "jvc-ic-memo"],
+      "failure_modes": ["Turns into investment recommendation", "Mixes unsupported intuition into verified highlights"]
+    },
+    {
+      "name": "jvc-bear-case",
+      "job": "Run role-based adversarial review from LP, competitor CEO, skeptical peer, and IC boss perspectives.",
+      "outputs": ["Markdown bear-case note"],
+      "near_neighbors": ["jvc-bull-case", "jvc-prescreen"],
+      "failure_modes": ["Becomes balanced pros/cons", "Drops IC boss", "Omits falsification evidence"]
+    },
+    {
+      "name": "jvc-track-research",
+      "job": "Build a sector map with definitions, history, technical routes, value chain, trends, players, policy, and investment questions.",
+      "outputs": ["Markdown track research report"],
+      "near_neighbors": ["jvc-comps-dd", "jvc-market-sizing"],
+      "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed"]
+    },
+    {
+      "name": "jvc-comps-dd",
+      "job": "Research competitors and comparable companies into a structured Excel workbook.",
+      "outputs": ["Excel workbook"],
+      "near_neighbors": ["jvc-track-research", "jvc-market-sizing"],
+      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
+      "failure_modes": ["Public market cap and private financing valuation mixed as one metric", "Missing source/date fields"]
+    },
+    {
+      "name": "jvc-market-sizing",
+      "job": "Build top-down and bottom-up TAM/SAM/SOM models with reconciliation and orthogonality checks.",
+      "outputs": ["Excel workbook"],
+      "near_neighbors": ["jvc-track-research", "jvc-roi-modeler"],
+      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
+      "failure_modes": ["TAM/SAM/SOM mixed", "Segments overlap without deduction", "Unsupported market size"]
+    },
+    {
+      "name": "jvc-roi-modeler",
+      "job": "Model investment terms, financing dilution, exit scenarios, MOIC/IRR, and sensitivity.",
+      "outputs": ["Excel workbook"],
+      "near_neighbors": ["jvc-market-sizing", "jvc-ic-memo"],
+      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
+      "failure_modes": ["Back-solves from final ownership", "Invents missing terms", "Outputs invest/pass recommendation"]
+    },
+    {
+      "name": "jvc-ic-memo",
+      "job": "Synthesize prior diligence materials into a ten-section IC memo draft.",
+      "outputs": ["Markdown IC memo"],
+      "near_neighbors": ["jvc-prescreen", "jvc-bull-case", "jvc-bear-case"],
+      "failure_modes": ["Risk section shorter than investment logic", "Missing source labels", "Final decision language"]
+    },
+    {
+      "name": "jvc-meeting-notes",
+      "job": "Generate a six-section factual DOCX interview note from transcript and user notes.",
+      "outputs": ["DOCX interview note"],
+      "near_neighbors": ["jvc-talk-notes"],
+      "scripts": ["skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"],
+      "failure_modes": ["Adds investment judgment", "Loses user observations", "Regresses DOCX filename or formatting"]
+    },
+    {
+      "name": "jvc-talk-notes",
+      "job": "Generate Q&A-style DOCX interview notes with complete answers, fact dimensions, and validation gaps.",
+      "outputs": ["DOCX Q&A interview note"],
+      "near_neighbors": ["jvc-meeting-notes"],
+      "scripts": ["skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"],
+      "failure_modes": ["Returns old summary/original quote/tag fields", "Puts Q headings in body content", "Lowers information extraction completeness"]
+    },
+    {
+      "name": "jvc-invoice-manager",
+      "job": "OCR PDF invoices, require human confirmation, generate reimbursement Excel, and copy PDFs into archive folders.",
+      "outputs": ["Excel reimbursement summary", "PDF archive"],
+      "near_neighbors": ["jvc-comps-dd"],
+      "scripts": ["skills/jvc-invoice-manager/scripts/process_invoices.py", "skills/jvc-invoice-manager/scripts/generate_summary.py"],
+      "failure_modes": ["Uses unreviewed OCR as final truth", "Deletes originals", "Leaks invoice data into investment judgment"]
+    }
+  ],
+  "evals": {
+    "trigger_cases": "evals/trigger_cases.json",
+    "output_cases": "evals/output/cases.json",
+    "verification_command": "python3 scripts/check-skill-evals.py",
+    "evidence_level": "deterministic fixture evidence; model-executed evidence is missing evidence"
+  },
+  "reports": {
+    "route_scorecard": "reports/route_scorecard.md",
+    "output_quality_scorecard": "reports/output_quality_scorecard.md",
+    "trust_report": "reports/trust_report.md",
+    "review_studio": "reports/review-studio.md"
+  }
+}

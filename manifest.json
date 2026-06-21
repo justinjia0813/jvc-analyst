@@ -24,6 +24,7 @@
   ],
   "output_contracts": [
     "Markdown diligence notes",
+    "Knowledge tree Markdown/Mermaid/JSON artifacts",
     "Excel workbooks",
     "DOCX interview notes",
     "Excel plus PDF invoice archive"

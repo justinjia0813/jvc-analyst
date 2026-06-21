@@ -30,6 +30,20 @@
       ]
     },
     {
+      "id": "knowledge-tree-builder-artifact-contract",
+      "skill": "jvc-knowledge-tree-builder",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/references/output-contract.md"},
+        {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/scripts/collect_sources.py"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "knowledge_tree.md"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "knowledge_graph.mmd"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "nodes.json"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "evidence_index.md"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "open_questions.md"}
+      ]
+    },
+    {
       "id": "bull-case-markdown-contract",
       "skill": "jvc-bull-case",
       "artifact_family": "markdown",

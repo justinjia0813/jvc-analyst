@@ -55,6 +55,7 @@ skills=(
   jvc-bull-case
   jvc-bear-case
   jvc-track-research
+  jvc-knowledge-tree-builder
   jvc-comps-dd
   jvc-market-sizing
   jvc-roi-modeler

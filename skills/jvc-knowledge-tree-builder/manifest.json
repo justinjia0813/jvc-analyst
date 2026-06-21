@@ -1,0 +1,29 @@
+{
+  "name": "jvc-knowledge-tree-builder",
+  "version": "0.1.0",
+  "owner": "Justin Jia",
+  "updated_at": "2026-06-21",
+  "status": "active",
+  "maturity_tier": "scaffold",
+  "lifecycle_stage": "scaffold",
+  "context_budget_tier": "scaffold",
+  "review_cadence": "on-change",
+  "skill_archetype": "scaffold",
+  "target_platforms": [
+    "codex",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "factory_components": [
+    "references",
+    "scripts"
+  ],
+  "output_contract": [
+    "knowledge_tree.md",
+    "knowledge_graph.mmd",
+    "nodes.json",
+    "evidence_index.md",
+    "open_questions.md"
+  ]
+}

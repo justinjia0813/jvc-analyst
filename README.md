@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="#安装"><img alt="Install locally" src="https://img.shields.io/badge/install-local--first-253B32?style=flat-square"></a>
-  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-11%20jvc--skills-A46A50?style=flat-square"></a>
+  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-12%20jvc--skills-A46A50?style=flat-square"></a>
   <a href="#使用原则"><img alt="Evidence-first" src="https://img.shields.io/badge/method-evidence--first-161514?style=flat-square"></a>
   <a href="#维护检查"><img alt="Checks" src="https://img.shields.io/badge/checks-shell%20%2B%20workbook-5F635B?style=flat-square"></a>
 </p>
@@ -69,6 +69,7 @@ cd jvc-analyst
 | `/jvc-bull-case` | 从项目素材中提炼投资亮点和待验证项。 | Markdown |
 | `/jvc-bear-case` | 用挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个角色做反向论证。 | Markdown |
 | `/jvc-track-research` | 给细分赛道，构建产业知识图谱。 | Markdown |
+| `/jvc-knowledge-tree-builder` | 读取已有本地赛道/项目资料文件夹，生成递归知识树、Mermaid 图、节点 JSON、证据索引和开放问题。 | Markdown + Mermaid + JSON |
 | `/jvc-comps-dd` | 调研竞争对手、可比公司、上下游和海外标杆。 | Excel |
 | `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模和正交检查。 | Excel |
 | `/jvc-roi-modeler` | 基于投资条款、融资稀释和退出假设计算 MOIC/IRR。 | Excel |
@@ -106,6 +107,13 @@ cd jvc-analyst
 - 输入：细分赛道名称。
 - 做什么：联网搜索，输出行业定义、行业简史、技术路线、产业链、政策/技术/市场趋势、关键玩家、监管和投资问题。
 - 输出：结构化 Markdown，可衔接 `/jvc-comps-dd` 和 `/jvc-market-sizing`。
+
+### `/jvc-knowledge-tree-builder` 知识树构建
+
+- 输入：已有本地赛道、项目、Obsidian 或来源文件夹。
+- 做什么：读取文件夹资料，整理成递归问题树、关系图、结构化节点、证据索引和开放问题。
+- 输出：`knowledge_tree.md`、`knowledge_graph.mmd`、`nodes.json`、`evidence_index.md`、`open_questions.md`。
+- 边界：不是第一轮联网赛道研究；新赛道开题先用 `/jvc-track-research`。
 
 ### `/jvc-comps-dd` 竞品尽调
 
@@ -195,6 +203,11 @@ projects/{company-slug}/
 
 tracks/{track-slug}/
 ├── landscape.md            # ← /jvc-track-research
+├── knowledge_tree.md       # ← /jvc-knowledge-tree-builder
+├── knowledge_graph.mmd     # ← /jvc-knowledge-tree-builder
+├── nodes.json              # ← /jvc-knowledge-tree-builder
+├── evidence_index.md       # ← /jvc-knowledge-tree-builder
+├── open_questions.md       # ← /jvc-knowledge-tree-builder
 ├── comps-dd.xlsx           # ← /jvc-comps-dd
 └── market-sizing.xlsx      # ← /jvc-market-sizing
 ```
@@ -228,6 +241,7 @@ tracks/{track-slug}/
 │   ├── jvc-comps-dd/
 │   ├── jvc-ic-memo/
 │   ├── jvc-invoice-manager/
+│   ├── jvc-knowledge-tree-builder/
 │   ├── jvc-market-sizing/
 │   ├── jvc-meeting-notes/
 │   ├── jvc-prescreen/

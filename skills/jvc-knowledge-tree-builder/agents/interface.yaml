@@ -1,0 +1,25 @@
+interface:
+  display_name: "JVC Knowledge Tree Builder"
+  short_description: "Turn local VC source folders into recursive knowledge trees and graph artifacts."
+  default_prompt: "Use /jvc-knowledge-tree-builder to read this folder or file list and produce knowledge_tree.md, knowledge_graph.mmd, nodes.json, evidence_index.md, and open_questions.md."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "codex"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths:
+      - "skills/jvc-knowledge-tree-builder/SKILL.md"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source"

@@ -94,6 +94,19 @@
       ]
     },
     {
+      "id": "knowledge-tree-builder-local-folder",
+      "prompt": "读取这个玻璃基板 Obsidian 文件夹，把已有资料整理成递归问题树、Mermaid 图、nodes.json、证据索引和开放问题。",
+      "expected_skill": "jvc-knowledge-tree-builder",
+      "prompt_signals": ["Obsidian 文件夹", "递归问题树", "Mermaid 图", "nodes.json"],
+      "skill_contract_signals": ["recursive question tree", "knowledge_graph.mmd", "nodes.json", "evidence_index.md"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "track-research owns first-pass web research; this prompt asks to transform existing local source files into reusable tree artifacts."
+        }
+      ]
+    },
+    {
       "id": "comps-dd-competitor-workbook",
       "prompt": "围绕这个项目做竞品分析，找直接竞品、可比公司、上下游参照和海外标杆，最后输出 Excel 工作簿。",
       "expected_skill": "jvc-comps-dd",

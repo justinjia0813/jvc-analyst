@@ -52,6 +52,14 @@
       "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed"]
     },
     {
+      "name": "jvc-knowledge-tree-builder",
+      "job": "Convert existing local VC track, project, Obsidian, or source folders into recursive knowledge tree artifacts with evidence and open questions.",
+      "outputs": ["Markdown knowledge tree", "Mermaid graph", "JSON nodes", "Evidence index", "Open-question list"],
+      "near_neighbors": ["jvc-track-research", "jvc-comps-dd"],
+      "scripts": ["skills/jvc-knowledge-tree-builder/scripts/collect_sources.py", "skills/jvc-knowledge-tree-builder/scripts/check_package.py"],
+      "failure_modes": ["Used for first-pass web research", "Summarizes without source paths", "Mixes investment conclusion with knowledge structure"]
+    },
+    {
       "name": "jvc-comps-dd",
       "job": "Research competitors and comparable companies into a structured Excel workbook.",
       "outputs": ["Excel workbook"],

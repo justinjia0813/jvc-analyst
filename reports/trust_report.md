@@ -1,6 +1,6 @@
 # Trust Report
 
-日期：2026-06-20
+日期：2026-06-21
 
 证据边界：这是 production governance 的本地 trust report，不是 public governed release 的完整安全认证。
 
@@ -16,7 +16,7 @@
 
 ## Source Contract Hash
 
-`3596a9761e94062cfa3a1e74acbc099c1ca02041303891a1abe6d39b574a67f9`
+`b1fd0d2e5cd9c826db73f30edac726ea631aaab56c5029a1ccbc343aa475b02d`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
@@ -39,6 +39,8 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | `scripts/check-skill-evals.py` | CLI | file read |
 | `scripts/generate-workbook.py` | argparse CLI | file read, file write |
 | `scripts/validate-workbook.py` | argparse CLI | file read |
+| `skills/jvc-knowledge-tree-builder/scripts/collect_sources.py` | argparse CLI | file read, file write |
+| `skills/jvc-knowledge-tree-builder/scripts/check_package.py` | CLI | file read |
 | `skills/jvc-meeting-notes/scripts/generate_meeting_notes.py` | argparse CLI | file read, file write |
 | `skills/jvc-invoice-manager/scripts/process_invoices.py` | manual CLI | file read, file write, OCR |
 | `skills/jvc-invoice-manager/scripts/generate_summary.py` | manual CLI | file read, file write, PDF copy |

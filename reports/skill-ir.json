@@ -3,7 +3,7 @@
   "package": {
     "name": "jvc-analyst",
     "version": "0.2.0",
-    "owner": "Justin Jia",
+    "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",
     "target_platforms": ["codex", "claude", "generic"]

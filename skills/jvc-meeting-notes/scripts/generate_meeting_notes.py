@@ -17,8 +17,8 @@ Times New Roman + KaiTi 字体，并启用 doNotExpandShiftReturn，避免手动
 
 sections.json 格式：
 {
-  "title": "2026/03/23 线上 访谈{深安锂能}",
-  "interviewee": "深安锂能",
+  "title": "2026/03/23 线上 访谈{示例项目A}",
+  "interviewee": "示例项目A",
   "sections": [
     {
       "heading": "一、公司基本情况",

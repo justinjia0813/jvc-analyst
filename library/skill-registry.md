@@ -2,7 +2,7 @@
 
 这里记录 `jvc-analyst` 已收录的 skills。
 
-`meeting-notes` 和 `invoice-manager` 的原始实现已经并入本仓库。旧 GitHub 仓库只作为来源记录，当前实现和安装入口以本仓库为准。
+`meeting-notes` 和 `invoice-manager` 的原始实现已经并入本仓库。来源只保留为本地组件名，当前实现和安装入口以本仓库为准。
 
 | Skill | 事实来源 | 本地入口 | 工具集角色 | 触发位置 |
 | --- | --- | --- | --- | --- |
@@ -15,9 +15,9 @@
 | `jvc-market-sizing` | 本仓库 | `skills/jvc-market-sizing/SKILL.md` | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 | `/jvc-market-sizing` |
 | `jvc-roi-modeler` | 本仓库 | `skills/jvc-roi-modeler/SKILL.md` | 根据五年财务预测、融资稀释和退出情形计算投资回报，输出 Excel。 | `/jvc-roi-modeler` |
 | `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 | `/jvc-ic-memo` |
-| `jvc-meeting-notes` | 本仓库，整合自 <https://github.com/justinjia0813/meeting-notes> | `skills/jvc-meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/jvc-meeting-notes` |
+| `jvc-meeting-notes` | 本仓库，整合自 `meeting-notes` | `skills/jvc-meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/jvc-meeting-notes` |
 | `jvc-talk-notes` | 本仓库 | `skills/jvc-talk-notes/SKILL.md` | 把高管访谈、客户访谈和专家访谈整理成问答式 `.docx` 纪要。 | `/jvc-talk-notes` |
-| `jvc-invoice-manager` | 本仓库，整合自 <https://github.com/justinjia0813/invoice-manager> | `skills/jvc-invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | `/jvc-invoice-manager` |
+| `jvc-invoice-manager` | 本仓库，整合自 `invoice-manager` | `skills/jvc-invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | `/jvc-invoice-manager` |
 
 ## 接入规则
 

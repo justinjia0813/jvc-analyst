@@ -36,7 +36,7 @@
 ## 安装
 
 ```bash
-git clone https://github.com/justinjia0813/jvc-analyst.git
+git clone <repo-url>
 cd jvc-analyst
 ./setup
 ```

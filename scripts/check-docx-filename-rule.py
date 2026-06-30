@@ -43,16 +43,16 @@ def main() -> int:
         write_json(
             meeting_json,
             {
-                "title": "2026/06/12 线上 访谈{深安锂能}",
-                "filename": "20260612_深安锂能_访谈纪要.docx",
+                "title": "2026/06/12 线上 访谈{示例项目A}",
+                "filename": "20260612_示例项目A_访谈纪要.docx",
                 "sections": [{"heading": "一、公司基本情况", "content": "公司简介。"}],
             },
         )
         run_generator(meeting_json, meeting_output)
         assert_generated(
             meeting_output,
-            "【2026年06月12日访谈】深安锂能.docx",
-            "20260612_深安锂能_访谈纪要.docx",
+            "【2026年06月12日访谈】示例项目A.docx",
+            "20260612_示例项目A_访谈纪要.docx",
         )
 
         talk_json = tmp / "talk.json"
@@ -60,9 +60,9 @@ def main() -> int:
         write_json(
             talk_json,
             {
-                "title": "2026/06/12 线上 客户访谈{深安锂能}",
-                "interviewee": "张三",
-                "filename": "20260612_深安锂能_客户_问答纪要.docx",
+                "title": "2026/06/12 线上 客户访谈{示例项目A}",
+                "interviewee": "示例访谈对象A",
+                "filename": "20260612_示例项目A_客户_问答纪要.docx",
                 "sections": [
                     {"heading": "一、访谈基本信息", "content": "日期、形式、受访人。"},
                     {
@@ -80,8 +80,8 @@ def main() -> int:
         run_generator(talk_json, talk_output)
         assert_generated(
             talk_output,
-            "【2026年06月12日访谈】张三.docx",
-            "20260612_深安锂能_客户_问答纪要.docx",
+            "【2026年06月12日访谈】示例访谈对象A.docx",
+            "20260612_示例项目A_客户_问答纪要.docx",
         )
 
     return 0

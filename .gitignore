@@ -7,6 +7,7 @@ output/
 outputs/
 archive/
 input/
+skills/*/data.json
 
 # Runtime / temporary files
 *.log

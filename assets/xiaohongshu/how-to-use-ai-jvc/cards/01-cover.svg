@@ -1,0 +1,48 @@
+<svg width="1080" height="1440" viewBox="0 0 1080 1440" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="先看赛道 再看公司">
+<rect width="1080" height="1440" fill="#0F1115"/>
+<path d="M90 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M180 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M270 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M360 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M450 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M540 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M630 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M720 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M810 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M900 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M990 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 120H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 240H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 360H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 480H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 600H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 720H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 840H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 960H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1080H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1200H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1320H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<rect x="54" y="54" width="972" height="1332" fill="none" stroke="#3A414C" stroke-width="2"/>
+<rect x="78" y="78" width="924" height="76" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="126" fill="#31D08A" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="800" text-anchor="start" letter-spacing="0">HOW TO USE AI / VC DILIGENCE</text>
+<text x="956" y="126" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700" text-anchor="end" letter-spacing="0">FILE 00</text>
+<text x="92" y="272" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">先看赛道</text>
+<text x="92" y="366" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">再看公司</text>
+<text x="94" y="480" fill="#C3C8C3" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="34" font-weight="600" text-anchor="start" letter-spacing="0">最后把证据、模型和攻防观点整合成 IC memo。</text>
+<rect x="92" y="592" width="128" height="10" fill="#31D08A"/>
+<rect x="92" y="666" width="276" height="58" fill="#171B21" stroke="#31D08A"/>
+<text x="120" y="704" fill="#31D08A" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">TRACK FIRST</text>
+<rect x="402" y="666" width="276" height="58" fill="#171B21" stroke="#31D08A"/>
+<text x="430" y="704" fill="#31D08A" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">COMPANY DD</text>
+<rect x="712" y="666" width="276" height="58" fill="#171B21" stroke="#31D08A"/>
+<text x="740" y="704" fill="#31D08A" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">IC MEMO</text>
+<rect x="92" y="762" width="896" height="350" fill="#171B21" stroke="#3A414C"/>
+<rect x="92" y="762" width="896" height="54" fill="#222832"/>
+<text x="120" y="798" fill="#31D08A" font-family="Menlo, Monaco, Consolas, monospace" font-size="22" font-weight="800" text-anchor="start" letter-spacing="0">FLOW</text>
+<text x="126" y="862" fill="#E6E9E3" font-family="Menlo, Monaco, Consolas, monospace" font-size="27" font-weight="700" text-anchor="start" letter-spacing="0">$ track-research → knowledge-tree → comps</text>
+<text x="126" y="924" fill="#E6E9E3" font-family="Menlo, Monaco, Consolas, monospace" font-size="27" font-weight="700" text-anchor="start" letter-spacing="0">$ prescreen → meeting/talk-notes → bull/bear</text>
+<text x="126" y="986" fill="#E6E9E3" font-family="Menlo, Monaco, Consolas, monospace" font-size="27" font-weight="700" text-anchor="start" letter-spacing="0">$ market-sizing → ROI → IC memo</text>
+<rect x="78" y="1276" width="924" height="86" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="1329" fill="#F7F5EF" font-family="Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="800" text-anchor="start" letter-spacing="0">JVC ANALYST</text>
+<text x="956" y="1329" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="22" font-weight="700" text-anchor="end" letter-spacing="0">TRACK → COMPANY → MODEL → MEMO</text>
+</svg>

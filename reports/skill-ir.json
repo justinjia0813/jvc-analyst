@@ -3,7 +3,7 @@
   "package": {
     "name": "jvc-analyst",
     "version": "0.2.0",
-    "owner": "Justin Jia",
+    "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",
     "target_platforms": ["codex", "claude", "generic"]
@@ -46,10 +46,10 @@
     },
     {
       "name": "jvc-track-research",
-      "job": "Build a sector map with definitions, history, technical routes, value chain, trends, players, policy, and investment questions.",
+      "job": "Build a first-pass investment research map with scope, definitions, history, technical routes, value chain, trends, players, policy, evidence gaps, and handoff questions.",
       "outputs": ["Markdown track research report"],
       "near_neighbors": ["jvc-comps-dd", "jvc-market-sizing"],
-      "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed"]
+      "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed", "Generic industry summary omits evidence gaps and next-skill handoff"]
     },
     {
       "name": "jvc-knowledge-tree-builder",

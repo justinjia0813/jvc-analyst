@@ -1,0 +1,66 @@
+<svg width="1080" height="1440" viewBox="0 0 1080 1440" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一条更顺的 AI 尽调链条">
+<rect width="1080" height="1440" fill="#0F1115"/>
+<path d="M90 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M180 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M270 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M360 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M450 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M540 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M630 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M720 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M810 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M900 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M990 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 120H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 240H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 360H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 480H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 600H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 720H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 840H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 960H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1080H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1200H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1320H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<rect x="54" y="54" width="972" height="1332" fill="none" stroke="#3A414C" stroke-width="2"/>
+<rect x="78" y="78" width="924" height="76" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="126" fill="#4C8DFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="800" text-anchor="start" letter-spacing="0">THE RIGHT ORDER</text>
+<text x="956" y="126" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700" text-anchor="end" letter-spacing="0">FILE 01</text>
+<text x="92" y="272" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">一条更顺的</text>
+<text x="92" y="366" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">AI 尽调链条</text>
+<text x="94" y="480" fill="#C3C8C3" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="34" font-weight="600" text-anchor="start" letter-spacing="0">遇到项目，不要直接写 memo。先确认它站在哪条赛道、面对</text>
+<text x="94" y="526" fill="#C3C8C3" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="34" font-weight="600" text-anchor="start" letter-spacing="0">谁、靠什么假设成立。</text>
+<rect x="92" y="592" width="128" height="10" fill="#4C8DFF"/>
+<rect x="92" y="636" width="896" height="86" fill="#F4F0E6"/>
+<rect x="92" y="636" width="82" height="86" fill="#4C8DFF"/>
+<text x="133" y="691" fill="#0F1115" font-family="Menlo, Monaco, Consolas, monospace" font-size="29" font-weight="900" text-anchor="middle" letter-spacing="0">01</text>
+<text x="206" y="671" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="27" font-weight="900" text-anchor="start" letter-spacing="0">赛道扫描</text>
+<text x="206" y="704" fill="#68706B" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">track-research / knowledge-tree / comps-dd</text>
+<path d="M538 726V744" stroke="#4C8DFF" stroke-width="5"/>
+<rect x="92" y="748" width="896" height="86" fill="#F4F0E6"/>
+<rect x="92" y="748" width="82" height="86" fill="#4C8DFF"/>
+<text x="133" y="803" fill="#0F1115" font-family="Menlo, Monaco, Consolas, monospace" font-size="29" font-weight="900" text-anchor="middle" letter-spacing="0">02</text>
+<text x="206" y="783" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="27" font-weight="900" text-anchor="start" letter-spacing="0">公司了解</text>
+<text x="206" y="816" fill="#68706B" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">prescreen / meeting-notes / talk-notes</text>
+<path d="M538 838V856" stroke="#4C8DFF" stroke-width="5"/>
+<rect x="92" y="860" width="896" height="86" fill="#F4F0E6"/>
+<rect x="92" y="860" width="82" height="86" fill="#4C8DFF"/>
+<text x="133" y="915" fill="#0F1115" font-family="Menlo, Monaco, Consolas, monospace" font-size="29" font-weight="900" text-anchor="middle" letter-spacing="0">03</text>
+<text x="206" y="895" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="27" font-weight="900" text-anchor="start" letter-spacing="0">尽调攻防</text>
+<text x="206" y="928" fill="#68706B" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">bull-case / bear-case</text>
+<path d="M538 950V968" stroke="#4C8DFF" stroke-width="5"/>
+<rect x="92" y="972" width="896" height="86" fill="#F4F0E6"/>
+<rect x="92" y="972" width="82" height="86" fill="#4C8DFF"/>
+<text x="133" y="1027" fill="#0F1115" font-family="Menlo, Monaco, Consolas, monospace" font-size="29" font-weight="900" text-anchor="middle" letter-spacing="0">04</text>
+<text x="206" y="1007" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="27" font-weight="900" text-anchor="start" letter-spacing="0">模型验证</text>
+<text x="206" y="1040" fill="#68706B" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">market-sizing / roi-modeler</text>
+<path d="M538 1062V1080" stroke="#4C8DFF" stroke-width="5"/>
+<rect x="92" y="1084" width="896" height="86" fill="#F4F0E6"/>
+<rect x="92" y="1084" width="82" height="86" fill="#4C8DFF"/>
+<text x="133" y="1139" fill="#0F1115" font-family="Menlo, Monaco, Consolas, monospace" font-size="29" font-weight="900" text-anchor="middle" letter-spacing="0">05</text>
+<text x="206" y="1119" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="27" font-weight="900" text-anchor="start" letter-spacing="0">有机整合</text>
+<text x="206" y="1152" fill="#68706B" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="800" text-anchor="start" letter-spacing="0">ic-memo</text>
+<rect x="78" y="1276" width="924" height="86" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="1329" fill="#F7F5EF" font-family="Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="800" text-anchor="start" letter-spacing="0">JVC ANALYST</text>
+<text x="956" y="1329" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="22" font-weight="700" text-anchor="end" letter-spacing="0">TRACK → COMPANY → MODEL → MEMO</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg width="1080" height="1440" viewBox="0 0 1080 1440" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="主链条之外 也要有边界">
+<rect width="1080" height="1440" fill="#0F1115"/>
+<path d="M90 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M180 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M270 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M360 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M450 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M540 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M630 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M720 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M810 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M900 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M990 0V1440" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 120H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 240H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 360H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 480H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 600H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 720H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 840H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 960H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1080H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1200H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<path d="M0 1320H1080" stroke="#2A3038" stroke-width="1" opacity="0.42"/>
+<rect x="54" y="54" width="972" height="1332" fill="none" stroke="#3A414C" stroke-width="2"/>
+<rect x="78" y="78" width="924" height="76" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="126" fill="#EF6A5B" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="800" text-anchor="start" letter-spacing="0">CONTROL LINE</text>
+<text x="956" y="126" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700" text-anchor="end" letter-spacing="0">FILE 07</text>
+<text x="92" y="272" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">主链条之外</text>
+<text x="92" y="366" fill="#F7F5EF" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="78" font-weight="900" text-anchor="start" letter-spacing="0">也要有边界</text>
+<text x="94" y="480" fill="#C3C8C3" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="34" font-weight="600" text-anchor="start" letter-spacing="0">运营辅助可以自动化，投决判断不要外包。</text>
+<rect x="92" y="592" width="128" height="10" fill="#EF6A5B"/>
+<rect x="92" y="636" width="896" height="132" fill="#F4F0E6"/>
+<rect x="92" y="636" width="12" height="132" fill="#EF6A5B"/>
+<text x="126" y="683" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="30" font-weight="900" text-anchor="start" letter-spacing="0">默认本地</text>
+<text x="126" y="722" fill="#68706B" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="25" font-weight="600" text-anchor="start" letter-spacing="0">BP、财务表、逐字稿、创始人沟通记录不上传网页工具</text>
+<rect x="92" y="790" width="896" height="132" fill="#F4F0E6"/>
+<rect x="92" y="790" width="12" height="132" fill="#EF6A5B"/>
+<text x="126" y="837" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="30" font-weight="900" text-anchor="start" letter-spacing="0">可以联网</text>
+<text x="126" y="876" fill="#68706B" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="25" font-weight="600" text-anchor="start" letter-spacing="0">公开资料、政策、新闻、公司官网、数据库线索</text>
+<rect x="92" y="944" width="896" height="132" fill="#F4F0E6"/>
+<rect x="92" y="944" width="12" height="132" fill="#EF6A5B"/>
+<text x="126" y="991" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="30" font-weight="900" text-anchor="start" letter-spacing="0">运营辅助</text>
+<text x="126" y="1030" fill="#68706B" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="25" font-weight="600" text-anchor="start" letter-spacing="0">/jvc-invoice-manager 处理发票和报销归档，不进入投决主链条</text>
+<rect x="92" y="1098" width="896" height="132" fill="#F4F0E6"/>
+<rect x="92" y="1098" width="12" height="132" fill="#EF6A5B"/>
+<text x="126" y="1145" fill="#101317" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="30" font-weight="900" text-anchor="start" letter-spacing="0">人来拍板</text>
+<text x="126" y="1184" fill="#68706B" font-family="PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Arial Unicode MS, sans-serif" font-size="25" font-weight="600" text-anchor="start" letter-spacing="0">AI 输出结构、证据缺口和问题，不输出投资建议</text>
+<rect x="78" y="1276" width="924" height="86" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="1329" fill="#F7F5EF" font-family="Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="800" text-anchor="start" letter-spacing="0">JVC ANALYST</text>
+<text x="956" y="1329" fill="#A9B0AD" font-family="Menlo, Monaco, Consolas, monospace" font-size="22" font-weight="700" text-anchor="end" letter-spacing="0">TRACK → COMPANY → MODEL → MEMO</text>
+</svg>

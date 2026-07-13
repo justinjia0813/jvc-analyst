@@ -59,6 +59,7 @@ def source_contract_files() -> list[Path]:
         path
         for path in included
         if "__pycache__" not in path.parts and not path.name.endswith(".pyc")
+        and not (path.parent.parent.name == "skills" and path.name == "data.json")
     )
 
 

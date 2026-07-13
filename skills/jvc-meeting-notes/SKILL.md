@@ -3,7 +3,7 @@ name: jvc-meeting-notes
 description: |
   访谈纪要生成：根据会议逐字稿、用户随笔和会议基本信息生成结构化 Word 访谈纪要，作为创始人访谈、客户访谈、专家访谈和背调电话的事实层入口。
   Use when user says '访谈纪要', '会议纪要', '整理逐字稿', 'meeting notes', '生成纪要'.
-integrated_from: https://github.com/justinjia0813/meeting-notes
+integrated_from: meeting-notes
 ---
 
 # /jvc-meeting-notes — 访谈纪要生成

@@ -3,7 +3,7 @@ name: jvc-invoice-manager
 description: |
   发票整理：OCR 识别 PDF 发票，生成报销汇总 Excel，并按月份、地点、项目自动归档差旅票据；这是运营辅助，不进入投资决策流程。
   Use when user says '整理发票', '处理发票', '报销归档', '发票汇总', 'invoice manager'.
-integrated_from: https://github.com/justinjia0813/invoice-manager
+integrated_from: invoice-manager
 ---
 
 # /jvc-invoice-manager — 发票管理器

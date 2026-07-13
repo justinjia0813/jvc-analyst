@@ -30,7 +30,6 @@ def extract_invoice_info(text, filename):
         'invoice_number': None,
         'seller': None,
         'location': None,
-        'raw_text': text[:2000]  # 保留原文前2000字符
     }
 
     # 提取金额

@@ -22,11 +22,14 @@
       "assertions": [
         {"type": "file_exists", "path": "examples/track-research-example.md"},
         {"type": "contains", "path": "examples/track-research-example.md", "text": "## 行业定义与边界"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 研究设定与一页快照"},
         {"type": "contains", "path": "examples/track-research-example.md", "text": "## 行业简史"},
         {"type": "contains", "path": "examples/track-research-example.md", "text": "## 技术路线"},
         {"type": "contains", "path": "examples/track-research-example.md", "text": "## 产业趋势"},
-        {"type": "contains_any", "path": "examples/track-research-example.md", "texts": ["[公开资料:", "[示例素材", "[未核实]"]},
-        {"type": "not_contains_any", "path": "examples/track-research-example.md", "texts": ["万亿级市场"]}
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 后续工作交接包"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 来源索引"},
+        {"type": "contains_any", "path": "examples/track-research-example.md", "texts": ["[S1]", "[S4]", "[未核实]"]},
+        {"type": "not_contains_any", "path": "examples/track-research-example.md", "texts": ["万亿级市场", "建议投资", "不建议投资"]}
       ]
     },
     {

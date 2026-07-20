@@ -1,6 +1,6 @@
 # Output Quality Scorecard
 
-日期：2026-06-20
+日期：2026-07-20
 
 证据类型：deterministic fixture evidence（确定性样例证据）。这不是 model-executed evidence（模型运行证据），也没有 baseline vs with-skill delta（基线输出与使用 skill 输出之间的差值）。
 
@@ -32,7 +32,7 @@
 | Case | Skill | Artifact family | Main assertions |
 | --- | --- | --- | --- |
 | `prescreen-markdown-contract` | `jvc-prescreen` | Markdown | 必要章节、来源/缺口标签、禁止投资结论 |
-| `track-research-markdown-contract` | `jvc-track-research` | Markdown | 行业定义、简史、技术路线、趋势、来源痕迹 |
+| `track-research-markdown-contract` | `jvc-track-research` | Markdown | 生命周期权重、四性假设、周期位置、因果链、反证与来源痕迹 |
 | `bull-case-markdown-contract` | `jvc-bull-case` | Markdown | 标题级亮点、正文级亮点、待验证亮点、禁止投资结论 |
 | `bear-case-four-role-contract` | `jvc-bear-case` | Markdown | 四角色、`IC boss`、IP/TAM/SAM 风险 |
 | `ic-memo-markdown-contract` | `jvc-ic-memo` | Markdown | 交易摘要、投资逻辑、风险与反方观点、禁止投资结论 |

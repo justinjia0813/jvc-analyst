@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-06-21",
+  "generated_at": "2026-07-20",
   "mode": "production-governance",
-  "package_sha256": "0d20cb6241259c5c0ba507758f204df810bb68e137327ee268ed049ca5412f67",
+  "package_sha256": "8bd1dcdc681f882c3fd7718daa9588c5385070ca9a6d9aba0521b15e5ead7661",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",

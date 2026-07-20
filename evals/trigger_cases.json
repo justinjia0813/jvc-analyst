@@ -85,7 +85,7 @@
       "prompt": "帮我做一个玻璃基板赛道研究，先讲行业定义、行业简史、技术路线、产业链图谱、政策趋势和关键玩家。",
       "expected_skill": "jvc-track-research",
       "prompt_signals": ["赛道研究", "行业简史", "技术路线", "产业链图谱"],
-      "skill_contract_signals": ["行业简史", "技术路线", "产业链图谱", "关键玩家分层"],
+      "skill_contract_signals": ["行业简史", "技术路线", "产业链图谱", "关键玩家分层", "产业生命周期", "周期位置", "可证伪假设"],
       "near_neighbors": [
         {
           "skill": "jvc-comps-dd",

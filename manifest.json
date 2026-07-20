@@ -1,8 +1,8 @@
 {
   "name": "jvc-analyst",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "owner": "jvc-analyst",
-  "updated_at": "2026-06-20",
+  "updated_at": "2026-07-20",
   "status": "active",
   "maturity_tier": "production",
   "lifecycle_stage": "production",

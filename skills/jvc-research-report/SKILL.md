@@ -12,17 +12,41 @@ metadata:
 ## 输入
 
 - 固定章节的 `report.md`
-- 可复用的 `brand.yml`
+- 可选：用户自定义的 `brand.yml`；未提供时使用 skill 内置默认品牌
 - Markdown 引用的本地图片
 
 内容不完整时回到 `/jvc-track-research`；本 skill 不补研究、不改观点。
 
+## 前置条件
+
+先从实际加载的 `SKILL.md` 绝对路径解析其所在目录，并把该目录设为 `SKILL_ROOT`；它不是自动存在的环境变量。将下方占位路径替换为真实路径后安装 Python 依赖：
+
+```bash
+SKILL_ROOT="/absolute/path/to/jvc-research-report"
+python3 -m pip install -r "$SKILL_ROOT/requirements.txt"
+```
+
+本机还必须提供 `fc-match`、`fc-query` 和 `fc-scan`，它们属于 Fontconfig（字体配置系统，用于查询和验证本机字体）。仓库根目录的 `./setup` 只注册 skill，不安装 Python 依赖或 Fontconfig。
+
 ## 执行
 
-1. 运行 `python3 scripts/build_report.py report.md --brand brand.yml --output output`。
-2. 构建失败时原样返回具体错误，不猜测、不覆盖上一版成功产物。
-3. 成功后检查 `build-report.txt`，再渲染并检查全部 PDF 页面。
-4. 交付 `report.pdf`、`report.html` 和 `build-report.txt`。
+1. 解析 `SKILL_ROOT`，并取得用户给定的 `report.md` 与输出目录绝对路径；不要依赖当前工作目录。
+2. 将下列三个占位路径替换为真实绝对路径。未提供自定义品牌时，命令仍显式指向内置默认品牌：
+
+```bash
+SKILL_ROOT="/absolute/path/to/jvc-research-report"
+REPORT="/absolute/path/to/report.md"
+OUTPUT="/absolute/path/to/output"
+python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
+  --brand "$SKILL_ROOT/assets/brand.yml" \
+  --output "$OUTPUT"
+```
+
+使用自定义品牌时，仅将 `--brand` 的值替换为该 `brand.yml` 的绝对路径。
+
+3. 构建失败时原样返回具体错误，不猜测、不覆盖上一版成功产物。
+4. 成功后检查 `build-report.txt`，再渲染并检查全部 PDF 页面。
+5. 交付 `report.pdf`、`report.html` 和 `build-report.txt`。
 
 ## 规则
 

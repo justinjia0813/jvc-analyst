@@ -111,10 +111,22 @@ cd jvc-analyst
 
 ### `/jvc-research-report` 固定研报排版
 
-- 输入：已经完成、带固定章节和来源索引的行业研究 Markdown，以及可选的本地图片和品牌配置。
+- 输入：已经完成、带固定章节和来源索引的行业研究 Markdown 和本地图片；用户可选传入自定义 `brand.yml`，否则使用 skill 内置默认品牌。
+- 前置：将 `SKILL_ROOT` 设为包含该 skill 的 `SKILL.md` 的绝对目录，运行 `python3 -m pip install -r "$SKILL_ROOT/requirements.txt"`，并确保 Fontconfig（字体配置系统，用于查询和验证本机字体）的 `fc-match`、`fc-query`、`fc-scan` 可用。`./setup` 只注册 skill，不安装这些依赖。
 - 做什么：校验结构、来源与本地资源，按 `lustinus RESEARCH` 版式生成可打印报告和浏览器预览。
 - 输出：`report.pdf`、`report.html` 和 `build-report.txt`。
 - 边界：只校验和排版，不补研究、不改写观点；内容未完成时先用 `/jvc-track-research`。
+
+CLI（Command-Line Interface，命令行界面，用于在终端调用构建器）示例；先替换三个绝对路径占位符，未传自定义品牌时仍显式指向内置 `brand.yml`：
+
+```bash
+SKILL_ROOT="/absolute/path/to/jvc-research-report"
+REPORT="/absolute/path/to/report.md"
+OUTPUT="/absolute/path/to/output"
+python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
+  --brand "$SKILL_ROOT/assets/brand.yml" \
+  --output "$OUTPUT"
+```
 
 ### `/jvc-knowledge-tree-builder` 知识树构建
 

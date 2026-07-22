@@ -525,6 +525,24 @@ def _image_uri(path: Path, label: str, warnings: list[str]) -> str:
         raw = path.read_bytes()
         if re.search(br"<!\s*(?:DOCTYPE|ENTITY)\b", raw, flags=re.IGNORECASE):
             raise BuildError(f"{label}: invalid SVG: declarations are not allowed: {path.name}")
+        pull_parser = ElementTree.XMLPullParser(events=("pi",))
+        pull_parser.feed(raw)
+        pull_parser.close()
+        for _event, instruction in pull_parser.read_events():
+            match = re.fullmatch(
+                r"xml-stylesheet\b(.*)", instruction.text or "", flags=re.IGNORECASE | re.DOTALL
+            )
+            if not match:
+                continue
+            hrefs = re.findall(
+                r"\bhref\s*=\s*(['\"])(.*?)\1",
+                match.group(1),
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if len(hrefs) != 1 or not hrefs[0][1].strip().casefold().startswith("data:"):
+                raise BuildError(
+                    f"{label}: external or malformed xml-stylesheet href is not allowed: {path.name}"
+                )
         root = ElementTree.fromstring(raw)
     except BuildError:
         raise
@@ -552,6 +570,18 @@ def _image_uri(path: Path, label: str, warnings: list[str]) -> str:
                     f"{label}: external SVG CSS URL is not allowed: {path.name}"
                 )
 
+    presentation_attributes = {
+        "style",
+        "fill",
+        "stroke",
+        "filter",
+        "clip-path",
+        "mask",
+        "marker-start",
+        "marker-mid",
+        "marker-end",
+        "cursor",
+    }
     for element in root.iter():
         for attribute, value in element.attrib.items():
             local_name = attribute.rsplit("}", 1)[-1].casefold()
@@ -559,7 +589,8 @@ def _image_uri(path: Path, label: str, warnings: list[str]) -> str:
                 raise BuildError(
                     f"{label}: external SVG {local_name} is not allowed: {path.name}"
                 )
-            validate_css(value, check_import=local_name == "style")
+            if local_name in presentation_attributes:
+                validate_css(value, check_import=local_name == "style")
         if element.tag.rsplit("}", 1)[-1].casefold() == "style":
             validate_css("".join(element.itertext()), check_import=True)
     return data_uri(path, "image/svg+xml")
@@ -865,7 +896,19 @@ def _font_corpora(
     serif = []
     sans_inline = False
     in_table = False
-    for token in tokens:
+    hidden_h1_inline = (
+        1
+        if len(tokens) >= 3
+        and tokens[0].type == "heading_open"
+        and tokens[0].tag == "h1"
+        and tokens[0].level == 0
+        and tokens[1].type == "inline"
+        and tokens[2].type == "heading_close"
+        else -1
+    )
+    for index, token in enumerate(tokens):
+        if token.type in ("code_block", "fence"):
+            serif.append(token.content)
         if token.type == "heading_open" and token.tag in ("h2", "h3"):
             sans_inline = True
         elif token.type == "table_open":
@@ -873,10 +916,14 @@ def _font_corpora(
         if token.meta.get("caption"):
             sans.append(str(token.meta["caption"]))
         if token.type == "inline":
+            if index == hidden_h1_inline:
+                continue
             visible = []
             for child in token.children or ():
                 if child.type == "text":
                     visible.append(child.content)
+                elif child.type == "code_inline":
+                    serif.append(child.content)
                 elif child.type == "image" and child.meta.get("standalone"):
                     if child.meta.get("caption"):
                         sans.append(str(child.meta["caption"]))

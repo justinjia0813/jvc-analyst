@@ -404,7 +404,8 @@ def main() -> None:
 
         (root / "safe-locations.svg").write_text(
             '<svg xmlns="http://www.w3.org/2000/svg">'
-            "<text>https://example.com/display-only</text>"
+            '<text data-note="literal url(ftp://example.com/not-a-resource)">'
+            "https://example.com/display-only</text>"
             '<a href="data:text/plain;base64,//8=">'
             "<text>safe data link</text>"
             "</a></svg>",
@@ -430,6 +431,26 @@ def main() -> None:
         assert unknown_metadata.returncode == 0, unknown_metadata.stderr
         unknown_log = (output / "build-report.txt").read_text(encoding="utf-8")
         assert "U+10000" not in unknown_log
+
+        hidden_h1_report = document().replace(
+            "\n---\n## 研究设定与一页快照",
+            "\n---\n# Hidden 𐀀\n\n## 研究设定与一页快照",
+            1,
+        )
+        report_path.write_text(hidden_h1_report, encoding="utf-8")
+        hidden_h1 = run_builder(report_path, brand_path, output)
+        assert hidden_h1.returncode == 0, hidden_h1.stderr
+        hidden_h1_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "U+10000" not in hidden_h1_log
+
+        visible_h1_report = hidden_h1_report.replace(
+            "# Hidden 𐀀", "# Hidden ASCII\n\n# Visible 𐀀", 1
+        )
+        report_path.write_text(visible_h1_report, encoding="utf-8")
+        visible_h1 = run_builder(report_path, brand_path, output)
+        assert visible_h1.returncode == 0, visible_h1.stderr
+        visible_h1_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "U+10000" in visible_h1_log
 
         bm_match = subprocess.run(
             ("fc-match", "-f", "%{family}\n", "BM Jua"),
@@ -462,6 +483,21 @@ def main() -> None:
             role_log = (output / "build-report.txt").read_text(encoding="utf-8")
             assert "font fallback (sans_font BM Jua)" in role_log
             assert "font fallback (serif_font Verdana)" not in role_log
+
+            code_report = document(
+                metadata="title: ASCII Report\ndate: 2026-07-22",
+                image=(
+                    "\nInline `가`\n\n"
+                    "```text\n가\n```\n\n"
+                    "    가"
+                ),
+            ).replace("正文引用 [S1]", "Body [S1]")
+            report_path.write_text(code_report, encoding="utf-8")
+            code_build = run_builder(report_path, brand_path, output)
+            assert code_build.returncode == 0, code_build.stderr
+            code_log = (output / "build-report.txt").read_text(encoding="utf-8")
+            assert "font fallback (serif_font Verdana)" in code_log
+            assert "U+AC00" in code_log
 
         fallback_brand = (
             valid_brand.replace("logo: local.png", "logo: null")
@@ -555,6 +591,22 @@ def main() -> None:
         relative_css = run_builder(report_path, brand_path, output)
         assert relative_css.returncode == 2
         assert "external SVG CSS URL" in relative_css.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        (root / "stylesheet-pi.svg").write_text(
+            '<?xml-stylesheet type="text/css" href="https://example.com/report.css"?>'
+            '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10"/></svg>',
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            document(image="\n![处理指令](stylesheet-pi.svg)"), encoding="utf-8"
+        )
+        stylesheet_pi = run_builder(report_path, brand_path, output)
+        assert stylesheet_pi.returncode == 2
+        assert "xml-stylesheet" in stylesheet_pi.stderr
         assert {
             name: hashlib.sha256((output / name).read_bytes()).hexdigest()
             for name in expected_outputs

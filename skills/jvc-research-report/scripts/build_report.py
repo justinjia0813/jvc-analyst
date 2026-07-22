@@ -7,11 +7,12 @@ import mimetypes
 import os
 import re
 import subprocess
+from bisect import bisect_right
 from datetime import date, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Sequence
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 from xml.etree import ElementTree
 
 import yaml
@@ -252,10 +253,7 @@ def _used_sources(tokens: list[Token]) -> set[str]:
             continue
         for child in token.children or ():
             if child.type in ("text", "image"):
-                content = child.content
-                if child.type == "text":
-                    content = re.sub(r"<[^>]*>", "", content)
-                used.update(re.findall(r"\[S([1-9]\d*)\]", content))
+                used.update(re.findall(r"\[S([1-9]\d*)\]", child.content))
     return used
 
 
@@ -288,19 +286,22 @@ def _validate_source_tokens(tokens: list[Token]) -> list[str]:
 
 
 def local_path(base: Path, raw: str, label: str) -> Path:
+    if re.search(r"%(?![0-9A-Fa-f]{2})", raw):
+        raise BuildError(f"{label}: invalid percent escape: {raw}")
     try:
-        parsed = urlparse(raw)
-    except ValueError as exc:
+        decoded = unquote(raw, errors="strict")
+        parsed = urlparse(decoded)
+    except (UnicodeError, ValueError) as exc:
         raise BuildError(f"{label}: invalid path: {raw}") from exc
     if (
-        not raw
+        not decoded
         or parsed.scheme
         or parsed.netloc
-        or raw.startswith(("//", "\\\\"))
-        or Path(raw).is_absolute()
+        or decoded.startswith(("//", "\\\\"))
+        or Path(decoded).is_absolute()
     ):
         raise BuildError(f"{label}: remote or absolute path is not allowed: {raw}")
-    path = (base / raw).resolve()
+    path = (base / decoded).resolve()
     try:
         path.relative_to(base.resolve())
     except ValueError as exc:
@@ -436,7 +437,13 @@ def _font_charset(path: Path, label: str) -> list[tuple[int, int]]:
         if end < start:
             raise BuildError(f"{label}: invalid font charset range: {item}")
         ranges.append((start, end))
-    return ranges
+    merged = []
+    for start, end in sorted(ranges):
+        if merged and start <= merged[-1][1] + 1:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+    return merged
 
 
 def _font_css(
@@ -940,15 +947,16 @@ def _warn_font_fallback(
     visible_text: str,
     warnings: list[str],
 ) -> None:
-    missing = sorted(
-        {
-            character
-            for character in visible_text
-            if not character.isspace()
-            and not any(start <= ord(character) <= end for start, end in charset)
-        },
-        key=ord,
-    )
+    starts = [start for start, _ in charset]
+    missing = []
+    for character in set(visible_text):
+        if character.isspace():
+            continue
+        codepoint = ord(character)
+        index = bisect_right(starts, codepoint) - 1
+        if index < 0 or codepoint > charset[index][1]:
+            missing.append(character)
+    missing.sort(key=ord)
     if missing:
         sample = ", ".join(f"{character} U+{ord(character):04X}" for character in missing[:8])
         warnings.append(

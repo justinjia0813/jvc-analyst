@@ -1,14 +1,21 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import subprocess
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
+
+sys.dont_write_bytecode = True
 
 from build_report import (
     BuildError,
+    _font_charset,
+    _warn_font_fallback,
     build_log as format_build_log,
+    local_path,
     publish_staged,
     validate_report,
 )
@@ -89,6 +96,32 @@ def main() -> None:
     with TemporaryDirectory() as temporary_directory:
         root = Path(temporary_directory)
         report_path = root / "report.md"
+
+        charset_result = subprocess.CompletedProcess(
+            args=(), returncode=0, stdout="10-12 1-3 3-9 a-f 20\n", stderr=""
+        )
+        with patch("build_report.subprocess.run", return_value=charset_result):
+            assert _font_charset(root / "font.ttf", "test font") == [
+                (0x1, 0x12),
+                (0x20, 0x20),
+            ]
+
+        class CountingRanges(list[tuple[int, int]]):
+            iterations = 0
+
+            def __iter__(self):
+                self.iterations += 1
+                return super().__iter__()
+
+        counting_ranges = CountingRanges([(0x20, 0x7E)])
+        repeated_warnings: list[str] = []
+        _warn_font_fallback(
+            "serif", "Test Font", counting_ranges, "가" * 100, repeated_warnings
+        )
+        assert counting_ranges.iterations == 1
+        assert repeated_warnings == [
+            "font fallback (serif_font Test Font): missing 1 glyphs: 가 U+AC00"
+        ]
 
         warnings = validate_report(document(), report_path)
         assert any("optional metadata missing" in warning for warning in warnings)
@@ -212,7 +245,8 @@ def main() -> None:
         )
         unused_warnings = validate_report(document(citation=""), report_path)
         assert "unused source definitions: S1" in unused_warnings
-        ignored_reference_warnings = validate_report(
+        expect_error(
+            "visible angled source reference",
             document(
                 citation="",
                 source_table=(
@@ -228,8 +262,8 @@ def main() -> None:
                 ),
             ),
             report_path,
+            "undefined sources: S5",
         )
-        assert "unused source definitions: S1" in ignored_reference_warnings
         expect_error(
             "citation after source index",
             document(after_sources="## 未核实与待补证据\n后置引用 [S2]"),
@@ -249,6 +283,30 @@ def main() -> None:
             "escapes the report directory",
         )
         expect_error(
+            "encoded path escape",
+            document(image="![越界图片](%2e%2e%2foutside.png)"),
+            report_path,
+            "escapes the report directory",
+        )
+        expect_error(
+            "encoded absolute path",
+            document(image="![绝对路径](%2Ftmp%2Foutside.png)"),
+            report_path,
+            "remote or absolute",
+        )
+        expect_error(
+            "encoded scheme",
+            document(image="![远程图片](https%3A%2F%2Fexample.com%2Fimage.png)"),
+            report_path,
+            "remote or absolute",
+        )
+        try:
+            local_path(report_path.parent, "%ZZ.png", "report.md image")
+        except BuildError as exc:
+            assert "invalid percent escape" in str(exc)
+        else:
+            raise AssertionError("local_path accepted a malformed percent escape")
+        expect_error(
             "malformed URL",
             document(
                 metadata=(
@@ -264,6 +322,8 @@ def main() -> None:
         from PIL import Image
 
         Image.new("RGB", (32, 16), "#A06B2C").save(root / "local.png")
+        Image.new("RGB", (32, 16), "#A06B2C").save(root / "中文图片.png")
+        Image.new("RGB", (32, 16), "#A06B2C").save(root / "space image.png")
         (root / "vector.svg").write_text(
             '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">'
             '<rect width="10" height="5" fill="#A06B2C"/></svg>',
@@ -281,6 +341,20 @@ def main() -> None:
             "serif_font: Songti SC\n"
         )
         brand_path.write_text(valid_brand, encoding="utf-8")
+        encoded_names_report = document(
+            image="![中文文件名](中文图片.png)\n\n![空格文件名](<space image.png>)"
+        )
+        report_path.write_text(encoded_names_report, encoding="utf-8")
+        encoded_names_output = root / "encoded-names-output"
+        encoded_names_build = run_builder(
+            report_path, brand_path, encoded_names_output
+        )
+        assert encoded_names_build.returncode == 0, encoded_names_build.stderr
+        encoded_names_html = (encoded_names_output / "report.html").read_text(
+            encoding="utf-8"
+        )
+        assert encoded_names_html.count('src="data:image/png;base64,') == 3
+
         rich_content = (
             "\n![本地图](local.png)\n\n"
             "*来源：本地测试来源*\n\n"
@@ -701,6 +775,46 @@ def main() -> None:
             name: hashlib.sha256((transaction_output / name).read_bytes()).hexdigest()
             for name in expected_outputs
         } == transaction_hashes
+
+        replacement_output = root / "replacement-output"
+        replacement_staging = root / "replacement-staging"
+        replacement_output.mkdir()
+        replacement_staging.mkdir()
+        for name in expected_outputs:
+            (replacement_output / name).write_bytes(f"old:{name}".encode())
+            (replacement_staging / name).write_bytes(f"new:{name}".encode())
+        unknown = replacement_output / "unknown.txt"
+        unknown.write_bytes(b"keep me")
+        replacement_hashes = {
+            name: hashlib.sha256((replacement_output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        }
+        real_replace = os.replace
+
+        def fail_third_publish(source: object, target: object) -> None:
+            source_path = Path(source)
+            target_path = Path(target)
+            if (
+                source_path.parent == replacement_staging
+                and target_path.parent == replacement_output
+                and source_path.name == "build-report.txt"
+            ):
+                raise OSError("controlled third publish failure")
+            real_replace(source, target)
+
+        with patch("build_report.os.replace", side_effect=fail_third_publish):
+            try:
+                publish_staged(replacement_staging, replacement_output)
+            except BuildError as exc:
+                assert "cannot publish report outputs" in str(exc)
+                assert "controlled third publish failure" in str(exc)
+            else:
+                raise AssertionError("publish_staged accepted a partial publish failure")
+        assert {
+            name: hashlib.sha256((replacement_output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == replacement_hashes
+        assert unknown.read_bytes() == b"keep me"
 
     print("PASS: fixed research report validation and rendering")
 

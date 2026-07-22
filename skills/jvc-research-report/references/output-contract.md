@@ -24,7 +24,7 @@
 
 ## 品牌字段
 
-`brand.yml` 使用 `name`、`logo`、`accent_color`、`header`、`footer`、`disclaimer`、`sans_font` 和 `serif_font`。`logo` 可为 `null` 或本地文件。`sans_font` 和 `serif_font` 只能按本机系统 font family 名解析；构建不接受字体 URL（Uniform Resource Locator，统一资源定位符，用于标识资源位置）或字体文件路径。来源索引中的网络链接仅作为引用元数据，不得在构建时获取。
+`brand.yml` 使用 `name`、`logo`、`accent_color`、`header`、`footer`、`disclaimer`、`sans_font` 和 `serif_font`。`logo` 可为 `null` 或本地文件。`sans_font` 和 `serif_font` 接受本机 font family 名，或相对 `brand.yml` 所在目录的本地字体文件路径。字体路径与 logo 一样，解析后不得逃离 brand 根目录；用户提供的绝对路径或带 scheme 的路径一律是 hard error。本地字体文件在渲染时嵌为 `data:` `@font-face`，不得通过网络获取。来源索引中的网络链接仅作为引用元数据，不得在构建时获取。
 
 ## 卡片、图片、表格和来源
 
@@ -38,6 +38,6 @@
 
 ## 失败规则
 
-以下情况是 hard error，构建必须停止：缺少 `title` 或 `date`；缺少 canonical section 或顺序错误；Markdown 或 YAML 解析失败；远程资源；本地图片、cover image 或 logo 缺失、不可读或逃离各自根目录；绝对路径或带 scheme 的资源路径；字体 URL 或字体文件路径；无效品牌颜色；配置的系统 font family 不存在；未定义或重复的 `[S<n>]`；HTML（HyperText Markup Language，超文本标记语言，用于浏览器预览）或 PDF（Portable Document Format，可移植文档格式，用于固定版式）渲染失败。失败不得覆盖上一版成功的三个产物。
+以下情况是 hard error，构建必须停止：缺少 `title` 或 `date`；缺少 canonical section 或顺序错误；Markdown 或 YAML 解析失败；远程资源；本地图片、cover image 或 logo 缺失、不可读或逃离各自根目录；绝对路径或带 scheme 的资源路径；字体 URL（Uniform Resource Locator，统一资源定位符，用于标识资源位置）或绝对路径；配置的系统 font family 不存在；本地字体文件缺失、不可读、路径逃逸或格式不支持；无效品牌颜色；未定义或重复的 `[S<n>]`；HTML（HyperText Markup Language，超文本标记语言，用于浏览器预览）或 PDF（Portable Document Format，可移植文档格式，用于固定版式）渲染失败。失败不得覆盖上一版成功的三个产物。
 
-以下情况是 warning，构建可继续但必须写入 `build-report.txt`：来源索引条目从未被正文引用；图片缺少 alt caption 或位图分辨率偏低；表格缺少 `表：` 标题或列数过多；对象缺少斜体 `来源：` 行；已确认存在的配置字体族对个别字形发生 fallback；可能出现分页、孤行或横向溢出。warning 不授权改写正文。
+以下情况是 warning，构建可继续但必须写入 `build-report.txt`：来源索引条目从未被正文引用；图片缺少 alt caption 或位图分辨率偏低；表格缺少 `表：` 标题或列数过多；对象缺少斜体 `来源：` 行；已存在的系统 font family 或本地字体文件仅对个别字形发生 fallback；可能出现分页、孤行或横向溢出。warning 不授权改写正文。

@@ -33,6 +33,16 @@
         "构建报告",
         "重新生成"
       ]
+    },
+    "preserve_content": {
+      "weight": 0.5,
+      "phrases": [
+        "without rewriting content",
+        "content rewriting",
+        "不要重写",
+        "不要改正文",
+        "不改正文"
+      ]
     }
   },
   "negative_concepts": {
@@ -47,9 +57,9 @@
       "phrases": ["任意结构", "快速转成 pdf"]
     },
     "content_rewriting": {
-      "weight": 0.9,
+      "weight": 0.4,
       "exclusive": true,
-      "phrases": ["帮我重写", "请重写正文", "联网补充"]
+      "phrases": ["重写", "联网补充"]
     },
     "ic_memo": {
       "weight": 0.9,

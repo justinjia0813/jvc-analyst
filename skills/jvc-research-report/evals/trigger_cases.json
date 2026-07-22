@@ -31,6 +31,10 @@
     {
       "text": "重写这份研报并联网补充更多事实。",
       "family": "content_rewriting"
+    },
+    {
+      "text": "重写这份固定章节的研报，并输出 PDF 和 HTML 预览。",
+      "family": "content_rewriting_without_web"
     }
   ],
   "near_neighbor": [

@@ -8,7 +8,7 @@ authors:
 sector: "虚构制造软件"
 region: "虚构区域"
 classification: "Internal"
-cover_image: "assets/technology-routes.svg"
+cover_image: null
 disclaimer: "本报告中的公司、数据、事件、标准、结论与来源均为虚构或假设，仅用于版式回归，不构成真实市场主张或投资意见。"
 ---
 

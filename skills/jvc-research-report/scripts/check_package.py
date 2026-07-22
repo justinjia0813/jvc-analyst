@@ -27,7 +27,9 @@ def document(
     sections: tuple[str, ...] = SECTIONS,
     citation: str = "[S1]",
     sources: str = "| S1 | 本地测试来源 |",
+    source_table: str | None = None,
     image: str = "",
+    after_sources: str = "",
 ) -> str:
     body = []
     for index, section in enumerate(sections):
@@ -36,7 +38,16 @@ def document(
         if section == "研究设定与一页快照":
             body.extend((f"正文引用 {citation}", image, ""))
         if section == "来源索引":
-            body.extend(("| ID | 来源 |", "| --- | --- |", sources, ""))
+            body.extend(
+                (
+                    source_table
+                    if source_table is not None
+                    else f"| ID | 来源 |\n| --- | --- |\n{sources}",
+                    "",
+                )
+            )
+    if after_sources:
+        body.extend((after_sources, ""))
     return f"---\n{metadata}\n---\n" + "\n".join(body)
 
 
@@ -63,6 +74,12 @@ def main() -> None:
             report_path,
             "date",
         )
+        expect_error(
+            "falsy non-mapping frontmatter",
+            document(metadata="[]"),
+            report_path,
+            "frontmatter must be a mapping",
+        )
 
         wrong_order = list(SECTIONS)
         wrong_order[1], wrong_order[2] = wrong_order[2], wrong_order[1]
@@ -84,6 +101,26 @@ def main() -> None:
             document(sources="| S1 | 来源甲 |\n| S1 | 来源乙 |"),
             report_path,
             "duplicate source IDs: S1",
+        )
+        validate_report(
+            document(
+                source_table="ID | 来源\n--- | ---\nS1 | 本地测试来源",
+            ),
+            report_path,
+        )
+        expect_error(
+            "fenced code is not a source definition",
+            document(source_table="```text\n| S1 | 伪定义 |\n```"),
+            report_path,
+            "undefined sources: S1",
+        )
+        unused_warnings = validate_report(document(citation=""), report_path)
+        assert "unused source definitions: S1" in unused_warnings
+        expect_error(
+            "citation after source index",
+            document(after_sources="## 附录\n后置引用 [S2]"),
+            report_path,
+            "undefined sources: S2",
         )
         expect_error(
             "remote image",

@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 import yaml
 from markdown_it import MarkdownIt
+from markdown_it.token import Token
 
 
 VERSION = "0.1.0"
@@ -47,9 +48,11 @@ def split_frontmatter(text: str) -> tuple[dict[str, object], str]:
     if marker < 0:
         raise BuildError("report.md: YAML frontmatter is not closed")
     try:
-        metadata = yaml.safe_load(text[4:marker]) or {}
+        metadata = yaml.safe_load(text[4:marker])
     except yaml.YAMLError as exc:
         raise BuildError(f"report.md: invalid YAML: {exc}") from exc
+    if metadata is None:
+        metadata = {}
     if not isinstance(metadata, dict):
         raise BuildError("report.md: frontmatter must be a mapping")
     return metadata, text[marker + 5 :]
@@ -80,7 +83,7 @@ def normalized_heading(value: str) -> str:
     return re.sub(r"\s+", "", without_prefix).casefold()
 
 
-def _markdown_tokens(body: str):
+def _markdown_tokens(body: str) -> list[Token]:
     return MarkdownIt("commonmark").enable("table").parse(body)
 
 
@@ -107,29 +110,49 @@ def validate_structure(body: str) -> None:
         cursor = following[0]
 
 
-def _source_index_bounds(body: str) -> tuple[int, int]:
-    lines = body.splitlines(keepends=True)
+def _source_index_tokens(body: str) -> list[Token]:
     tokens = _markdown_tokens(body)
     for index, token in enumerate(tokens[:-1]):
         if token.type != "heading_open" or token.tag != "h2":
             continue
         if normalized_heading(tokens[index + 1].content) != normalized_heading("来源索引"):
             continue
-        start_line = token.map[0]
-        end_line = len(lines)
-        for later in tokens[index + 3 :]:
+        end = len(tokens)
+        for later_index, later in enumerate(tokens[index + 3 :], index + 3):
             if later.type == "heading_open" and later.tag == "h2":
-                end_line = later.map[0]
+                end = later_index
                 break
-        return sum(map(len, lines[:start_line])), sum(map(len, lines[:end_line]))
+        return tokens[index + 3 : end]
     raise BuildError("report.md: missing source index")
 
 
+def _source_definitions(tokens: list[Token]) -> list[str]:
+    defined = []
+    in_tbody = False
+    first_cell_pending = False
+    in_first_cell = False
+    for token in tokens:
+        if token.type == "tbody_open":
+            in_tbody = True
+        elif token.type == "tbody_close":
+            in_tbody = False
+        elif in_tbody and token.type == "tr_open":
+            first_cell_pending = True
+        elif in_tbody and token.type == "td_open" and first_cell_pending:
+            first_cell_pending = False
+            in_first_cell = True
+        elif token.type == "td_close" and in_first_cell:
+            in_first_cell = False
+        elif in_first_cell and token.type == "inline":
+            match = re.fullmatch(r"S([1-9]\d*)", token.content.strip())
+            if match:
+                defined.append(match.group(1))
+    return defined
+
+
 def validate_sources(body: str) -> list[str]:
-    source_start, source_end = _source_index_bounds(body)
-    used = set(re.findall(r"\[S([1-9]\d*)\]", body[:source_start]))
-    source_block = body[source_start:source_end]
-    defined = re.findall(r"(?m)^[ \t]{0,3}\|\s*S([1-9]\d*)\s*\|", source_block)
+    used = set(re.findall(r"\[S([1-9]\d*)\]", body))
+    defined = _source_definitions(_source_index_tokens(body))
     duplicates = sorted(
         (source for source in set(defined) if defined.count(source) > 1),
         key=int,

@@ -1,6 +1,6 @@
 # Route Scorecard
 
-日期：2026-06-20
+日期：2026-07-22
 
 证据类型：deterministic fixture evidence（确定性样例证据）。这不是 model-executed evidence（模型运行证据），也不是 blind holdout（盲测保留集）。
 
@@ -16,13 +16,14 @@
 | SOM | Serviceable Obtainable Market | 可获得市场 | 一定时间内可实际获取的市场份额 |
 | OCR | Optical Character Recognition | 光学字符识别 | 从 PDF 发票中识别文字 |
 | PDF | Portable Document Format | 便携式文档格式 | 发票和 deck 常见文件格式 |
+| HTML | HyperText Markup Language | 超文本标记语言 | 浏览器预览使用的页面结构格式 |
 
 ## 结果
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Trigger cases | 12 |
-| Near-neighbor pairs | 11 |
+| Trigger cases | 14 |
+| Near-neighbor pairs | 15 |
 | No-route teaching case | 1 |
 | Verification command | `python3 scripts/check-skill-evals.py` |
 | Latest local result | pass |
@@ -38,6 +39,8 @@
 | `bear-case-adversarial-review` | `jvc-bear-case` | `jvc-bull-case` |
 | `ic-memo-full-synthesis` | `jvc-ic-memo` | `jvc-bull-case` |
 | `track-research-sector-map` | `jvc-track-research` | `jvc-comps-dd` |
+| `research-report-fixed-markdown-render` | `jvc-research-report` | `jvc-track-research`, `jvc-ic-memo` |
+| `knowledge-tree-builder-local-folder` | `jvc-knowledge-tree-builder` | `jvc-track-research` |
 | `comps-dd-competitor-workbook` | `jvc-comps-dd` | `jvc-track-research` |
 | `market-sizing-workbook` | `jvc-market-sizing` | `jvc-track-research` |
 | `roi-modeler-return-workbook` | `jvc-roi-modeler` | `jvc-market-sizing` |
@@ -48,4 +51,4 @@
 
 - 还没有 model-executed route run，不能声称真实模型路由准确率。
 - 还没有 blind holdout 或 adversarial holdout，不能声称 Production promotion gate 已完整通过。
-- 当前脚本验证的是 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage。
+- 当前 14 个样例验证的是 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage；`jvc-research-report` 的 file-backed rendering 与真实 PDF 文本、页数和视觉检查增强了产物证据，但不是 model-executed routing evidence 或 blind-review evidence。

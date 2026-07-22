@@ -12,6 +12,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Sequence
 from urllib.parse import urlparse
+from xml.etree import ElementTree
 
 import yaml
 from markdown_it import MarkdownIt
@@ -37,14 +38,6 @@ BRAND_DEFAULTS: dict[str, object] = {
     "serif_font": "Songti SC",
 }
 FONT_EXTENSIONS = {".otf", ".ttc", ".ttf", ".woff", ".woff2"}
-RASTER_MEDIA_TYPES = {
-    "image/bmp",
-    "image/gif",
-    "image/jpeg",
-    "image/png",
-    "image/tiff",
-    "image/webp",
-}
 
 
 class BuildError(RuntimeError):
@@ -350,8 +343,8 @@ def _validate_parsed(
     return warnings
 
 
-def data_uri(path: Path) -> str:
-    media_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+def data_uri(path: Path, media_type: str | None = None) -> str:
+    media_type = media_type or mimetypes.guess_type(path.name)[0] or "application/octet-stream"
     try:
         encoded = base64.b64encode(path.read_bytes()).decode("ascii")
     except (OSError, UnicodeError) as exc:
@@ -403,7 +396,52 @@ def _css_string(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ") + '"'
 
 
-def _font_css(value: str, brand_root: Path, role: str) -> tuple[str, str]:
+def _scan_font(path: Path, label: str) -> tuple[str, str]:
+    try:
+        result = subprocess.run(
+            ("fc-scan", "--format", "%{family}\n%{charset}\n", str(path)),
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except OSError as exc:
+        raise BuildError(f"{label}: font scan failed: {exc}") from exc
+    lines = result.stdout.splitlines()
+    if result.returncode or len(lines) < 2 or not lines[0].strip() or not lines[1].strip():
+        detail = result.stderr.strip() or "fontconfig could not parse family/charset"
+        raise BuildError(f"{label}: invalid font file: {path.name}: {detail}")
+    return lines[0].strip(), lines[1].strip()
+
+
+def _font_charset(path: Path, label: str) -> list[tuple[int, int]]:
+    try:
+        result = subprocess.run(
+            ("fc-query", "--format", "%{charset}\n", str(path)),
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except OSError as exc:
+        raise BuildError(f"{label}: font charset query failed: {exc}") from exc
+    if result.returncode or not result.stdout.strip():
+        detail = result.stderr.strip() or "fontconfig returned no charset"
+        raise BuildError(f"{label}: invalid font charset: {path.name}: {detail}")
+    ranges = []
+    for item in result.stdout.split():
+        if not re.fullmatch(r"[0-9A-Fa-f]+(?:-[0-9A-Fa-f]+)?", item):
+            raise BuildError(f"{label}: invalid font charset range: {item}")
+        bounds = item.split("-", 1)
+        start = int(bounds[0], 16)
+        end = int(bounds[-1], 16)
+        if end < start:
+            raise BuildError(f"{label}: invalid font charset range: {item}")
+        ranges.append((start, end))
+    return ranges
+
+
+def _font_css(
+    value: str, brand_root: Path, role: str
+) -> tuple[str, str, list[tuple[int, int]]]:
     try:
         parsed = urlparse(value)
     except ValueError as exc:
@@ -423,6 +461,8 @@ def _font_css(value: str, brand_root: Path, role: str) -> tuple[str, str]:
             path.open("rb").close()
         except OSError as exc:
             raise BuildError(f"brand.yml {role}_font: cannot read {value}: {exc}") from exc
+        _scan_font(path, f"brand.yml {role}_font")
+        charset = _font_charset(path, f"brand.yml {role}_font")
         family = f"lustinus-{role}"
         face = (
             "@font-face {"
@@ -430,17 +470,19 @@ def _font_css(value: str, brand_root: Path, role: str) -> tuple[str, str]:
             f"src: url({_css_string(data_uri(path))});"
             "}"
         )
-        return _css_string(family), face
+        return _css_string(family), face, charset
 
     try:
         matched = subprocess.run(
-            ("fc-match", "-f", "%{family}\\n", value),
+            ("fc-match", "-f", "%{family}\\n%{file}\\n", value),
             text=True,
             capture_output=True,
             check=True,
         ).stdout.splitlines()
     except (OSError, subprocess.CalledProcessError) as exc:
         raise BuildError(f"brand.yml {role}_font: font lookup failed: {exc}") from exc
+    if len(matched) < 2:
+        raise BuildError(f"brand.yml {role}_font: font lookup returned no file: {value}")
     families = {
         family.strip().casefold()
         for line in matched[:1]
@@ -453,21 +495,55 @@ def _font_css(value: str, brand_root: Path, role: str) -> tuple[str, str]:
             f"brand.yml {role}_font: system font family not found: "
             f"{value} (fc-match returned {actual})"
         )
-    return _css_string(value), ""
+    font_path = Path(matched[1])
+    if not font_path.is_file():
+        raise BuildError(f"brand.yml {role}_font: matched font file is missing: {font_path}")
+    return (
+        _css_string(value),
+        "",
+        _font_charset(font_path, f"brand.yml {role}_font"),
+    )
 
 
 def _image_uri(path: Path, label: str, warnings: list[str]) -> str:
-    media_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
-    if media_type in RASTER_MEDIA_TYPES:
-        try:
-            with Image.open(path) as image:
-                width = image.width
-                image.verify()
-        except (OSError, UnidentifiedImageError) as exc:
-            raise BuildError(f"{label}: invalid raster image: {path.name}: {exc}") from exc
+    try:
+        with Image.open(path) as image:
+            image_format = image.format
+            image.verify()
+        with Image.open(path) as image:
+            width = image.width
+        media_type = Image.MIME.get(image_format or "")
+        if not media_type or not media_type.startswith("image/"):
+            raise UnidentifiedImageError(f"unknown raster format: {image_format}")
         if width < 1200:
             warnings.append(f"low-resolution image ({width}px wide): {path.name}")
-    return data_uri(path)
+        return data_uri(path, media_type)
+    except (OSError, UnidentifiedImageError):
+        pass
+
+    try:
+        raw = path.read_bytes()
+        if re.search(br"<!\s*(?:DOCTYPE|ENTITY)\b", raw, flags=re.IGNORECASE):
+            raise BuildError(f"{label}: invalid SVG: declarations are not allowed: {path.name}")
+        root = ElementTree.fromstring(raw)
+    except BuildError:
+        raise
+    except (OSError, ElementTree.ParseError) as exc:
+        raise BuildError(f"{label}: invalid SVG or unknown image: {path.name}: {exc}") from exc
+    if root.tag.rsplit("}", 1)[-1].casefold() != "svg":
+        raise BuildError(f"{label}: invalid SVG root: {path.name}")
+
+    blocked = re.compile(r"(?:https?|file)\s*:|(?<!:)//|@import", re.IGNORECASE)
+    for element in root.iter():
+        for value in (element.text, element.tail, *element.attrib.values()):
+            if value and blocked.search(value):
+                raise BuildError(f"{label}: external SVG reference is not allowed: {path.name}")
+        for attribute, value in element.attrib.items():
+            if attribute.rsplit("}", 1)[-1].casefold() == "href" and not value.startswith(
+                ("#", "data:")
+            ):
+                raise BuildError(f"{label}: external SVG href is not allowed: {path.name}")
+    return data_uri(path, "image/svg+xml")
 
 
 CALLOUTS = {
@@ -475,6 +551,17 @@ CALLOUTS = {
     "[!INFERENCE]": "callout-inference",
     "[!OPEN QUESTION]": "callout-open-question",
 }
+
+
+def _is_source_line(children: list[Token]) -> bool:
+    if len(children) < 3 or children[0].type != "em_open" or children[-1].type != "em_close":
+        return False
+    visible = "".join(
+        child.content
+        for child in children[1:-1]
+        if child.type in ("text", "code_inline", "image")
+    )
+    return visible.strip().startswith("来源：")
 
 
 def _prepare_tokens(
@@ -499,7 +586,7 @@ def _prepare_tokens(
             token.attrSet("id", target)
             toc.append((target, label))
 
-    for index in range(len(tokens) - 3):
+    for index in range(len(tokens) - 2):
         if (
             tokens[index].type == "paragraph_open"
             and tokens[index + 1].type == "inline"
@@ -511,16 +598,11 @@ def _prepare_tokens(
                 tokens[index].meta["figure"] = True
                 tokens[index + 2].meta["figure"] = True
                 children[0].meta["standalone"] = True
-            if (
-                len(children) == 3
-                and children[0].type == "em_open"
-                and children[1].type == "text"
-                and children[1].content.strip().startswith("来源：")
-                and children[2].type == "em_close"
-            ):
+            if _is_source_line(children):
                 tokens[index].meta["source_line"] = True
             if (
                 inline.content.strip().startswith("表：")
+                and index + 3 < len(tokens)
                 and tokens[index + 3].type == "table_open"
             ):
                 tokens[index].hidden = True
@@ -730,14 +812,68 @@ def _cover_html(
     )
 
 
-def _stylesheet(brand: dict[str, object], brand_root: Path) -> str:
+def _visible_text(
+    metadata: dict[str, object], brand: dict[str, object], tokens: list[Token]
+) -> str:
+    parts = []
+    for field, value in metadata.items():
+        if field != "cover_image" and not _missing(value):
+            if isinstance(value, list):
+                parts.extend(str(item) for item in value)
+            else:
+                parts.append(str(value))
+    parts.extend(str(brand[field]) for field in ("name", "header", "footer", "disclaimer"))
+    for token in tokens:
+        if token.type in ("code_block", "fence"):
+            parts.append(token.content)
+        if token.meta.get("caption"):
+            parts.append(str(token.meta["caption"]))
+        for child in token.children or ():
+            if child.type in ("text", "code_inline", "image"):
+                parts.append(child.content)
+    return "\n".join(parts)
+
+
+def _warn_font_fallback(
+    role: str,
+    family: str,
+    charset: list[tuple[int, int]],
+    visible_text: str,
+    warnings: list[str],
+) -> None:
+    missing = sorted(
+        {
+            character
+            for character in visible_text
+            if not character.isspace()
+            and not any(start <= ord(character) <= end for start, end in charset)
+        },
+        key=ord,
+    )
+    if missing:
+        sample = ", ".join(f"{character} U+{ord(character):04X}" for character in missing[:8])
+        warnings.append(
+            f"font fallback ({role}_font {family}): missing {len(missing)} glyphs: {sample}"
+        )
+
+
+def _stylesheet(
+    brand: dict[str, object],
+    brand_root: Path,
+    visible_text: str,
+    warnings: list[str],
+) -> str:
     css_path = Path(__file__).resolve().parent.parent / "assets" / "report.css"
     try:
         css = css_path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as exc:
         raise BuildError(f"report.css: cannot read: {exc}") from exc
-    sans, sans_face = _font_css(str(brand["sans_font"]), brand_root, "sans")
-    serif, serif_face = _font_css(str(brand["serif_font"]), brand_root, "serif")
+    sans_family = str(brand["sans_font"])
+    serif_family = str(brand["serif_font"])
+    sans, sans_face, sans_charset = _font_css(sans_family, brand_root, "sans")
+    serif, serif_face, serif_charset = _font_css(serif_family, brand_root, "serif")
+    _warn_font_fallback("sans", sans_family, sans_charset, visible_text, warnings)
+    _warn_font_fallback("serif", serif_family, serif_charset, visible_text, warnings)
     replacements = {
         "__ACCENT_COLOR__": str(brand["accent_color"]),
         "__SANS_FONT__": sans,
@@ -874,9 +1010,10 @@ def build_report(report_path: Path, brand_path: Path, output_dir: Path) -> None:
     report_root = report_path.resolve().parent
     brand_root = brand_path.resolve().parent
     toc = _prepare_tokens(tokens, report_root, warnings)
+    visible_text = _visible_text(metadata, brand, tokens)
     rendered_body = _render_markdown(tokens, markdown)
     cover = _cover_html(metadata, brand, report_root, brand_root, warnings)
-    css = _stylesheet(brand, brand_root)
+    css = _stylesheet(brand, brand_root, visible_text, warnings)
     html_text = _html_document(metadata, brand, cover, toc, rendered_body, css)
 
     try:

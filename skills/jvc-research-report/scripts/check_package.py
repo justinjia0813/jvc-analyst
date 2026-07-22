@@ -270,7 +270,7 @@ def main() -> None:
             encoding="utf-8",
         )
         brand_path = root / "brand.yml"
-        brand_path.write_text(
+        valid_brand = (
             "name: lustinus RESEARCH\n"
             "logo: local.png\n"
             'accent_color: "#A06B2C"\n'
@@ -278,9 +278,9 @@ def main() -> None:
             'footer: "<Internal Research>"\n'
             "disclaimer: Internal research only. Verify sources before external distribution.\n"
             "sans_font: PingFang SC\n"
-            "serif_font: Songti SC\n",
-            encoding="utf-8",
+            "serif_font: Songti SC\n"
         )
+        brand_path.write_text(valid_brand, encoding="utf-8")
         rich_content = (
             "\n![本地图](local.png)\n\n"
             "*来源：本地测试来源*\n\n"
@@ -362,12 +362,121 @@ def main() -> None:
         assert rebuilt.returncode == 0, rebuilt.stderr
         assert (output / "user-notes.txt").read_text(encoding="utf-8") == "preserve me"
 
+        linked_source_report = document(
+            image=(
+                "\n![带链接来源的图片](local.png)\n\n"
+                "*来源：[本地测试来源](https://example.com/source)*"
+            )
+        )
+        report_path.write_text(linked_source_report, encoding="utf-8")
+        linked_source = run_builder(report_path, brand_path, output)
+        assert linked_source.returncode == 0, linked_source.stderr
+        linked_html = (output / "report.html").read_text(encoding="utf-8")
+        assert '<p class="source-line"><em>来源：<a href=' in linked_html
+        linked_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "image source line missing" not in linked_log
+
+        tail_image_report = document(
+            after_sources="## 未核实与待补证据\n\n![文末图片](vector.svg)"
+        )
+        report_path.write_text(tail_image_report, encoding="utf-8")
+        tail_image = run_builder(report_path, brand_path, output)
+        assert tail_image.returncode == 0, tail_image.stderr
+        tail_html = (output / "report.html").read_text(encoding="utf-8")
+        assert "<figure><img" in tail_html
+        assert "<figcaption>文末图片</figcaption></figure>" in tail_html
+
+        Image.new("RGB", (24, 12), "#2E6F62").save(
+            root / "renamed.bin", format="PNG"
+        )
+        brand_path.write_text(
+            valid_brand.replace("logo: local.png", "logo: null"),
+            encoding="utf-8",
+        )
+        renamed_report = document(image="\n![改名位图](renamed.bin)")
+        report_path.write_text(renamed_report, encoding="utf-8")
+        renamed_image = run_builder(report_path, brand_path, output)
+        assert renamed_image.returncode == 0, renamed_image.stderr
+        renamed_html = (output / "report.html").read_text(encoding="utf-8")
+        assert "data:image/png;base64," in renamed_html
+        renamed_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "low-resolution image (24px wide): renamed.bin" in renamed_log
+
+        bm_match = subprocess.run(
+            ("fc-match", "-f", "%{family}\n", "BM Jua"),
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.splitlines()[0]
+        fallback_family = (
+            "BM Jua"
+            if "bm jua" in {name.strip().casefold() for name in bm_match.split(",")}
+            else "Verdana"
+        )
+        fallback_brand = (
+            valid_brand.replace("logo: local.png", "logo: null")
+            .replace("sans_font: PingFang SC", f"sans_font: {fallback_family}")
+            .replace("serif_font: Songti SC", f"serif_font: {fallback_family}")
+        )
+        brand_path.write_text(fallback_brand, encoding="utf-8")
+        report_path.write_text(document(), encoding="utf-8")
+        fallback_build = run_builder(report_path, brand_path, output)
+        assert fallback_build.returncode == 0, fallback_build.stderr
+        fallback_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "font fallback" in fallback_log
+        assert fallback_family in fallback_log
+
         hashes = {
             name: hashlib.sha256((output / name).read_bytes()).hexdigest()
             for name in expected_outputs
         }
+        (root / "bogus.ttf").write_bytes(b"not a font")
+        brand_path.write_text(
+            valid_brand.replace("sans_font: PingFang SC", "sans_font: bogus.ttf"),
+            encoding="utf-8",
+        )
+        broken_font = run_builder(report_path, brand_path, output)
+        assert broken_font.returncode == 2
+        assert "invalid font file" in broken_font.stderr
+        assert "Traceback" not in broken_font.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        brand_path.write_text(valid_brand, encoding="utf-8")
+        (root / "bogus.svg").write_text("<svg>", encoding="utf-8")
         report_path.write_text(
-            valid_report.replace("date: 2026-07-22\n", "", 1),
+            document(image="\n![损坏矢量图](bogus.svg)"), encoding="utf-8"
+        )
+        broken_svg = run_builder(report_path, brand_path, output)
+        assert broken_svg.returncode == 2
+        assert "invalid SVG" in broken_svg.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        (root / "remote.svg").write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'xmlns:xlink="http://www.w3.org/1999/xlink">'
+            '<image xlink:href="https://example.com/remote.png"/>'
+            "</svg>",
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            document(image="\n![外链矢量图](remote.svg)"), encoding="utf-8"
+        )
+        remote_svg = run_builder(report_path, brand_path, output)
+        assert remote_svg.returncode == 2
+        assert "external SVG" in remote_svg.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        report_path.write_text(
+            renamed_report.replace("date: 2026-07-22\n", "", 1),
             encoding="utf-8",
         )
         failed = run_builder(report_path, brand_path, output)
@@ -378,7 +487,7 @@ def main() -> None:
             for name in expected_outputs
         } == hashes
 
-        report_path.write_text(valid_report, encoding="utf-8")
+        report_path.write_text(renamed_report, encoding="utf-8")
         brand_path.write_text(
             brand_path.read_text(encoding="utf-8").replace("#A06B2C", "copper"),
             encoding="utf-8",

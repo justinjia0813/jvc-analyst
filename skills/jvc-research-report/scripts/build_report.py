@@ -920,10 +920,8 @@ def _font_corpora(
                 continue
             visible = []
             for child in token.children or ():
-                if child.type == "text":
+                if child.type in ("text", "code_inline"):
                     visible.append(child.content)
-                elif child.type == "code_inline":
-                    serif.append(child.content)
                 elif child.type == "image" and child.meta.get("standalone"):
                     if child.meta.get("caption"):
                         sans.append(str(child.meta["caption"]))

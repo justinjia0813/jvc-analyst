@@ -322,6 +322,7 @@ def main() -> None:
         assert (output / "report.pdf").read_bytes().startswith(b"%PDF")
         html_text = (output / "report.html").read_text(encoding="utf-8")
         assert "lustinus RESEARCH" in html_text
+        assert "code { font-family: inherit; }" in html_text
         assert 'src="data:image/png;base64,' in html_text
         assert "local.png" not in html_text
         assert "vector.svg" not in html_text
@@ -498,6 +499,43 @@ def main() -> None:
             code_log = (output / "build-report.txt").read_text(encoding="utf-8")
             assert "font fallback (serif_font Verdana)" in code_log
             assert "U+AC00" in code_log
+
+            inline_role_brand = (
+                valid_brand.replace("logo: local.png", "logo: null")
+                .replace("sans_font: PingFang SC", "sans_font: Verdana")
+                .replace("serif_font: Songti SC", "serif_font: BM Jua")
+            )
+            brand_path.write_text(inline_role_brand, encoding="utf-8")
+            heading_code_report = document(
+                metadata="title: ASCII Report\ndate: 2026-07-22",
+                image="### Inline `‥`",
+            ).replace("正文引用 [S1]", "Body [S1]")
+            report_path.write_text(heading_code_report, encoding="utf-8")
+            heading_code_build = run_builder(report_path, brand_path, output)
+            assert heading_code_build.returncode == 0, heading_code_build.stderr
+            heading_code_log = (output / "build-report.txt").read_text(encoding="utf-8")
+            heading_sans_warning = next(
+                line
+                for line in heading_code_log.splitlines()
+                if "font fallback (sans_font Verdana)" in line
+            )
+            assert "U+2025" in heading_sans_warning
+
+            body_code_report = document(
+                metadata="title: ASCII Report\ndate: 2026-07-22",
+                image="Inline `‥`",
+            ).replace("正文引用 [S1]", "Body [S1]")
+            report_path.write_text(body_code_report, encoding="utf-8")
+            body_code_build = run_builder(report_path, brand_path, output)
+            assert body_code_build.returncode == 0, body_code_build.stderr
+            body_code_log = (output / "build-report.txt").read_text(encoding="utf-8")
+            body_sans_warning = next(
+                line
+                for line in body_code_log.splitlines()
+                if "font fallback (sans_font Verdana)" in line
+            )
+            assert "U+2025" not in body_sans_warning
+            assert "font fallback (serif_font BM Jua)" not in body_code_log
 
         fallback_brand = (
             valid_brand.replace("logo: local.png", "logo: null")

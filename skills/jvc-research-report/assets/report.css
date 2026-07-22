@@ -34,7 +34,8 @@ html {
 }
 
 body { counter-reset: figure table; margin: 0; }
-code, pre { font-family: __SERIF_FONT__, serif; }
+code { font-family: inherit; }
+pre { font-family: __SERIF_FONT__, serif; }
 
 .cover {
   page: cover;

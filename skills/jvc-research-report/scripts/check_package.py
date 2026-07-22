@@ -301,7 +301,12 @@ def main() -> None:
             "remote or absolute",
         )
         try:
-            local_path(report_path.parent, "%ZZ.png", "report.md image")
+            local_path(
+                report_path.parent,
+                "%ZZ.png",
+                "report.md image",
+                uri_encoded=True,
+            )
         except BuildError as exc:
             assert "invalid percent escape" in str(exc)
         else:
@@ -324,6 +329,9 @@ def main() -> None:
         Image.new("RGB", (32, 16), "#A06B2C").save(root / "local.png")
         Image.new("RGB", (32, 16), "#A06B2C").save(root / "中文图片.png")
         Image.new("RGB", (32, 16), "#A06B2C").save(root / "space image.png")
+        Image.new("RGB", (32, 16), "#A06B2C").save(root / "logo%mark.png")
+        Image.new("RGB", (32, 16), "#A06B2C").save(root / "cover%20image.png")
+        (root / "font%20file.ttf").write_bytes(b"raw path fixture")
         (root / "vector.svg").write_text(
             '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">'
             '<rect width="10" height="5" fill="#A06B2C"/></svg>',
@@ -340,6 +348,31 @@ def main() -> None:
             "sans_font: PingFang SC\n"
             "serif_font: Songti SC\n"
         )
+        raw_resource_brand = valid_brand.replace(
+            "logo: local.png", "logo: logo%mark.png"
+        )
+        brand_path.write_text(raw_resource_brand, encoding="utf-8")
+        raw_resource_report = document(
+            metadata=(
+                "title: Raw Resource Paths\n"
+                "date: 2026-07-22\n"
+                "cover_image: cover%20image.png"
+            )
+        )
+        report_path.write_text(raw_resource_report, encoding="utf-8")
+        raw_resource_output = root / "raw-resource-output"
+        raw_resource_build = run_builder(
+            report_path, brand_path, raw_resource_output
+        )
+        assert raw_resource_build.returncode == 0, raw_resource_build.stderr
+        raw_resource_html = (raw_resource_output / "report.html").read_text(
+            encoding="utf-8"
+        )
+        assert raw_resource_html.count('src="data:image/png;base64,') == 2
+        assert local_path(root, "font%20file.ttf", "brand.yml serif_font") == (
+            root / "font%20file.ttf"
+        ).resolve()
+
         brand_path.write_text(valid_brand, encoding="utf-8")
         encoded_names_report = document(
             image="![中文文件名](中文图片.png)\n\n![空格文件名](<space image.png>)"
@@ -354,6 +387,14 @@ def main() -> None:
             encoding="utf-8"
         )
         assert encoded_names_html.count('src="data:image/png;base64,') == 3
+
+        report_path.write_text(
+            document(image="![空字节路径](%00.png)"), encoding="utf-8"
+        )
+        nul_path_build = run_builder(report_path, brand_path, root / "nul-path-output")
+        assert nul_path_build.returncode == 2
+        assert "report.md image: invalid path: %00.png" in nul_path_build.stderr
+        assert "Traceback" not in nul_path_build.stderr
 
         rich_content = (
             "\n![本地图](local.png)\n\n"

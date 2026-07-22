@@ -285,28 +285,40 @@ def _validate_source_tokens(tokens: list[Token]) -> list[str]:
     ] if unused else []
 
 
-def local_path(base: Path, raw: str, label: str) -> Path:
-    if re.search(r"%(?![0-9A-Fa-f]{2})", raw):
-        raise BuildError(f"{label}: invalid percent escape: {raw}")
+def local_path(
+    base: Path, raw: str, label: str, *, uri_encoded: bool = False
+) -> Path:
     try:
-        decoded = unquote(raw, errors="strict")
-        parsed = urlparse(decoded)
-    except (UnicodeError, ValueError) as exc:
+        if uri_encoded and re.search(r"%(?![0-9A-Fa-f]{2})", raw):
+            raise BuildError(f"{label}: invalid percent escape: {raw}")
+        value = unquote(raw, errors="strict") if uri_encoded else raw
+        parsed = urlparse(value)
+        candidate = Path(value)
+        is_absolute = candidate.is_absolute()
+    except (UnicodeError, ValueError, OSError) as exc:
         raise BuildError(f"{label}: invalid path: {raw}") from exc
     if (
-        not decoded
+        not value
         or parsed.scheme
         or parsed.netloc
-        or decoded.startswith(("//", "\\\\"))
-        or Path(decoded).is_absolute()
+        or value.startswith(("//", "\\\\"))
+        or is_absolute
     ):
         raise BuildError(f"{label}: remote or absolute path is not allowed: {raw}")
-    path = (base / decoded).resolve()
     try:
-        path.relative_to(base.resolve())
+        root = base.resolve()
+        path = (base / candidate).resolve()
+    except (ValueError, OSError) as exc:
+        raise BuildError(f"{label}: invalid path: {raw}") from exc
+    try:
+        path.relative_to(root)
     except ValueError as exc:
         raise BuildError(f"{label}: path escapes the report directory: {raw}") from exc
-    if not path.is_file():
+    try:
+        is_file = path.is_file()
+    except (ValueError, OSError) as exc:
+        raise BuildError(f"{label}: invalid path: {raw}") from exc
+    if not is_file:
         raise BuildError(f"{label}: missing file: {raw}")
     return path
 
@@ -340,7 +352,7 @@ def _validate_parsed(
             raise BuildError("report.md cover_image: path must be a string")
         local_path(report_root, cover_image, "report.md cover_image")
     for source in _image_sources(tokens):
-        local_path(report_root, source, "report.md image")
+        local_path(report_root, source, "report.md image", uri_encoded=True)
     return warnings
 
 
@@ -706,7 +718,9 @@ def _prepare_tokens(
             if child.type != "image":
                 continue
             source = child.attrGet("src") or ""
-            path = local_path(report_root, source, "report.md image")
+            path = local_path(
+                report_root, source, "report.md image", uri_encoded=True
+            )
             child.attrSet("src", _image_uri(path, "report.md image", warnings))
             caption = child.content.strip()
             child.meta["caption"] = caption

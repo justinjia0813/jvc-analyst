@@ -220,7 +220,8 @@ python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/validate_skill.py
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/resource_boundary_check.py skills/jvc-research-report --max-initial-tokens 1000
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/trigger_eval.py \
   --description-file skills/jvc-research-report/SKILL.md \
-  --cases skills/jvc-research-report/evals/trigger_cases.json
+  --cases skills/jvc-research-report/evals/trigger_cases.json \
+  --semantic-config skills/jvc-research-report/evals/semantic_config.json
 ```
 
 Expected: all exit `0`; initial-load tokens are at or below `1000`.
@@ -708,7 +709,8 @@ python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/validate_skill.py
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/resource_boundary_check.py skills/jvc-research-report --max-initial-tokens 1000
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/trigger_eval.py \
   --description-file skills/jvc-research-report/SKILL.md \
-  --cases skills/jvc-research-report/evals/trigger_cases.json
+  --cases skills/jvc-research-report/evals/trigger_cases.json \
+  --semantic-config skills/jvc-research-report/evals/semantic_config.json
 python3 skills/jvc-research-report/scripts/check_package.py
 ```
 

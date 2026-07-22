@@ -49,17 +49,12 @@
     "content_rewriting": {
       "weight": 0.9,
       "exclusive": true,
-      "phrases": ["重写", "联网补充"]
+      "phrases": ["帮我重写", "请重写正文", "联网补充"]
     },
     "ic_memo": {
       "weight": 0.9,
       "exclusive": true,
       "phrases": ["尽调材料", "投委会备忘录"]
-    },
-    "layout_only": {
-      "weight": 0.9,
-      "exclusive": true,
-      "phrases": ["只需要固定版式和分页"]
     }
   }
 }

@@ -13,6 +13,10 @@
     {
       "text": "按 brand.yml 重新生成本地研报，保留上一版直到新版本成功。",
       "family": "branded_rebuild"
+    },
+    {
+      "text": "不要重写这份固定章节的研报，只输出 PDF 和 HTML 预览。",
+      "family": "render_without_rewriting"
     }
   ],
   "should_not_trigger": [

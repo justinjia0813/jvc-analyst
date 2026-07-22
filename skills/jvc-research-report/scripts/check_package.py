@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+import hashlib
+import subprocess
+import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from build_report import BuildError, validate_report
+from build_report import (
+    BuildError,
+    build_log as format_build_log,
+    publish_staged,
+    validate_report,
+)
 
 
 SECTIONS = (
@@ -58,6 +66,23 @@ def expect_error(label: str, text: str, report_path: Path, expected: str) -> Non
         assert expected in str(exc), f"{label}: unexpected error: {exc}"
     else:
         raise AssertionError(f"{label}: expected BuildError")
+
+
+def run_builder(report_path: Path, brand_path: Path, output: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        (
+            sys.executable,
+            str(Path(__file__).with_name("build_report.py")),
+            str(report_path),
+            "--brand",
+            str(brand_path),
+            "--output",
+            str(output),
+        ),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
 
 
 def main() -> None:
@@ -236,7 +261,164 @@ def main() -> None:
             "report.md cover_image: invalid path",
         )
 
-    print("PASS: fixed research report input validation")
+        from PIL import Image
+
+        Image.new("RGB", (32, 16), "#A06B2C").save(root / "local.png")
+        (root / "vector.svg").write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">'
+            '<rect width="10" height="5" fill="#A06B2C"/></svg>',
+            encoding="utf-8",
+        )
+        brand_path = root / "brand.yml"
+        brand_path.write_text(
+            "name: lustinus RESEARCH\n"
+            "logo: local.png\n"
+            'accent_color: "#A06B2C"\n'
+            "header: lustinus RESEARCH\n"
+            'footer: "<Internal Research>"\n'
+            "disclaimer: Internal research only. Verify sources before external distribution.\n"
+            "sans_font: PingFang SC\n"
+            "serif_font: Songti SC\n",
+            encoding="utf-8",
+        )
+        rich_content = (
+            "\n![本地图](local.png)\n\n"
+            "*来源：本地测试来源*\n\n"
+            "> [!FACT]\n"
+            "> 已验证事实 [S1]\n\n"
+            "> [!INFERENCE]\n"
+            "> 测试推断\n\n"
+            "> [!OPEN QUESTION]\n"
+            "> 待验证问题\n\n"
+            "> [!FACT] 不是合法标记\n\n"
+            "![](local.png)\n\n"
+            "![矢量图](vector.svg)\n\n"
+            "表：测试表\n\n"
+            "| A | B | C | D | E | F | G |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n\n"
+            "*来源：本地测试来源*"
+        )
+        valid_report = document(
+            metadata=(
+                "title: 本地渲染测试\n"
+                'subtitle: "自包含 <HTML> 与 PDF"\n'
+                "date: 2026-07-22\n"
+                "authors: [测试作者]\n"
+                "sector: 测试行业\n"
+                "region: 中国\n"
+                "classification: Internal\n"
+                "cover_image: local.png"
+            ),
+            image=rich_content,
+        )
+        report_path.write_text(valid_report, encoding="utf-8")
+        output = root / "output"
+        built = run_builder(report_path, brand_path, output)
+        assert built.returncode == 0, built.stderr
+
+        expected_outputs = {"report.pdf", "report.html", "build-report.txt"}
+        assert {path.name for path in output.iterdir()} == expected_outputs
+        assert (output / "report.pdf").read_bytes().startswith(b"%PDF")
+        html_text = (output / "report.html").read_text(encoding="utf-8")
+        assert "lustinus RESEARCH" in html_text
+        assert 'src="data:image/png;base64,' in html_text
+        assert "local.png" not in html_text
+        assert "vector.svg" not in html_text
+        assert "data:image/svg+xml;base64," in html_text
+        assert 'class="cover-logo"' in html_text
+        assert 'class="cover-image"' in html_text
+        assert "&lt;HTML&gt;" in html_text
+        assert "&lt;Internal Research&gt;" in html_text
+        assert '<figcaption>本地图</figcaption>' in html_text
+        assert 'class="callout callout-fact"' in html_text
+        assert 'class="callout callout-inference"' in html_text
+        assert 'class="callout callout-open-question"' in html_text
+        assert "[!INFERENCE]" not in html_text
+        assert "[!OPEN QUESTION]" not in html_text
+        assert "<blockquote>\n<p>[!FACT] 不是合法标记</p>" in html_text
+        assert "<caption>表：测试表</caption>" in html_text
+        assert 'class="source-line"' in html_text
+        assert 'id="section-11"' in html_text
+        assert 'href="#section-11"' in html_text
+        build_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        for check in ("structure", "source", "render", "bookmark"):
+            assert f"{check}: pass" in build_log
+        for warning in (
+            "optional metadata missing: disclaimer",
+            "low-resolution image",
+            "image caption missing",
+            "table caption missing",
+            "table has 7 columns",
+            "image source line missing",
+            "table source line missing",
+        ):
+            assert warning in build_log
+        assert "low-resolution image" in build_log
+        assert "low-resolution image (10px wide): vector.svg" not in build_log
+
+        (output / "user-notes.txt").write_text("preserve me", encoding="utf-8")
+        rebuilt = run_builder(report_path, brand_path, output)
+        assert rebuilt.returncode == 0, rebuilt.stderr
+        assert (output / "user-notes.txt").read_text(encoding="utf-8") == "preserve me"
+
+        hashes = {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        }
+        report_path.write_text(
+            valid_report.replace("date: 2026-07-22\n", "", 1),
+            encoding="utf-8",
+        )
+        failed = run_builder(report_path, brand_path, output)
+        assert failed.returncode == 2
+        assert "build failed: report.md: missing required metadata: date" in failed.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        report_path.write_text(valid_report, encoding="utf-8")
+        brand_path.write_text(
+            brand_path.read_text(encoding="utf-8").replace("#A06B2C", "copper"),
+            encoding="utf-8",
+        )
+        invalid_brand = run_builder(report_path, brand_path, output)
+        assert invalid_brand.returncode == 2
+        assert invalid_brand.stderr.startswith(
+            "build failed: brand.yml: accent_color"
+        )
+        assert "Traceback" not in invalid_brand.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        assert "warnings: none" in format_build_log(report_path, 1, [])
+        transaction_output = root / "transaction-output"
+        transaction_staging = root / "transaction-staging"
+        transaction_output.mkdir()
+        transaction_staging.mkdir()
+        for name in expected_outputs:
+            (transaction_output / name).write_bytes(f"old:{name}".encode())
+        for name in ("report.pdf", "report.html"):
+            (transaction_staging / name).write_bytes(f"new:{name}".encode())
+        transaction_hashes = {
+            name: hashlib.sha256((transaction_output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        }
+        try:
+            publish_staged(transaction_staging, transaction_output)
+        except BuildError as exc:
+            assert "staged output missing: build-report.txt" in str(exc)
+        else:
+            raise AssertionError("publish_staged accepted an incomplete staged set")
+        assert {
+            name: hashlib.sha256((transaction_output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == transaction_hashes
+
+    print("PASS: fixed research report validation and rendering")
 
 
 if __name__ == "__main__":

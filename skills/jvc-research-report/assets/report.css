@@ -1,0 +1,104 @@
+__FONT_FACES__
+
+@page {
+  size: A4;
+  margin: 20mm 16mm 18mm;
+  @top-left { content: "lustinus RESEARCH"; color: __ACCENT_COLOR__; font-size: 8pt; }
+  @top-right { content: string(report-title); color: #667085; font-size: 8pt; }
+  @bottom-left { content: string(classification); color: #667085; font-size: 8pt; }
+  @bottom-right { content: counter(page) " / " counter(pages); color: #667085; font-size: 8pt; }
+}
+
+@page cover {
+  size: A4;
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+:root {
+  --ink: #20252B;
+  --copper: __ACCENT_COLOR__;
+  --fact: #2E6F62;
+  --risk: #A33A32;
+}
+
+html {
+  color: var(--ink);
+  font-family: __SERIF_FONT__, serif;
+  font-size: 10pt;
+  line-height: 1.55;
+}
+
+body { counter-reset: figure table; margin: 0; }
+
+.cover {
+  page: cover;
+  height: 297mm;
+  padding: 28mm 24mm;
+  box-sizing: border-box;
+  border-top: 9mm solid var(--ink);
+  font-family: __SANS_FONT__, sans-serif;
+  position: relative;
+}
+
+.brand-name { color: var(--copper); font-size: 11pt; font-weight: 700; letter-spacing: 0.08em; }
+.cover-logo { display: block; max-height: 16mm; max-width: 55mm; margin-top: 10mm; }
+.cover-image { position: absolute; inset: 0 0 auto auto; width: 82mm; height: 95mm; object-fit: cover; opacity: 0.16; }
+.cover h1 { string-set: report-title content(); font-size: 28pt; line-height: 1.2; margin: 42mm 0 5mm; max-width: 150mm; }
+.subtitle { color: #475467; font-size: 14pt; margin: 0 0 6mm; max-width: 145mm; }
+.report-date { color: var(--copper); font-size: 11pt; }
+.cover-details { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 9mm; margin-top: 16mm; max-width: 130mm; }
+.cover-detail span { color: #667085; display: block; font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase; }
+.classification { string-set: classification content(); color: var(--risk); font-size: 9pt; font-weight: 700; margin-top: 12mm; }
+.disclaimer { bottom: 24mm; color: #667085; font-size: 7.5pt; left: 24mm; margin: 0; max-width: 125mm; position: absolute; }
+.brand-footer { bottom: 12mm; color: var(--copper); font-size: 7.5pt; left: 24mm; margin: 0; position: absolute; }
+
+.toc {
+  break-after: page;
+  font-family: __SANS_FONT__, sans-serif;
+}
+
+.toc-title { border-bottom: 3px solid var(--copper); font-size: 22pt; font-weight: 700; margin-bottom: 12mm; padding-bottom: 5mm; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { border-bottom: 0.3pt solid #E4E7EC; padding: 2.2mm 0; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a::after { content: leader(".") target-counter(attr(href), page); color: #667085; }
+
+.report-body > h1:first-child { display: none; }
+h2, h3 { font-family: __SANS_FONT__, sans-serif; }
+h2 { break-before: page; border-top: 3px solid var(--copper); font-size: 18pt; padding-top: 8mm; }
+h3 { break-after: avoid; color: #344054; font-size: 12pt; }
+p, li { orphans: 3; widows: 3; }
+a { color: #70512C; }
+
+table {
+  border-collapse: collapse;
+  counter-increment: table;
+  font-family: __SANS_FONT__, sans-serif;
+  font-size: 8pt;
+  table-layout: fixed;
+  width: 100%;
+}
+
+caption { color: #475467; font-weight: 700; padding: 0 0 2mm; text-align: left; }
+caption::before { content: "表 " counter(table) " · "; color: var(--copper); }
+thead { display: table-header-group; }
+tr, figure, blockquote { break-inside: avoid; }
+th, td { border: 0.3pt solid #CBD1D8; overflow-wrap: anywhere; padding: 2mm; vertical-align: top; }
+th { background: #F2F4F7; color: #344054; }
+
+figure { counter-increment: figure; margin: 7mm 0; }
+figure img { display: block; margin: 0 auto 2mm; max-height: 175mm; max-width: 100%; }
+figcaption { color: #475467; font-family: __SANS_FONT__, sans-serif; font-size: 8pt; text-align: center; }
+figcaption::before { content: "图 " counter(figure) " · "; color: var(--copper); }
+.source-line { color: #667085; font-size: 7.5pt; }
+
+.callout { background: #F7F3ED; border-left: 3px solid var(--copper); padding: 3mm 4mm; }
+.callout-fact { background: #F0F7F5; border-color: var(--fact); }
+.callout-inference { background: #F7F3ED; border-color: var(--copper); }
+.callout-open-question { background: #FBF1F0; border-color: var(--risk); }
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }

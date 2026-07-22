@@ -533,16 +533,35 @@ def _image_uri(path: Path, label: str, warnings: list[str]) -> str:
     if root.tag.rsplit("}", 1)[-1].casefold() != "svg":
         raise BuildError(f"{label}: invalid SVG root: {path.name}")
 
-    blocked = re.compile(r"(?:https?|file)\s*:|(?<!:)//|@import", re.IGNORECASE)
+    css_url = re.compile(
+        r"url\(\s*(?:(['\"])(.*?)\1|([^)]*))\s*\)",
+        re.IGNORECASE | re.DOTALL,
+    )
+
+    def allowed_location(value: str) -> bool:
+        value = value.strip()
+        return value.startswith("#") or value.casefold().startswith("data:")
+
+    def validate_css(value: str, *, check_import: bool = False) -> None:
+        if check_import and re.search(r"@import\b", value, flags=re.IGNORECASE):
+            raise BuildError(f"{label}: external SVG @import is not allowed: {path.name}")
+        for match in css_url.finditer(value):
+            location = (match.group(2) or match.group(3) or "").strip().strip("'\"")
+            if not allowed_location(location):
+                raise BuildError(
+                    f"{label}: external SVG CSS URL is not allowed: {path.name}"
+                )
+
     for element in root.iter():
-        for value in (element.text, element.tail, *element.attrib.values()):
-            if value and blocked.search(value):
-                raise BuildError(f"{label}: external SVG reference is not allowed: {path.name}")
         for attribute, value in element.attrib.items():
-            if attribute.rsplit("}", 1)[-1].casefold() == "href" and not value.startswith(
-                ("#", "data:")
-            ):
-                raise BuildError(f"{label}: external SVG href is not allowed: {path.name}")
+            local_name = attribute.rsplit("}", 1)[-1].casefold()
+            if local_name in ("href", "src") and not allowed_location(value):
+                raise BuildError(
+                    f"{label}: external SVG {local_name} is not allowed: {path.name}"
+                )
+            validate_css(value, check_import=local_name == "style")
+        if element.tag.rsplit("}", 1)[-1].casefold() == "style":
+            validate_css("".join(element.itertext()), check_import=True)
     return data_uri(path, "image/svg+xml")
 
 
@@ -812,26 +831,61 @@ def _cover_html(
     )
 
 
-def _visible_text(
+def _font_corpora(
     metadata: dict[str, object], brand: dict[str, object], tokens: list[Token]
-) -> str:
-    parts = []
-    for field, value in metadata.items():
-        if field != "cover_image" and not _missing(value):
+) -> tuple[str, str]:
+    sans = [
+        "目录",
+        "表",
+        "图",
+        "0123456789 /",
+        str(brand["name"]),
+        str(brand["footer"]),
+    ]
+    for field in (
+        "title",
+        "subtitle",
+        "date",
+        "authors",
+        "sector",
+        "region",
+        "classification",
+    ):
+        value = metadata.get(field)
+        if not _missing(value):
             if isinstance(value, list):
-                parts.extend(str(item) for item in value)
+                sans.extend(str(item) for item in value)
             else:
-                parts.append(str(value))
-    parts.extend(str(brand[field]) for field in ("name", "header", "footer", "disclaimer"))
+                sans.append(str(value))
+    sans.append(str(metadata.get("disclaimer") or brand["disclaimer"]))
+    for field, label in (("authors", "Authors"), ("sector", "Sector"), ("region", "Region")):
+        if not _missing(metadata.get(field)):
+            sans.append(label)
+
+    serif = []
+    sans_inline = False
+    in_table = False
     for token in tokens:
-        if token.type in ("code_block", "fence"):
-            parts.append(token.content)
+        if token.type == "heading_open" and token.tag in ("h2", "h3"):
+            sans_inline = True
+        elif token.type == "table_open":
+            in_table = True
         if token.meta.get("caption"):
-            parts.append(str(token.meta["caption"]))
-        for child in token.children or ():
-            if child.type in ("text", "code_inline", "image"):
-                parts.append(child.content)
-    return "\n".join(parts)
+            sans.append(str(token.meta["caption"]))
+        if token.type == "inline":
+            visible = []
+            for child in token.children or ():
+                if child.type == "text":
+                    visible.append(child.content)
+                elif child.type == "image" and child.meta.get("standalone"):
+                    if child.meta.get("caption"):
+                        sans.append(str(child.meta["caption"]))
+            (sans if sans_inline or in_table else serif).extend(visible)
+        if token.type == "heading_close" and token.tag in ("h2", "h3"):
+            sans_inline = False
+        elif token.type == "table_close":
+            in_table = False
+    return "\n".join(sans), "\n".join(serif)
 
 
 def _warn_font_fallback(
@@ -860,7 +914,7 @@ def _warn_font_fallback(
 def _stylesheet(
     brand: dict[str, object],
     brand_root: Path,
-    visible_text: str,
+    corpora: tuple[str, str],
     warnings: list[str],
 ) -> str:
     css_path = Path(__file__).resolve().parent.parent / "assets" / "report.css"
@@ -872,8 +926,8 @@ def _stylesheet(
     serif_family = str(brand["serif_font"])
     sans, sans_face, sans_charset = _font_css(sans_family, brand_root, "sans")
     serif, serif_face, serif_charset = _font_css(serif_family, brand_root, "serif")
-    _warn_font_fallback("sans", sans_family, sans_charset, visible_text, warnings)
-    _warn_font_fallback("serif", serif_family, serif_charset, visible_text, warnings)
+    _warn_font_fallback("sans", sans_family, sans_charset, corpora[0], warnings)
+    _warn_font_fallback("serif", serif_family, serif_charset, corpora[1], warnings)
     replacements = {
         "__ACCENT_COLOR__": str(brand["accent_color"]),
         "__SANS_FONT__": sans,
@@ -1010,10 +1064,10 @@ def build_report(report_path: Path, brand_path: Path, output_dir: Path) -> None:
     report_root = report_path.resolve().parent
     brand_root = brand_path.resolve().parent
     toc = _prepare_tokens(tokens, report_root, warnings)
-    visible_text = _visible_text(metadata, brand, tokens)
+    corpora = _font_corpora(metadata, brand, tokens)
     rendered_body = _render_markdown(tokens, markdown)
     cover = _cover_html(metadata, brand, report_root, brand_root, warnings)
-    css = _stylesheet(brand, brand_root, visible_text, warnings)
+    css = _stylesheet(brand, brand_root, corpora, warnings)
     html_text = _html_document(metadata, brand, cover, toc, rendered_body, css)
 
     try:

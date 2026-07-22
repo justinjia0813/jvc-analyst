@@ -402,6 +402,35 @@ def main() -> None:
         renamed_log = (output / "build-report.txt").read_text(encoding="utf-8")
         assert "low-resolution image (24px wide): renamed.bin" in renamed_log
 
+        (root / "safe-locations.svg").write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            "<text>https://example.com/display-only</text>"
+            '<a href="data:text/plain;base64,//8=">'
+            "<text>safe data link</text>"
+            "</a></svg>",
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            document(image="\n![安全矢量图](safe-locations.svg)"), encoding="utf-8"
+        )
+        safe_svg = run_builder(report_path, brand_path, output)
+        assert safe_svg.returncode == 0, safe_svg.stderr
+
+        report_path.write_text(
+            document(
+                metadata=(
+                    "title: 测试报告\n"
+                    "date: 2026-07-22\n"
+                    "unused_private_note: 𐀀"
+                )
+            ),
+            encoding="utf-8",
+        )
+        unknown_metadata = run_builder(report_path, brand_path, output)
+        assert unknown_metadata.returncode == 0, unknown_metadata.stderr
+        unknown_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        assert "U+10000" not in unknown_log
+
         bm_match = subprocess.run(
             ("fc-match", "-f", "%{family}\n", "BM Jua"),
             text=True,
@@ -413,6 +442,27 @@ def main() -> None:
             if "bm jua" in {name.strip().casefold() for name in bm_match.split(",")}
             else "Verdana"
         )
+        if fallback_family == "BM Jua":
+            role_brand = (
+                valid_brand.replace("logo: local.png", "logo: null")
+                .replace("sans_font: PingFang SC", "sans_font: BM Jua")
+                .replace("serif_font: Songti SC", "serif_font: Verdana")
+            )
+            role_report = document(
+                metadata=(
+                    "title: ASCII Report\n"
+                    "subtitle: 가\n"
+                    "date: 2026-07-22"
+                )
+            ).replace("正文引用 [S1]", "Body [S1]")
+            brand_path.write_text(role_brand, encoding="utf-8")
+            report_path.write_text(role_report, encoding="utf-8")
+            role_build = run_builder(report_path, brand_path, output)
+            assert role_build.returncode == 0, role_build.stderr
+            role_log = (output / "build-report.txt").read_text(encoding="utf-8")
+            assert "font fallback (sans_font BM Jua)" in role_log
+            assert "font fallback (serif_font Verdana)" not in role_log
+
         fallback_brand = (
             valid_brand.replace("logo: local.png", "logo: null")
             .replace("sans_font: PingFang SC", f"sans_font: {fallback_family}")
@@ -470,6 +520,41 @@ def main() -> None:
         remote_svg = run_builder(report_path, brand_path, output)
         assert remote_svg.returncode == 2
         assert "external SVG" in remote_svg.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        (root / "ftp-css.svg").write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            "<style>.remote { fill: url(ftp://example.com/color.svg#paint); }</style>"
+            '<rect class="remote" width="10" height="10"/>'
+            "</svg>",
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            document(image="\n![FTP 样式](ftp-css.svg)"), encoding="utf-8"
+        )
+        ftp_css = run_builder(report_path, brand_path, output)
+        assert ftp_css.returncode == 2
+        assert "external SVG CSS URL" in ftp_css.stderr
+        assert {
+            name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+            for name in expected_outputs
+        } == hashes
+
+        (root / "relative-css.svg").write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            '<rect style="fill: url(../outside.svg#paint)" width="10" height="10"/>'
+            "</svg>",
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            document(image="\n![相对样式](relative-css.svg)"), encoding="utf-8"
+        )
+        relative_css = run_builder(report_path, brand_path, output)
+        assert relative_css.returncode == 2
+        assert "external SVG CSS URL" in relative_css.stderr
         assert {
             name: hashlib.sha256((output / name).read_bytes()).hexdigest()
             for name in expected_outputs

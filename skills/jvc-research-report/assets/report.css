@@ -3,6 +3,7 @@ __FONT_FACES__
 @page {
   size: A4;
   margin: 20mm 16mm 18mm;
+  font-family: __SANS_FONT__, sans-serif;
   @top-left { content: "lustinus RESEARCH"; color: __ACCENT_COLOR__; font-size: 8pt; }
   @top-right { content: string(report-title); color: #667085; font-size: 8pt; }
   @bottom-left { content: string(classification); color: #667085; font-size: 8pt; }

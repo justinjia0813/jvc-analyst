@@ -17,6 +17,10 @@
     {
       "text": "不要重写这份固定章节的研报，只输出 PDF 和 HTML 预览。",
       "family": "render_without_rewriting"
+    },
+    {
+      "text": "Do not rewrite this completed fixed-structure report; only render a printable report and browser preview.",
+      "family": "preserve_content_english"
     }
   ],
   "should_not_trigger": [
@@ -35,6 +39,10 @@
     {
       "text": "重写这份固定章节的研报，并输出 PDF 和 HTML 预览。",
       "family": "content_rewriting_without_web"
+    },
+    {
+      "text": "Rewrite this fixed-structure report and render it as a printable report.",
+      "family": "content_rewriting_english"
     }
   ],
   "near_neighbor": [

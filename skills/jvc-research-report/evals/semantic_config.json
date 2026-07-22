@@ -38,7 +38,10 @@
       "weight": 0.5,
       "phrases": [
         "without rewriting content",
-        "content rewriting",
+        "Do not use for content rewriting",
+        "do not use for first-pass research content rewriting",
+        "do not rewrite",
+        "without rewriting",
         "不要重写",
         "不要改正文",
         "不改正文"
@@ -59,7 +62,7 @@
     "content_rewriting": {
       "weight": 0.4,
       "exclusive": true,
-      "phrases": ["重写", "联网补充"]
+      "phrases": ["重写", "联网补充", "rewrite", "content rewriting"]
     },
     "ic_memo": {
       "weight": 0.9,

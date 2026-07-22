@@ -1,6 +1,6 @@
 ---
 name: jvc-research-report
-description: Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion.
+description: Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview without rewriting the research content. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion.
 metadata:
   author: jvc-analyst
 ---

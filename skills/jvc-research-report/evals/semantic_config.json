@@ -37,9 +37,8 @@
     "preserve_content": {
       "weight": 0.5,
       "phrases": [
+        "without rewriting the research content",
         "without rewriting content",
-        "Do not use for content rewriting",
-        "do not use for first-pass research content rewriting",
         "do not rewrite",
         "without rewriting",
         "不要重写",

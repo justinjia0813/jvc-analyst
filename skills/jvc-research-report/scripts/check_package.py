@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -92,7 +93,53 @@ def run_builder(report_path: Path, brand_path: Path, output: Path) -> subprocess
     )
 
 
+def check_tracked_fixture() -> None:
+    repository = Path(__file__).resolve().parents[3]
+    fixture = repository / "examples" / "research-report-example" / "report.md"
+    brand = Path(__file__).resolve().parent.parent / "assets" / "brand.yml"
+    assert fixture.is_file(), f"tracked fixture missing: {fixture}"
+    pdftotext = shutil.which("pdftotext")
+    assert pdftotext, "pdftotext is required for tracked fixture PDF checks"
+
+    with TemporaryDirectory() as temporary_directory:
+        output = Path(temporary_directory) / "output"
+        built = run_builder(fixture, brand, output)
+        assert built.returncode == 0, built.stderr
+        expected_outputs = {"report.pdf", "report.html", "build-report.txt"}
+        assert {path.name for path in output.iterdir()} == expected_outputs
+
+        pdf = output / "report.pdf"
+        assert pdf.read_bytes().startswith(b"%PDF")
+        extracted = subprocess.run(
+            (pdftotext, str(pdf), "-"),
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert extracted.returncode == 0, extracted.stderr
+        assert "工业视觉质检" in extracted.stdout
+        for heading in (
+            "研究设定与一页快照",
+            "技术路线与商业可行性",
+            "后续工作交接包",
+            "来源索引",
+        ):
+            assert heading in extracted.stdout
+
+        html_text = (output / "report.html").read_text(encoding="utf-8")
+        assert "lustinus RESEARCH" in html_text
+        assert "callout-fact" in html_text
+        assert "technology-routes.svg" not in html_text
+        assert "data:image/svg+xml;base64," in html_text
+        assert str(fixture.parent.resolve()) not in html_text
+
+        build_log = (output / "build-report.txt").read_text(encoding="utf-8")
+        for check in ("structure", "source", "render", "bookmark"):
+            assert f"{check}: pass" in build_log
+
+
 def main() -> None:
+    check_tracked_fixture()
     with TemporaryDirectory() as temporary_directory:
         root = Path(temporary_directory)
         report_path = root / "report.md"

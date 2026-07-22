@@ -75,7 +75,7 @@ Create `SKILL.md` with this exact behavior:
 ```markdown
 ---
 name: jvc-research-report
-description: Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion.
+description: Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview without rewriting the research content. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion.
 metadata:
   author: jvc-analyst
 ---
@@ -219,7 +219,7 @@ Create `evals/trigger_cases.json` with `recommended_threshold: 0.33`, `negative_
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/validate_skill.py skills/jvc-research-report
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/resource_boundary_check.py skills/jvc-research-report --max-initial-tokens 1000
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/trigger_eval.py \
-  --description "Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion." \
+  --description-file skills/jvc-research-report/SKILL.md \
   --cases skills/jvc-research-report/evals/trigger_cases.json
 ```
 
@@ -707,7 +707,7 @@ git commit -m "Govern research report skill"
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/validate_skill.py skills/jvc-research-report
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/resource_boundary_check.py skills/jvc-research-report --max-initial-tokens 1000
 python3 /Users/justinjia/.agents/skills/yao-meta-skill/scripts/trigger_eval.py \
-  --description "Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion." \
+  --description-file skills/jvc-research-report/SKILL.md \
   --cases skills/jvc-research-report/evals/trigger_cases.json
 python3 skills/jvc-research-report/scripts/check_package.py
 ```

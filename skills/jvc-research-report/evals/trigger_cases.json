@@ -1,0 +1,46 @@
+{
+  "recommended_threshold": 0.33,
+  "negative_patterns": ["从零研究", "任意结构", "重写", "联网补充"],
+  "should_trigger": [
+    {
+      "text": "把这份固定章节和来源索引的行业研究 Markdown 编译成 lustinus RESEARCH 报告，不要改正文。",
+      "family": "fixed_report_render"
+    },
+    {
+      "text": "将已经完成的 jvc-track-research 文档校验后输出 PDF、HTML 预览和构建报告。",
+      "family": "track_output_render"
+    },
+    {
+      "text": "按 brand.yml 重新生成本地研报，保留上一版直到新版本成功。",
+      "family": "branded_rebuild"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "帮我从零研究玻璃基板赛道并补齐资料。",
+      "family": "first_pass_research"
+    },
+    {
+      "text": "把这篇任意结构的 Markdown 快速转成 PDF。",
+      "family": "arbitrary_markdown"
+    },
+    {
+      "text": "重写这份研报并联网补充更多事实。",
+      "family": "content_rewriting"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "先研究赛道，再决定是否需要正式报告。",
+      "family": "track_research_first"
+    },
+    {
+      "text": "把公司尽调材料合成为投委会备忘录。",
+      "family": "ic_memo"
+    },
+    {
+      "text": "已有完整行业研究，只需要固定版式和分页。",
+      "family": "render_only"
+    }
+  ]
+}

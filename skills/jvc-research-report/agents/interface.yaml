@@ -1,0 +1,21 @@
+interface:
+  display_name: "JVC Research Report"
+  short_description: "Render fixed-format industry research as lustinus RESEARCH PDF and HTML."
+  default_prompt: "Use /jvc-research-report to validate this fixed-format local industry-research Markdown and generate report.pdf, report.html, and build-report.txt without rewriting content."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets: ["codex", "claude", "generic"]
+  activation:
+    mode: "manual"
+    paths: ["skills/jvc-research-report/SKILL.md"]
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source"

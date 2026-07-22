@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -26,6 +27,7 @@ OPTIONAL_FIELDS = (
     "cover_image",
     "disclaimer",
 )
+TEXT_FIELDS = ("subtitle", "sector", "region", "classification", "disclaimer")
 SECTION_ALIASES = (
     ("研究设定与一页快照",),
     ("行业定义与边界",),
@@ -39,23 +41,30 @@ SECTION_ALIASES = (
     ("后续工作交接包",),
     ("来源索引",),
 )
+OPTIONAL_SECTIONS = ("缩写说明", "未核实与待补证据")
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, object], str]:
-    if not text.startswith("---\n"):
+    if text.startswith("---\n"):
+        newline = "\n"
+    elif text.startswith("---\r\n"):
+        newline = "\r\n"
+    else:
         raise BuildError("report.md: missing YAML frontmatter")
-    marker = text.find("\n---\n", 4)
+    opening = f"---{newline}"
+    closing = f"{newline}---{newline}"
+    marker = text.find(closing, len(opening))
     if marker < 0:
         raise BuildError("report.md: YAML frontmatter is not closed")
     try:
-        metadata = yaml.safe_load(text[4:marker])
+        metadata = yaml.safe_load(text[len(opening) : marker])
     except yaml.YAMLError as exc:
         raise BuildError(f"report.md: invalid YAML: {exc}") from exc
     if metadata is None:
         metadata = {}
     if not isinstance(metadata, dict):
         raise BuildError("report.md: frontmatter must be a mapping")
-    return metadata, text[marker + 5 :]
+    return metadata, text[marker + len(closing) :]
 
 
 def _missing(value: object) -> bool:
@@ -66,6 +75,27 @@ def validate_metadata(metadata: dict[str, object]) -> list[str]:
     missing = [field for field in REQUIRED_FIELDS if _missing(metadata.get(field))]
     if missing:
         raise BuildError(f"report.md: missing required metadata: {', '.join(missing)}")
+    if not isinstance(metadata["title"], str):
+        raise BuildError("report.md: metadata title must be a non-empty string")
+    report_date = metadata["date"]
+    if not isinstance(report_date, (str, date, datetime)):
+        raise BuildError("report.md: metadata date must be a non-empty string or date")
+    for field in TEXT_FIELDS:
+        value = metadata.get(field)
+        if value is not None and not isinstance(value, str):
+            raise BuildError(f"report.md: metadata {field} must be a string")
+    authors = metadata.get("authors")
+    if authors is not None and not (
+        isinstance(authors, str) and bool(authors.strip())
+        or isinstance(authors, list)
+        and all(isinstance(author, str) for author in authors)
+    ):
+        raise BuildError(
+            "report.md: metadata authors must be a non-empty string or list of strings"
+        )
+    cover_image = metadata.get("cover_image")
+    if cover_image is not None and not isinstance(cover_image, str):
+        raise BuildError("report.md: metadata cover_image must be a string")
     return [
         f"optional metadata missing: {field}"
         for field in OPTIONAL_FIELDS
@@ -92,34 +122,57 @@ def level_two_headings(body: str) -> list[str]:
     return [
         tokens[index + 1].content
         for index, token in enumerate(tokens[:-1])
-        if token.type == "heading_open" and token.tag == "h2"
+        if token.type == "heading_open" and token.tag == "h2" and token.level == 0
     ]
 
 
 def validate_structure(body: str) -> None:
-    headings = [normalized_heading(value) for value in level_two_headings(body)]
-    cursor = -1
-    for aliases in SECTION_ALIASES:
-        accepted = {normalized_heading(alias) for alias in aliases}
-        positions = [index for index, heading in enumerate(headings) if heading in accepted]
-        if not positions:
+    alias_indexes = {
+        normalized_heading(alias): index
+        for index, aliases in enumerate(SECTION_ALIASES)
+        for alias in aliases
+    }
+    optional = {normalized_heading(section) for section in OPTIONAL_SECTIONS}
+    canonical_order = []
+    seen = set()
+    for value in level_two_headings(body):
+        heading = normalized_heading(value)
+        if heading in optional:
+            continue
+        if heading not in alias_indexes:
+            raise BuildError(f"report.md: unexpected section: {value}")
+        canonical_index = alias_indexes[heading]
+        if canonical_index in seen:
+            raise BuildError(
+                f"report.md: duplicate canonical section: "
+                f"{SECTION_ALIASES[canonical_index][0]}"
+            )
+        seen.add(canonical_index)
+        canonical_order.append(canonical_index)
+
+    for index, aliases in enumerate(SECTION_ALIASES):
+        if index not in seen:
             raise BuildError(f"report.md: missing required section: {aliases[0]}")
-        following = [position for position in positions if position > cursor]
-        if not following:
-            raise BuildError(f"report.md: out-of-order section: {aliases[0]}")
-        cursor = following[0]
+    if canonical_order != list(range(len(SECTION_ALIASES))):
+        first_wrong = next(
+            actual
+            for expected, actual in enumerate(canonical_order)
+            if actual != expected
+        )
+        raise BuildError(
+            f"report.md: out-of-order section: {SECTION_ALIASES[first_wrong][0]}"
+        )
 
 
-def _source_index_tokens(body: str) -> list[Token]:
-    tokens = _markdown_tokens(body)
+def _source_index_tokens(tokens: list[Token]) -> list[Token]:
     for index, token in enumerate(tokens[:-1]):
-        if token.type != "heading_open" or token.tag != "h2":
+        if token.type != "heading_open" or token.tag != "h2" or token.level != 0:
             continue
         if normalized_heading(tokens[index + 1].content) != normalized_heading("来源索引"):
             continue
         end = len(tokens)
         for later_index, later in enumerate(tokens[index + 3 :], index + 3):
-            if later.type == "heading_open" and later.tag == "h2":
+            if later.type == "heading_open" and later.tag == "h2" and later.level == 0:
                 end = later_index
                 break
         return tokens[index + 3 : end]
@@ -150,9 +203,31 @@ def _source_definitions(tokens: list[Token]) -> list[str]:
     return defined
 
 
+def _used_sources(tokens: list[Token]) -> set[str]:
+    used = set()
+    in_section = False
+    in_source_index = False
+    for index, token in enumerate(tokens):
+        if token.type == "heading_open" and token.tag == "h2" and token.level == 0:
+            in_section = True
+            in_source_index = normalized_heading(
+                tokens[index + 1].content
+            ) == normalized_heading("来源索引")
+            continue
+        if not in_section or in_source_index or token.type != "inline":
+            continue
+        if index and tokens[index - 1].type == "heading_open":
+            continue
+        for child in token.children or ():
+            if child.type == "text":
+                used.update(re.findall(r"\[S([1-9]\d*)\]", child.content))
+    return used
+
+
 def validate_sources(body: str) -> list[str]:
-    used = set(re.findall(r"\[S([1-9]\d*)\]", body))
-    defined = _source_definitions(_source_index_tokens(body))
+    tokens = _markdown_tokens(body)
+    used = _used_sources(tokens)
+    defined = _source_definitions(_source_index_tokens(tokens))
     duplicates = sorted(
         (source for source in set(defined) if defined.count(source) > 1),
         key=int,
@@ -175,7 +250,10 @@ def validate_sources(body: str) -> list[str]:
 
 
 def local_path(base: Path, raw: str, label: str) -> Path:
-    parsed = urlparse(raw)
+    try:
+        parsed = urlparse(raw)
+    except ValueError as exc:
+        raise BuildError(f"{label}: invalid path: {raw}") from exc
     if (
         not raw
         or parsed.scheme

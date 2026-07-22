@@ -67,6 +67,7 @@ def main() -> None:
 
         warnings = validate_report(document(), report_path)
         assert any("optional metadata missing" in warning for warning in warnings)
+        validate_report(document().replace("\n", "\r\n"), report_path)
 
         expect_error(
             "missing date",
@@ -80,6 +81,30 @@ def main() -> None:
             report_path,
             "frontmatter must be a mapping",
         )
+        expect_error(
+            "title type",
+            document(metadata="title: [测试报告]\ndate: 2026-07-22"),
+            report_path,
+            "metadata title must be a non-empty string",
+        )
+        expect_error(
+            "date type",
+            document(metadata="title: 测试报告\ndate: {year: 2026}"),
+            report_path,
+            "metadata date must be a non-empty string or date",
+        )
+        expect_error(
+            "authors type",
+            document(
+                metadata=(
+                    "title: 测试报告\n"
+                    "date: 2026-07-22\n"
+                    "authors: {name: 测试作者}"
+                )
+            ),
+            report_path,
+            "metadata authors must be a non-empty string or list of strings",
+        )
 
         wrong_order = list(SECTIONS)
         wrong_order[1], wrong_order[2] = wrong_order[2], wrong_order[1]
@@ -88,6 +113,28 @@ def main() -> None:
             document(sections=tuple(wrong_order)),
             report_path,
             "out-of-order",
+        )
+        expect_error(
+            "nested canonical heading",
+            document().replace(
+                "## A) 行业定义与边界",
+                "> ## A) 行业定义与边界",
+                1,
+            ),
+            report_path,
+            "missing required section: 行业定义与边界",
+        )
+        expect_error(
+            "duplicate canonical heading",
+            document(after_sources="## 行业定义与边界"),
+            report_path,
+            "duplicate canonical section: 行业定义与边界",
+        )
+        expect_error(
+            "unexpected heading",
+            document(after_sources="## 附录"),
+            report_path,
+            "unexpected section: 附录",
         )
 
         expect_error(
@@ -116,9 +163,27 @@ def main() -> None:
         )
         unused_warnings = validate_report(document(citation=""), report_path)
         assert "unused source definitions: S1" in unused_warnings
+        ignored_reference_warnings = validate_report(
+            document(
+                citation="",
+                source_table=(
+                    "ID | 来源\n"
+                    "--- | ---\n"
+                    "S1 | 来源描述中的 [S2]"
+                ),
+                after_sources=(
+                    "## 未核实与待补证据\n"
+                    "```text\n[S3]\n```\n"
+                    "行内代码 `[S4]`\n"
+                    "<span data-source=\"[S5]\"></span>"
+                ),
+            ),
+            report_path,
+        )
+        assert "unused source definitions: S1" in ignored_reference_warnings
         expect_error(
             "citation after source index",
-            document(after_sources="## 附录\n后置引用 [S2]"),
+            document(after_sources="## 未核实与待补证据\n后置引用 [S2]"),
             report_path,
             "undefined sources: S2",
         )
@@ -133,6 +198,18 @@ def main() -> None:
             document(image="![越界图片](../outside.png)"),
             report_path,
             "escapes the report directory",
+        )
+        expect_error(
+            "malformed URL",
+            document(
+                metadata=(
+                    "title: 测试报告\n"
+                    "date: 2026-07-22\n"
+                    "cover_image: 'http://[invalid'"
+                )
+            ),
+            report_path,
+            "report.md cover_image: invalid path",
         )
 
     print("PASS: fixed research report input validation")

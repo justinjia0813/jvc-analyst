@@ -144,6 +144,30 @@ def main() -> None:
             "undefined sources: S2",
         )
         expect_error(
+            "preamble source reference",
+            document().replace(
+                "---\n## 研究设定与一页快照",
+                "---\n前导语 [S999]\n\n## 研究设定与一页快照",
+                1,
+            ),
+            report_path,
+            "undefined sources: S999",
+        )
+        expect_error(
+            "level-three heading source reference",
+            document(
+                after_sources="## 未核实与待补证据\n### 待验证问题 [S998]"
+            ),
+            report_path,
+            "undefined sources: S998",
+        )
+        expect_error(
+            "image alt source reference",
+            document(citation="", image="![图片说明 [S997]](missing.png)"),
+            report_path,
+            "undefined sources: S997",
+        )
+        expect_error(
             "duplicate source",
             document(sources="| S1 | 来源甲 |\n| S1 | 来源乙 |"),
             report_path,

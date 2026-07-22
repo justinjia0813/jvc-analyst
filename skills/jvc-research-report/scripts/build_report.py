@@ -205,21 +205,17 @@ def _source_definitions(tokens: list[Token]) -> list[str]:
 
 def _used_sources(tokens: list[Token]) -> set[str]:
     used = set()
-    in_section = False
     in_source_index = False
     for index, token in enumerate(tokens):
         if token.type == "heading_open" and token.tag == "h2" and token.level == 0:
-            in_section = True
             in_source_index = normalized_heading(
                 tokens[index + 1].content
             ) == normalized_heading("来源索引")
             continue
-        if not in_section or in_source_index or token.type != "inline":
-            continue
-        if index and tokens[index - 1].type == "heading_open":
+        if in_source_index or token.type != "inline":
             continue
         for child in token.children or ():
-            if child.type == "text":
+            if child.type in ("text", "image"):
                 used.update(re.findall(r"\[S([1-9]\d*)\]", child.content))
     return used
 

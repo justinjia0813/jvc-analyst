@@ -156,6 +156,24 @@
         {"type": "contains", "path": "skills/jvc-invoice-manager/SKILL.md", "text": "PDF 原件只复制"},
         {"type": "contains", "path": "skills/jvc-invoice-manager/SKILL.md", "text": "不进入投资决策流程"}
       ]
+    },
+    {
+      "id": "research-report-pdf-contract",
+      "skill": "jvc-research-report",
+      "artifact_family": "research_pdf",
+      "assertions": [
+        {"type": "file_tracked", "path": "examples/research-report-example/report.md"},
+        {"type": "file_tracked", "path": "examples/research-report-example/assets/technology-routes.svg"},
+        {"type": "file_exists", "path": "skills/jvc-research-report/scripts/build_report.py"},
+        {"type": "file_exists", "path": "skills/jvc-research-report/assets/report.css"},
+        {"type": "file_exists", "path": "skills/jvc-research-report/templates/industry-report.md"},
+        {"type": "contains", "path": "skills/jvc-research-report/manifest.json", "text": "\"output_contract\": [\"report.pdf\", \"report.html\", \"build-report.txt\"]"},
+        {"type": "contains", "path": "skills/jvc-research-report/assets/brand.yml", "text": "name: lustinus RESEARCH"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "只读取本地 Markdown、YAML、图片和字体"},
+        {"type": "contains", "path": "skills/jvc-research-report/scripts/build_report.py", "text": "return f\"data:{media_type};base64,{encoded}\""},
+        {"type": "contains", "path": "skills/jvc-research-report/scripts/build_report.py", "text": "def publish_staged("},
+        {"type": "contains", "path": "skills/jvc-research-report/references/output-contract.md", "text": "失败不得覆盖上一版成功的三个产物"}
+      ]
     }
   ]
 }

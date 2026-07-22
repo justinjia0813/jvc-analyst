@@ -6,7 +6,7 @@
     {
       "capability": "file_read",
       "decision": "approved",
-      "scope": "Read local skill sources, templates, examples, JSON fixtures, DOCX templates, PDF invoices, and workbook files supplied by the operator.",
+      "scope": "Read local skill sources, templates, examples, JSON fixtures, DOCX templates, PDF invoices, workbook files, finished research Markdown, HTML previews, images, fonts, and research PDFs supplied by the operator.",
       "reason": "The suite is local-first and must inspect user-provided diligence inputs and package fixtures.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
@@ -15,7 +15,7 @@
     {
       "capability": "file_write",
       "decision": "approved",
-      "scope": "Write generated Markdown, XLSX, DOCX, JSON, and copied PDF archive artifacts to explicit output paths or package-local output/archive directories.",
+      "scope": "Write generated Markdown, XLSX, DOCX, JSON, self-contained HTML previews, research PDFs, and copied PDF archive artifacts to explicit output paths or package-local output/archive directories.",
       "reason": "Workbook, interview-note, and invoice-archive skills produce local files as their primary output contract.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",

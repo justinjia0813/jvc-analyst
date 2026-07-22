@@ -105,7 +105,7 @@ PR = Public Relations，公共关系 / 公关稿；只能作为公司自述线�
 - 3-5 条结论先行的关键判断，每条带证据、机制和含义
 - 3-5 条最重要的不确定性与反证条件
 - 适用周期的位置矩阵，以及一条把关键周期串起来的核心因果链
-- 后续最该进入哪个 skill：`/jvc-knowledge-tree-builder`、`/jvc-comps-dd`、`/jvc-market-sizing`、`/jvc-bull-case`、`/jvc-bear-case`
+- 后续最该进入哪个 skill：`/jvc-research-report`、`/jvc-knowledge-tree-builder`、`/jvc-comps-dd`、`/jvc-market-sizing`、`/jvc-bull-case`、`/jvc-bear-case`
 
 **A. 行业定义与边界**
 - 这个赛道是什么、不是什么
@@ -152,6 +152,7 @@ PR = Public Relations，公共关系 / 公关稿；只能作为公司自述线�
 - 分成：客户付费、技术壁垒、交付复制、单位经济、竞争格局、监管风险
 
 **I. 后续工作交接包**
+- 给 `/jvc-research-report`：仅在研究内容已经完成后交付固定结构 Markdown；它只负责校验和排版，不改写研究内容
 - 给 `/jvc-knowledge-tree-builder`：建议沉淀的资料文件夹结构
 - 给 `/jvc-comps-dd`：候选竞品 / 可比公司清单和比较维度
 - 给 `/jvc-market-sizing`：可建模变量、口径、需要补的数据

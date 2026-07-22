@@ -90,6 +90,27 @@
         {
           "skill": "jvc-comps-dd",
           "why_not": "comps-dd should trigger when the user asks for competitors/comparable companies and an Excel workbook."
+        },
+        {
+          "skill": "jvc-research-report",
+          "why_not": "research-report validates and renders finished research Markdown; this case asks to create the research content."
+        }
+      ]
+    },
+    {
+      "id": "research-report-fixed-markdown-render",
+      "prompt": "我已经有一份固定章节和 [S1] 来源索引的赛道研究 Markdown，请不要改内容，按 lustinus RESEARCH 版式生成可打印 PDF、HTML 预览和构建报告。",
+      "expected_skill": "jvc-research-report",
+      "prompt_signals": ["固定章节", "不要改内容", "lustinus RESEARCH", "PDF"],
+      "skill_contract_signals": ["不重写", "report.pdf", "report.html", "build-report.txt"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "track-research creates research content; this prompt already has finished Markdown and asks only for validation and rendering."
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "ic-memo synthesizes company diligence; this is an industry-report renderer."
         }
       ]
     },

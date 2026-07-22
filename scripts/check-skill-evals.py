@@ -10,6 +10,7 @@ evidence.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -74,6 +75,9 @@ def check_trigger_cases() -> int:
         ("jvc-bear-case", "jvc-bull-case"),
         ("jvc-ic-memo", "jvc-bull-case"),
         ("jvc-track-research", "jvc-comps-dd"),
+        ("jvc-track-research", "jvc-research-report"),
+        ("jvc-research-report", "jvc-track-research"),
+        ("jvc-research-report", "jvc-ic-memo"),
         ("jvc-comps-dd", "jvc-track-research"),
         ("jvc-market-sizing", "jvc-track-research"),
         ("jvc-roi-modeler", "jvc-market-sizing"),
@@ -126,11 +130,22 @@ def check_trigger_cases() -> int:
 def check_assertion(case_id: str, assertion: dict[str, Any]) -> None:
     assertion_type = assertion.get("type")
     relative_path = assertion.get("path")
-    if assertion_type in {"file_exists", "contains", "contains_any", "not_contains_any", "workbook_sheets"}:
+    if assertion_type in {"file_exists", "file_tracked", "contains", "contains_any", "not_contains_any", "workbook_sheets"}:
         require(isinstance(relative_path, str) and relative_path, f"{case_id}: assertion missing path")
 
     if assertion_type == "file_exists":
         require((ROOT / relative_path).is_file(), f"{case_id}: missing file {relative_path}")
+        return
+
+    if assertion_type == "file_tracked":
+        require((ROOT / relative_path).is_file(), f"{case_id}: missing file {relative_path}")
+        tracked = subprocess.run(
+            ("git", "ls-files", "--error-unmatch", "--", relative_path),
+            cwd=ROOT,
+            capture_output=True,
+            check=False,
+        )
+        require(tracked.returncode == 0, f"{case_id}: untracked file {relative_path}")
         return
 
     if assertion_type == "contains":
@@ -179,7 +194,7 @@ def check_output_cases() -> int:
     require(isinstance(cases, list) and cases, "output cases must be a non-empty list")
     require_unique_ids(cases, "output")
 
-    required_families = {"markdown", "excel", "docx", "excel_pdf_archive"}
+    required_families = {"markdown", "excel", "docx", "excel_pdf_archive", "research_pdf"}
     families: set[str] = set()
     for case in cases:
         case_id = case["id"]

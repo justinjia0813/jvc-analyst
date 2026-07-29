@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="#安装"><img alt="Install locally" src="https://img.shields.io/badge/install-local--first-253B32?style=flat-square"></a>
-  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-12%20jvc--skills-A46A50?style=flat-square"></a>
+  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-13%20jvc--skills-A46A50?style=flat-square"></a>
   <a href="#使用原则"><img alt="Evidence-first" src="https://img.shields.io/badge/method-evidence--first-161514?style=flat-square"></a>
   <a href="#维护检查"><img alt="Checks" src="https://img.shields.io/badge/checks-shell%20%2B%20workbook-5F635B?style=flat-square"></a>
 </p>
@@ -69,6 +69,7 @@ cd jvc-analyst
 | `/jvc-bull-case` | 从项目素材中提炼投资亮点和待验证项。 | Markdown |
 | `/jvc-bear-case` | 用挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个角色做反向论证。 | Markdown |
 | `/jvc-track-research` | 给细分赛道，构建产业知识图谱。 | Markdown |
+| `/jvc-research-report` | 校验已完成的固定章节行业研究并排版，不改正文。 | `report.pdf`（PDF，Portable Document Format，可移植文档格式，用于固定版式）、`report.html`（HTML，HyperText Markup Language，超文本标记语言，用于浏览器预览）和 `build-report.txt` |
 | `/jvc-knowledge-tree-builder` | 读取已有本地赛道/项目资料文件夹，生成递归知识树、Mermaid 图、节点 JSON、证据索引和开放问题。 | Markdown + Mermaid + JSON |
 | `/jvc-comps-dd` | 调研竞争对手、可比公司、上下游和海外标杆。 | Excel |
 | `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模和正交检查。 | Excel |
@@ -107,6 +108,25 @@ cd jvc-analyst
 - 输入：细分赛道名称。
 - 做什么：联网搜索，输出行业定义、行业简史、技术路线、产业链、政策/技术/市场趋势、关键玩家、监管和投资问题。
 - 输出：结构化 Markdown，可衔接 `/jvc-comps-dd` 和 `/jvc-market-sizing`。
+
+### `/jvc-research-report` 固定研报排版
+
+- 输入：已经完成、带固定章节和来源索引的行业研究 Markdown 和本地图片；用户可选传入自定义 `brand.yml`，否则使用 skill 内置默认品牌。
+- 前置：将 `SKILL_ROOT` 设为包含该 skill 的 `SKILL.md` 的绝对目录，运行 `python3 -m pip install -r "$SKILL_ROOT/requirements.txt"`，并确保 Fontconfig（字体配置系统，用于查询和验证本机字体）的 `fc-match`、`fc-query`、`fc-scan` 可用。`./setup` 只注册 skill，不安装这些依赖。
+- 做什么：校验结构、来源与本地资源，按 `lustinus RESEARCH` 版式生成可打印报告和浏览器预览。
+- 输出：`report.pdf`、`report.html` 和 `build-report.txt`。
+- 边界：只校验和排版，不补研究、不改写观点；内容未完成时先用 `/jvc-track-research`。
+
+CLI（Command-Line Interface，命令行界面，用于在终端调用构建器）示例；先替换三个绝对路径占位符，未传自定义品牌时仍显式指向内置 `brand.yml`：
+
+```bash
+SKILL_ROOT="/absolute/path/to/jvc-research-report"
+REPORT="/absolute/path/to/report.md"
+OUTPUT="/absolute/path/to/output"
+python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
+  --brand "$SKILL_ROOT/assets/brand.yml" \
+  --output "$OUTPUT"
+```
 
 ### `/jvc-knowledge-tree-builder` 知识树构建
 
@@ -203,6 +223,9 @@ projects/{company-slug}/
 
 tracks/{track-slug}/
 ├── landscape.md            # ← /jvc-track-research
+├── report.pdf              # ← /jvc-research-report
+├── report.html             # ← /jvc-research-report
+├── build-report.txt        # ← /jvc-research-report
 ├── knowledge_tree.md       # ← /jvc-knowledge-tree-builder
 ├── knowledge_graph.mmd     # ← /jvc-knowledge-tree-builder
 ├── nodes.json              # ← /jvc-knowledge-tree-builder
@@ -245,6 +268,7 @@ tracks/{track-slug}/
 │   ├── jvc-market-sizing/
 │   ├── jvc-meeting-notes/
 │   ├── jvc-prescreen/
+│   ├── jvc-research-report/
 │   ├── jvc-roi-modeler/
 │   ├── jvc-talk-notes/
 │   └── jvc-track-research/

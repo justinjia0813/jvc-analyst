@@ -1,0 +1,72 @@
+{
+  "optimizer_hints": {
+    "capability": "Validate and render completed fixed-format local industry research as branded PDF and HTML without rewriting content",
+    "inputs": ["fixed-format report.md", "brand.yml", "local images"],
+    "trigger_actions": ["validate completed research", "render a branded report", "rebuild local report outputs"],
+    "exclusions": ["first-pass research", "arbitrary Markdown conversion", "content rewriting", "investment-committee memo drafting"],
+    "artifacts": ["report.pdf", "report.html", "build-report.txt"]
+  },
+  "fallback_positive_concepts": ["fixed_input", "render_report"],
+  "positive_concepts": {
+    "fixed_input": {
+      "weight": 0.5,
+      "phrases": [
+        "fixed-structure",
+        "固定章节",
+        "来源索引",
+        "jvc-track-research",
+        "已经完成",
+        "brand.yml",
+        "本地研报"
+      ]
+    },
+    "render_report": {
+      "weight": 0.5,
+      "phrases": [
+        "rendered",
+        "printable report",
+        "browser preview",
+        "编译成",
+        "lustinus research 报告",
+        "pdf",
+        "html 预览",
+        "构建报告",
+        "重新生成"
+      ]
+    },
+    "preserve_content": {
+      "weight": 0.5,
+      "phrases": [
+        "without rewriting the research content",
+        "without rewriting content",
+        "do not rewrite",
+        "without rewriting",
+        "不要重写",
+        "不要改正文",
+        "不改正文"
+      ]
+    }
+  },
+  "negative_concepts": {
+    "first_pass_research": {
+      "weight": 0.9,
+      "exclusive": true,
+      "phrases": ["从零研究", "补齐资料", "先研究赛道"]
+    },
+    "arbitrary_markdown": {
+      "weight": 0.9,
+      "exclusive": true,
+      "phrases": ["任意结构", "快速转成 pdf"]
+    },
+    "content_rewriting": {
+      "weight": 0.4,
+      "exclusive": true,
+      "phrases": ["重写", "联网补充", "rewrite", "content rewriting"]
+    },
+    "ic_memo": {
+      "weight": 0.9,
+      "exclusive": true,
+      "phrases": ["尽调材料", "投委会备忘录"]
+    }
+  }
+}

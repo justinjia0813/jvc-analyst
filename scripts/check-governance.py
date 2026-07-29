@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -72,6 +74,23 @@ def compute_source_contract_hash() -> str:
         digest.update(path.read_bytes())
         digest.update(b"\0")
     return digest.hexdigest()
+
+
+def write_trust_hash(value: str) -> None:
+    json_path = ROOT / "reports/trust_report.json"
+    data = json.loads(json_path.read_text(encoding="utf-8"))
+    data["package_sha256"] = value
+    json_path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+    markdown_path = ROOT / "reports/trust_report.md"
+    markdown = markdown_path.read_text(encoding="utf-8")
+    pattern = r"`[0-9a-f]{64}`"
+    require(len(re.findall(pattern, markdown)) == 1, "trust report markdown hash was not uniquely identifiable")
+    updated, count = re.subn(pattern, f"`{value}`", markdown, count=1)
+    require(count == 1, "trust report markdown hash was not uniquely identifiable")
+    markdown_path.write_text(updated, encoding="utf-8")
 
 
 def check_manifest() -> None:
@@ -147,8 +166,14 @@ def check_review_studio() -> None:
     require_text("reports/review-studio.md", "Review Studio")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--write-hash", action="store_true", help="refresh trust report source-contract hashes")
+    args = parser.parse_args(argv)
+
     try:
+        if args.write_hash:
+            write_trust_hash(compute_source_contract_hash())
         check_manifest()
         check_interface()
         check_skill_ir()

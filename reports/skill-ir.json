@@ -52,6 +52,14 @@
       "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed", "Static template ignores lifecycle-specific priorities", "Recent trends are linearly extrapolated or presented as precise cycle forecasts", "Generic industry summary omits falsifiers and next-skill handoff"]
     },
     {
+      "name": "jvc-research-report",
+      "job": "Validate completed fixed-format local industry research Markdown and render a lustinus RESEARCH PDF, HTML preview, and build report without changing content.",
+      "outputs": ["PDF research report", "HTML preview", "Build report"],
+      "near_neighbors": ["jvc-track-research", "jvc-ic-memo"],
+      "scripts": ["skills/jvc-research-report/scripts/build_report.py", "skills/jvc-research-report/scripts/check_package.py"],
+      "failure_modes": ["Rewrites or supplements research content", "Fetches remote assets", "Accepts unresolved source IDs", "Produces clipped or overflowing pages", "Overwrites a previous successful build after failure"]
+    },
+    {
       "name": "jvc-knowledge-tree-builder",
       "job": "Convert existing local VC track, project, Obsidian, or source folders into recursive knowledge tree artifacts with evidence and open questions.",
       "outputs": ["Markdown knowledge tree", "Mermaid graph", "JSON nodes", "Evidence index", "Open-question list"],

@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-06-20",
+  "generated_at": "2026-07-22",
   "decision": "reviewable_with_warnings",
   "gates": [
     {"key": "intent-canvas", "label": "Intent Canvas", "status": "pass", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md", "reports/skill-ir.json"]},
     {"key": "trigger-lab", "label": "Trigger Lab", "status": "warn", "evidence": ["evals/trigger_cases.json", "reports/route_scorecard.md"], "review_action": "Add model-executed route evidence plus blind and adversarial holdout before claiming library-grade routing."},
-    {"key": "output-lab", "label": "Output Lab", "status": "warn", "evidence": ["evals/output/cases.json", "reports/output_quality_scorecard.md"], "review_action": "Add file-backed fixtures, baseline vs with-skill runs, and blind A/B review pack."},
+    {"key": "output-lab", "label": "Output Lab", "status": "warn", "evidence": ["evals/output/cases.json", "reports/output_quality_scorecard.md", "examples/research-report-example/report.md", "examples/research-report-example/assets/technology-routes.svg", "skills/jvc-research-report/scripts/check_package.py"], "review_action": "Retain the current file-backed A4 13-page fixture evidence: pdftotext extracted the expected report text, pdftoppm and visual inspection covered 13 of 13 pages, and duplicate cover artwork was removed before final inspection. Add remaining file-backed artifact families, baseline vs with-skill runs, model-executed evidence, and a blind A/B review pack before upgrading this warn gate."},
     {"key": "context-budget", "label": "Context Budget", "status": "pass", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md"]},
     {"key": "runtime-matrix", "label": "Runtime Matrix", "status": "warn", "evidence": ["agents/interface.yaml"], "review_action": "Generate packaged adapters and conformance matrix before external distribution."},
-    {"key": "trust-report", "label": "Trust Report", "status": "warn", "evidence": ["reports/trust_report.md", "reports/trust_report.json"], "review_action": "Pin dependencies and convert invoice CLIs to argparse for a cleaner trust surface."},
+    {"key": "trust-report", "label": "Trust Report", "status": "warn", "evidence": ["reports/trust_report.md", "reports/trust_report.json"], "review_action": "Keep the report dependencies pinned, pin remaining suite dependencies where reproducibility requires it, and convert invoice CLIs to argparse for a cleaner trust surface."},
     {"key": "permission-gates", "label": "Permission Gates", "status": "pass", "evidence": ["security/permission_policy.json"]},
     {"key": "permission-runtime", "label": "Runtime Permission Probes", "status": "warn", "evidence": ["agents/interface.yaml"], "review_action": "Run packaged adapter permission probes after a dist package exists."},
     {"key": "skill-atlas", "label": "Skill Atlas", "status": "warn", "evidence": ["reports/skill-ir.json", "evals/trigger_cases.json"], "review_action": "Generate a full atlas of route collisions, stale skills, and no-route opportunities before library release."},

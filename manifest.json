@@ -1,8 +1,8 @@
 {
   "name": "jvc-analyst",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "owner": "jvc-analyst",
-  "updated_at": "2026-07-20",
+  "updated_at": "2026-07-21",
   "status": "active",
   "maturity_tier": "production",
   "lifecycle_stage": "production",
@@ -25,6 +25,7 @@
   "output_contracts": [
     "Markdown diligence notes",
     "Knowledge tree Markdown/Mermaid/JSON artifacts",
+    "Branded research PDF and HTML previews",
     "Excel workbooks",
     "DOCX interview notes",
     "Excel plus PDF invoice archive"

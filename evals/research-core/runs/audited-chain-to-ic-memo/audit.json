@@ -1,0 +1,148 @@
+{
+  "audits": [
+    {
+      "artifacts": [
+        {
+          "fingerprint": "e498fffba801a88a1438f26bca52db417d74ec4240dcff8e6dfd7557ef65904d",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bull-case.md"
+        }
+      ],
+      "audit_key": "993cdab0c8af481c4a27fe9b3d6a4fe694c3dcc0d5754cb4b5c8a921b3e5e2db",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+      "audited_at": "2026-07-29T16:13:06Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [],
+      "findings": [],
+      "ledger_prefix_fingerprint": "fe2a090b781f1a5146d867fca33b4bb0e5d7d372e857a5dc10fa40afa99441ae",
+      "ledger_sequence": 11,
+      "profile_fingerprint": "b3e1a137a526b6c92b506fa06a1eebea0f11884669f0190ec80ff7649a173ad9",
+      "schema_version": 1,
+      "skill": "jvc-bull-case",
+      "status": "ready"
+    },
+    {
+      "artifacts": [
+        {
+          "fingerprint": "3209e4a5b82d4baa77b5e86d7fbaf2d9b083d6c376514a5012155080aeb78f0e",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bear-case.md"
+        }
+      ],
+      "audit_key": "e575cca19f6b57b15da47384a56b1cbf97c7529919a06594bb14ef68dc3aca52",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+      "audited_at": "2026-07-29T16:13:55Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [
+        {
+          "artifacts": [
+            {
+              "fingerprint": "e498fffba801a88a1438f26bca52db417d74ec4240dcff8e6dfd7557ef65904d",
+              "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bull-case.md"
+            }
+          ],
+          "audit_key": "993cdab0c8af481c4a27fe9b3d6a4fe694c3dcc0d5754cb4b5c8a921b3e5e2db",
+          "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+          "audited_at": "2026-07-29T16:13:06Z",
+          "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+          "dependency_audits": [],
+          "findings": [],
+          "ledger_prefix_fingerprint": "fe2a090b781f1a5146d867fca33b4bb0e5d7d372e857a5dc10fa40afa99441ae",
+          "ledger_sequence": 11,
+          "profile_fingerprint": "b3e1a137a526b6c92b506fa06a1eebea0f11884669f0190ec80ff7649a173ad9",
+          "schema_version": 1,
+          "skill": "jvc-bull-case",
+          "status": "ready"
+        }
+      ],
+      "findings": [],
+      "ledger_prefix_fingerprint": "03131afe888c0ac61559a7978bf03ab4ae06cc1ad03f707725a712b7edd58dd2",
+      "ledger_sequence": 19,
+      "profile_fingerprint": "ee043ec1c935a5e5f230df801cecc1c13e27d7c53f9ea60d7b82775f50952697",
+      "schema_version": 1,
+      "skill": "jvc-bear-case",
+      "status": "ready"
+    },
+    {
+      "artifacts": [
+        {
+          "fingerprint": "6191501dbf2e54568419e06416696560dfbd248ba35002305eb6b9af3596c1d4",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/ic-memo.md"
+        }
+      ],
+      "audit_key": "3c65349ba0e9c68a9af852b61c31e51cd8dd35d721b54b8a3c1a03d3a120cd99",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+      "audited_at": "2026-07-29T16:15:30Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [
+        {
+          "artifacts": [
+            {
+              "fingerprint": "3209e4a5b82d4baa77b5e86d7fbaf2d9b083d6c376514a5012155080aeb78f0e",
+              "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bear-case.md"
+            }
+          ],
+          "audit_key": "e575cca19f6b57b15da47384a56b1cbf97c7529919a06594bb14ef68dc3aca52",
+          "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+          "audited_at": "2026-07-29T16:13:55Z",
+          "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+          "dependency_audits": [
+            {
+              "artifacts": [
+                {
+                  "fingerprint": "e498fffba801a88a1438f26bca52db417d74ec4240dcff8e6dfd7557ef65904d",
+                  "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bull-case.md"
+                }
+              ],
+              "audit_key": "993cdab0c8af481c4a27fe9b3d6a4fe694c3dcc0d5754cb4b5c8a921b3e5e2db",
+              "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+              "audited_at": "2026-07-29T16:13:06Z",
+              "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+              "dependency_audits": [],
+              "findings": [],
+              "ledger_prefix_fingerprint": "fe2a090b781f1a5146d867fca33b4bb0e5d7d372e857a5dc10fa40afa99441ae",
+              "ledger_sequence": 11,
+              "profile_fingerprint": "b3e1a137a526b6c92b506fa06a1eebea0f11884669f0190ec80ff7649a173ad9",
+              "schema_version": 1,
+              "skill": "jvc-bull-case",
+              "status": "ready"
+            }
+          ],
+          "findings": [],
+          "ledger_prefix_fingerprint": "03131afe888c0ac61559a7978bf03ab4ae06cc1ad03f707725a712b7edd58dd2",
+          "ledger_sequence": 19,
+          "profile_fingerprint": "ee043ec1c935a5e5f230df801cecc1c13e27d7c53f9ea60d7b82775f50952697",
+          "schema_version": 1,
+          "skill": "jvc-bear-case",
+          "status": "ready"
+        },
+        {
+          "artifacts": [
+            {
+              "fingerprint": "e498fffba801a88a1438f26bca52db417d74ec4240dcff8e6dfd7557ef65904d",
+              "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/bull-case.md"
+            }
+          ],
+          "audit_key": "993cdab0c8af481c4a27fe9b3d6a4fe694c3dcc0d5754cb4b5c8a921b3e5e2db",
+          "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/audited-chain-to-ic-memo/audit.json",
+          "audited_at": "2026-07-29T16:13:06Z",
+          "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+          "dependency_audits": [],
+          "findings": [],
+          "ledger_prefix_fingerprint": "fe2a090b781f1a5146d867fca33b4bb0e5d7d372e857a5dc10fa40afa99441ae",
+          "ledger_sequence": 11,
+          "profile_fingerprint": "b3e1a137a526b6c92b506fa06a1eebea0f11884669f0190ec80ff7649a173ad9",
+          "schema_version": 1,
+          "skill": "jvc-bull-case",
+          "status": "ready"
+        }
+      ],
+      "findings": [],
+      "ledger_prefix_fingerprint": "8e4b30725ac3d22e5b8ac35d1933b64df10f539bdb16f6e94d8835678f89466d",
+      "ledger_sequence": 29,
+      "profile_fingerprint": "ed8fbabdd6119ed1a579f2f61274c12c203505b49b3ff9c3d719fc134722efb2",
+      "schema_version": 1,
+      "skill": "jvc-ic-memo",
+      "status": "ready"
+    }
+  ],
+  "schema_version": 1
+}

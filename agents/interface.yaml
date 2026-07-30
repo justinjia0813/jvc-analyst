@@ -24,6 +24,7 @@ compatibility:
       - "skills/jvc-meeting-notes/SKILL.md"
       - "skills/jvc-talk-notes/SKILL.md"
       - "skills/jvc-invoice-manager/SKILL.md"
+      - "skills/jvc-research-core/SKILL.md" # support-only; never user-routable
   execution:
     context: "local"
     shell: "bash"

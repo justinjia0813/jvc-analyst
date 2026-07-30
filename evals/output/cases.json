@@ -158,6 +158,32 @@
       ]
     },
     {
+      "id": "research-core-audit-contract",
+      "skill": "jvc-research-core",
+      "artifact_family": "json_markdown_audit",
+      "assertions": [
+        {
+          "type": "file_exists",
+          "path": "skills/jvc-research-core/scripts/researchctl.py"
+        },
+        {
+          "type": "contains",
+          "path": "skills/jvc-research-core/SKILL.md",
+          "text": "ready"
+        },
+        {
+          "type": "contains",
+          "path": "skills/jvc-research-core/SKILL.md",
+          "text": "partial"
+        },
+        {
+          "type": "contains",
+          "path": "skills/jvc-research-core/SKILL.md",
+          "text": "blocked"
+        }
+      ]
+    },
+    {
       "id": "research-report-pdf-contract",
       "skill": "jvc-research-report",
       "artifact_family": "research_pdf",

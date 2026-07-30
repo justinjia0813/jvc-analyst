@@ -6,8 +6,8 @@
     {
       "capability": "file_read",
       "decision": "approved",
-      "scope": "Read local skill sources, templates, examples, JSON fixtures, DOCX templates, PDF invoices, workbook files, finished research Markdown, HTML previews, images, fonts, and research PDFs supplied by the operator.",
-      "reason": "The suite is local-first and must inspect user-provided diligence inputs and package fixtures.",
+      "scope": "Read local skill sources, templates, examples, JSON fixtures, scope JSON, evidence ledger JSONL, research profiles, final artifacts, DOCX templates, PDF invoices, workbook files, finished research Markdown, HTML previews, images, fonts, and research PDFs supplied by the operator.",
+      "reason": "The suite is local-first and must inspect operator-selected diligence inputs, core audit inputs, and package fixtures.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
       "target_enforcement": "metadata-only; operator controls local file selection"
@@ -15,8 +15,8 @@
     {
       "capability": "file_write",
       "decision": "approved",
-      "scope": "Write generated Markdown, XLSX, DOCX, JSON, self-contained HTML previews, research PDFs, and copied PDF archive artifacts to explicit output paths or package-local output/archive directories.",
-      "reason": "Workbook, interview-note, and invoice-archive skills produce local files as their primary output contract.",
+      "scope": "Write generated Markdown, XLSX, DOCX, JSON, self-contained HTML previews, research PDFs, copied PDF archive artifacts, evidence_registry.jsonl, audit.json, and audit.md only to explicit output paths, explicit research run directories, or package-local output/archive directories.",
+      "reason": "Artifact-producing skills, the research-report renderer, and the research core must write their local output contracts at operator-selected paths.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
       "target_enforcement": "metadata-only; scripts require explicit paths or package-local output directories"
@@ -24,8 +24,8 @@
     {
       "capability": "subprocess",
       "decision": "approved",
-      "scope": "Run repository validation scripts and local document/workbook generation commands.",
-      "reason": "The package validation path depends on local CLI checks and deterministic generation scripts.",
+      "scope": "Run repository validation scripts, local research-core self-check/install simulation/audit commands, and local report/document/workbook generation commands.",
+      "reason": "The package validation path depends on local core checks, local CLI checks, and deterministic generation scripts.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
       "target_enforcement": "metadata-only; no remote inline execution is permitted"

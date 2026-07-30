@@ -1,0 +1,25 @@
+{
+  "audits": [
+    {
+      "artifacts": [
+        {
+          "fingerprint": "7f1841ead914ef0edd67bfc108023f5b5dd445f381d289c0f08b7b4839da76cb",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/market-model-fact-vs-assumption/industrial_vision_software_market_20260729.xlsx"
+        }
+      ],
+      "audit_key": "4a8ffabb95965419882af5f48a988b0255839850213b2c3b971876979151d11a",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/market-model-fact-vs-assumption/audit.json",
+      "audited_at": "2026-07-29T16:07:38Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [],
+      "findings": [],
+      "ledger_prefix_fingerprint": "ba3bc340b0a2a7ceeed0ea7e25cbdc8c6253c1fd82b8381187ff2206ab23bb78",
+      "ledger_sequence": 19,
+      "profile_fingerprint": "33f45844f8a5de688ca1ce1112513f03c51c5e605f36aed8844ede6045bd1992",
+      "schema_version": 1,
+      "skill": "jvc-market-sizing",
+      "status": "ready"
+    }
+  ],
+  "schema_version": 1
+}

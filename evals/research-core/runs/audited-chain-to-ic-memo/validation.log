@@ -1,0 +1,35 @@
+audited-chain-to-ic-memo validation
+date: 2026-07-30
+
+upstream artifact verification:
+- local interview Office Open XML Document（DOCX，Office 开放 XML 文档，Microsoft Word 的压缩文档格式）: ready; sequence=10; Secure Hash Algorithm 256-bit（SHA-256，安全散列算法 256 位，用于核对文件内容是否变化）=91ea8a6d1e90f5e9da96db22a0347aab55f2bff194d9cad64d08797df826469f
+- local prescreen: ready; sequence=10; sha256=6012deeac24472367a04ee9d5b5d0daa301cdb9056d537863e5d5b9dc0a51c5d
+- glass substrate track report: ready; sequence=18; sha256=f8e637386a984104b8a63a6588130610fe4bc419713b8009ba5af4555d2c2039
+- industrial vision market workbook: ready; sequence=19; sha256=7f1841ead914ef0edd67bfc108023f5b5dd445f381d289c0f08b7b4839da76cb
+- result: current file fingerprints match the artifact fingerprints in their final ready audits
+
+stage execution:
+- researchctl init --skill jvc-bull-case --scope-file input/scope.json: exit=0
+- researchctl record --input record-inputs/bull-records.jsonl: exit=0
+- researchctl audit --skill jvc-bull-case --artifact bull-case.md: exit=0; status=ready; sequence=11; findings=0; dependencies=[]
+- researchctl init --skill jvc-bear-case --resume: exit=0
+- researchctl record --input record-inputs/bear-records.jsonl: exit=0
+- researchctl audit --skill jvc-bear-case --artifact bear-case.md: exit=0; status=ready; sequence=19; findings=0; dependencies=[jvc-bull-case:ready]
+- researchctl init --skill jvc-ic-memo --resume: exit=0
+- researchctl record --input record-inputs/ic-records.jsonl: exit=0
+- researchctl audit --skill jvc-ic-memo --artifact ic-memo.md: exit=0; status=ready; sequence=29; findings=0; dependencies=[jvc-bear-case:ready,jvc-bull-case:ready]
+
+final artifact fingerprints:
+- bull-case.md: e498fffba801a88a1438f26bca52db417d74ec4240dcff8e6dfd7557ef65904d
+- bear-case.md: 3209e4a5b82d4baa77b5e86d7fbaf2d9b083d6c376514a5012155080aeb78f0e
+- ic-memo.md: 6191501dbf2e54568419e06416696560dfbd248ba35002305eb6b9af3596c1d4
+- all current file fingerprints match final audit.json
+
+content and contract checks:
+- canonical ledger records=29; bull claims=5; bear claims=4; 投决备忘录 claims=10; waiver records=0
+- 投决备忘录 investment logic characters=274; risk characters=1041; risk>=investment logic
+- forbidden terminal phrases absent from all three artifacts
+- glass substrate High-Volume Manufacturing（HVM，大批量制造，指稳定、可重复且具有商业规模的生产状态） counterevidence, industrial vision market-definition conflict, and local revenue conflict are retained
+- glass substrate evidence is explicitly marked as a different subject and is not promoted into company facts
+- python3 skills/jvc-research-core/scripts/check_package.py: exit=0; research core ledger and audit checks passed
+- git diff --check -- evals/research-core/runs/audited-chain-to-ic-memo: exit=0

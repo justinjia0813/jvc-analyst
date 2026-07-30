@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "record_id": "SC1",
+  "record_type": "scope",
+  "created_at": "2026-07-29T02:00:00Z",
+  "actor": "acceptance-agent",
+  "created_by_skill": "jvc-track-research",
+  "subject": "远澜智造（脱敏虚构公司）的商业化证据",
+  "decision": "判断现有材料能否支持公司已形成规模收入的研究结论",
+  "inclusions": ["公司融资稿中的收入与客户自述", "独立客户证明缺口", "独立财务证明缺口"],
+  "exclusions": ["公开来源检索", "投资建议", "用户批准例外"],
+  "geography": "中国",
+  "time_range": "截至 2026-07-29 的本地材料",
+  "user_assumptions": ["除公司融资稿外没有独立客户或财务证据"]
+}

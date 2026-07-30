@@ -1,0 +1,376 @@
+{
+  "ok": true,
+  "cases": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/output_cases.jsonl",
+  "summary": {
+    "case_count": 2,
+    "file_backed_case_count": 2,
+    "near_neighbor_case_count": 0,
+    "boundary_case_count": 0,
+    "baseline_pass_rate": 64.09,
+    "with_skill_pass_rate": 100.0,
+    "delta": 35.91,
+    "regression_count": 0,
+    "gate_pass": true,
+    "failure_taxonomy": [],
+    "blind_pair_count": 2
+  },
+  "results": [
+    {
+      "id": "glass-substrate-public-research-output",
+      "prompt": "# 玻璃基板先进封装公开研究任务\n\n- 研究日期：2026-07-29\n- 地域：全球，兼顾中国早期风险投资研究\n- 时间：2023-2026 年公开进展，展望未来 3-5 年\n- 决策用途：判断下一轮尽调应优先核验技术性能、客户资格认证，还是稳定大批量制造（High-Volume Manufacturing，HVM，大批量制造，指稳定、可重复且有商业规模的生产状态）。\n- 排除：显示面板盖板玻璃、仅作为临时载板的玻璃载体、未经实际打开的二手转载。\n\n核心要求：\n\n1. 设施建成、样品、试验线、低量生产不能等同于稳定 HVM。\n2. 主动寻找量产良率、可靠性、破损、翘曲、通孔和客户认证方面的反证。\n3. 保留 SKC/Absolics 不同年份材料中“首座量产设施”与后续“继续可靠性测试、质量和良率提升”的时间序列张力。\n4. 保留 Sony/IEEE 工程证据中 SeWaRe 玻璃失效模式及可靠性边界。\n5. 无可比量产良率和客户放量数据时，收窄结论，不把“未找到”写成“不存在”。\n\n",
+      "input_files": [
+        "runs/glass-substrate-conflicting-public-sources/input/research_brief.md",
+        "runs/glass-substrate-conflicting-public-sources/input/source_manifest.md"
+      ],
+      "metadata": {
+        "case_type": "acceptance",
+        "artifact_type": "markdown",
+        "fixed_date": "2026-07-29",
+        "skill": "jvc-track-research"
+      },
+      "baseline": {
+        "score": 68.18,
+        "passed_count": 4,
+        "failed_count": 2,
+        "checks": [
+          {
+            "id": "factual_accuracy",
+            "description": "事实准确：设施、样品、低量制造与稳定大批量制造不得混写。",
+            "weight": 2.0,
+            "failure_type": "factual_accuracy",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "traceability",
+            "description": "可追溯：关键判断紧邻来源标签，并保留可检查的来源索引。",
+            "weight": 2.0,
+            "failure_type": "traceability",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "independent_sources",
+            "description": "独立来源：公司时间线、政府阶段和工程证据分组使用，不把同组材料当独立互证。",
+            "weight": 2.0,
+            "failure_type": "source_independence",
+            "passed": false,
+            "missing": [
+              "两类独立来源"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "conflict_counterevidence",
+            "description": "冲突与反证：保留 SKC 时间序列张力、SeWaRe、微裂纹和客户认证缺口。",
+            "weight": 2.0,
+            "failure_type": "counterevidence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "calibration",
+            "description": "校准：结论只称证据边界 ready，不把 ready 写成量产或投资成立。",
+            "weight": 1.5,
+            "failure_type": "calibration",
+            "passed": false,
+            "missing": [
+              "研究状态：ready",
+              "不是量产成立或投资结论"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "next_step_usefulness",
+            "description": "下一步可用：给出停止条件、恢复触发条件及良率/报废/认证核验动作。",
+            "weight": 1.5,
+            "failure_type": "next_step_usefulness",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "independent_sources",
+            "description": "独立来源：公司时间线、政府阶段和工程证据分组使用，不把同组材料当独立互证。",
+            "weight": 2.0,
+            "failure_type": "source_independence",
+            "passed": false,
+            "missing": [
+              "两类独立来源"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "calibration",
+            "description": "校准：结论只称证据边界 ready，不把 ready 写成量产或投资成立。",
+            "weight": 1.5,
+            "failure_type": "calibration",
+            "passed": false,
+            "missing": [
+              "研究状态：ready",
+              "不是量产成立或投资结论"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 6,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "factual_accuracy",
+            "description": "事实准确：设施、样品、低量制造与稳定大批量制造不得混写。",
+            "weight": 2.0,
+            "failure_type": "factual_accuracy",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "traceability",
+            "description": "可追溯：关键判断紧邻来源标签，并保留可检查的来源索引。",
+            "weight": 2.0,
+            "failure_type": "traceability",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "independent_sources",
+            "description": "独立来源：公司时间线、政府阶段和工程证据分组使用，不把同组材料当独立互证。",
+            "weight": 2.0,
+            "failure_type": "source_independence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "conflict_counterevidence",
+            "description": "冲突与反证：保留 SKC 时间序列张力、SeWaRe、微裂纹和客户认证缺口。",
+            "weight": 2.0,
+            "failure_type": "counterevidence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "calibration",
+            "description": "校准：结论只称证据边界 ready，不把 ready 写成量产或投资成立。",
+            "weight": 1.5,
+            "failure_type": "calibration",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "next_step_usefulness",
+            "description": "下一步可用：给出停止条件、恢复触发条件及良率/报废/认证核验动作。",
+            "weight": 1.5,
+            "failure_type": "next_step_usefulness",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 31.82,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "industrial-vision-market-model-output",
+      "prompt": "# 中国工业机器视觉质检软件市场建模任务\n\n- 研究日期：2026-07-29\n- 地域：中国大陆\n- 时间口径：外部事实使用其原始年份；情景模型统一到 2026 年人民币年化口径\n- 决策用途：形成可复核的市场情景，并明确下一轮需要补的客户、价格和渗透率证据。\n\n用户给定假设（不是外部事实）：\n\n- U1：可服务客户占制造业法人单位的 1%。\n- U2：工业视觉质检软件年支出为 12 万元/客户。\n- U3：三年可获得渗透率为 8%。\n- U4：工业企业营业收入中用于工业视觉质检软件的比例为 0.02%。\n- U5：上述顶部口径中 60% 属于可服务范围。\n\n约束：\n\n1. 不得把 404.8 万制造业法人单位直接视为工业视觉客户数。\n2. 不得把任一数字化或工业互联网采用率直接视为机器视觉渗透率。\n3. 不得把整机视觉系统平均售价直接视为纯软件年价格。\n4. 181.47 亿元、395.4 亿元和约 400 亿元来自不同定义，必须并列，不得合并或平均。\n5. Total Addressable Market（TAM，总可及市场，理论上所有目标需求对应的收入池）、Serviceable Available Market（SAM，可服务市场，产品和地域实际覆盖的收入池）与 Serviceable Obtainable Market（SOM，可获得市场，给定期间可现实取得的收入池）必须分开。\n\n",
+      "input_files": [
+        "runs/market-model-fact-vs-assumption/input/research_brief.md",
+        "runs/market-model-fact-vs-assumption/input/source_manifest.md"
+      ],
+      "metadata": {
+        "case_type": "acceptance",
+        "artifact_type": "xlsx_canonical_cell_dump",
+        "fixed_date": "2026-07-29",
+        "skill": "jvc-market-sizing"
+      },
+      "baseline": {
+        "score": 60.0,
+        "passed_count": 4,
+        "failed_count": 2,
+        "checks": [
+          {
+            "id": "factual_accuracy",
+            "description": "事实准确：法人、数字化采用和整机价格不得直接变成视觉客户、渗透率或纯软件价格。",
+            "weight": 2.0,
+            "failure_type": "factual_accuracy",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "traceability",
+            "description": "可追溯：外部事实、用户假设和模型公式在六张表中有来源或标签。",
+            "weight": 2.0,
+            "failure_type": "traceability",
+            "passed": false,
+            "missing": [
+              "[外部事实]",
+              "[模型估算]"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "independent_sources",
+            "description": "独立来源：政府、监管披露、行业/技术材料和公司材料不混成单一来源。",
+            "weight": 1.5,
+            "failure_type": "source_independence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "conflict_counterevidence",
+            "description": "冲突与反证：181.47/395.4/400 亿元按定义并列，禁止合并或平均。",
+            "weight": 2.0,
+            "failure_type": "counterevidence",
+            "passed": false,
+            "missing": [
+              "三组行业绝对额不可合并",
+              "181.47/395.4/>400",
+              "不平均"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "calibration",
+            "description": "校准：市场数字只作为情景，明确低置信度及非市场事实边界。",
+            "weight": 1.5,
+            "failure_type": "calibration",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "next_step_usefulness",
+            "description": "下一步可用：对账后指出优先验证纯软件收入、客户定义和可访谈变量。",
+            "weight": 1.0,
+            "failure_type": "next_step_usefulness",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "traceability",
+            "description": "可追溯：外部事实、用户假设和模型公式在六张表中有来源或标签。",
+            "weight": 2.0,
+            "failure_type": "traceability",
+            "passed": false,
+            "missing": [
+              "[外部事实]",
+              "[模型估算]"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "conflict_counterevidence",
+            "description": "冲突与反证：181.47/395.4/400 亿元按定义并列，禁止合并或平均。",
+            "weight": 2.0,
+            "failure_type": "counterevidence",
+            "passed": false,
+            "missing": [
+              "三组行业绝对额不可合并",
+              "181.47/395.4/>400",
+              "不平均"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 6,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "factual_accuracy",
+            "description": "事实准确：法人、数字化采用和整机价格不得直接变成视觉客户、渗透率或纯软件价格。",
+            "weight": 2.0,
+            "failure_type": "factual_accuracy",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "traceability",
+            "description": "可追溯：外部事实、用户假设和模型公式在六张表中有来源或标签。",
+            "weight": 2.0,
+            "failure_type": "traceability",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "independent_sources",
+            "description": "独立来源：政府、监管披露、行业/技术材料和公司材料不混成单一来源。",
+            "weight": 1.5,
+            "failure_type": "source_independence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "conflict_counterevidence",
+            "description": "冲突与反证：181.47/395.4/400 亿元按定义并列，禁止合并或平均。",
+            "weight": 2.0,
+            "failure_type": "counterevidence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "calibration",
+            "description": "校准：市场数字只作为情景，明确低置信度及非市场事实边界。",
+            "weight": 1.5,
+            "failure_type": "calibration",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "next_step_usefulness",
+            "description": "下一步可用：对账后指出优先验证纯软件收入、客户定义和可访谈变量。",
+            "weight": 1.0,
+            "failure_type": "next_step_usefulness",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 40.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    }
+  ],
+  "failures": [],
+  "blind_review": {
+    "pack": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.json",
+    "answer_key": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_answer_key.json",
+    "pair_count": 2
+  },
+  "artifacts": {
+    "json": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/research-core-output-eval.json",
+    "markdown": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/research-core-output-eval.md",
+    "blind_review_pack_json": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.json",
+    "blind_review_pack_md": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.md",
+    "blind_answer_key_json": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_answer_key.json"
+  }
+}

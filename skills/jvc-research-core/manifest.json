@@ -1,0 +1,16 @@
+{
+  "name": "jvc-research-core",
+  "version": "2.0.0",
+  "owner": "jvc-analyst",
+  "updated_at": "2026-07-29",
+  "status": "active",
+  "maturity_tier": "library",
+  "lifecycle_stage": "library",
+  "context_budget_tier": "production",
+  "review_cadence": "quarterly",
+  "target_platforms": ["codex", "claude", "generic", "agent-skills-compatible"],
+  "factory_components": ["agents", "references", "profiles", "scripts", "reports"],
+  "input_files": "file-backed fixture: scope JSON, evidence JSONL, skill profile, and local final artifacts",
+  "output_contract": ["evidence_registry.jsonl", "audit.json", "audit.md", "ready/partial/blocked exit status"],
+  "rollback_boundary": "Revert the core and profile commit; research inputs and pre-existing artifacts stay outside the package boundary."
+}

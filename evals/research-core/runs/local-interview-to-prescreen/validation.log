@@ -1,0 +1,18 @@
+local-interview-to-prescreen acceptance validation
+date: 2026-07-30
+
+execution:
+- python3 scripts/check-docx-filename-rule.py: exit=0
+- python3 scripts/check-docx-format-consistency.py: exit=0
+- direct generated-artifact format check: exit=0; A4 page=(21.0, 29.7) cm; margins=(2.54, 2.54, 3.17, 3.17) cm; standard section XML and Normal paragraph styling verified
+- researchctl audit --skill jvc-prescreen --artifact artifacts/prescreen.md: exit=0; status=ready
+
+content and evidence checks:
+- the Office Open XML Document（DOCX，Office 开放 XML 文档，Microsoft Word 的压缩文档格式）uses the canonical filename 【2026年07月29日访谈】澄像智检（虚构）.docx
+- 受访者自述 and 用户观察 are explicitly separated in the generated document
+- canonical ledger records=10; waiver records=0
+- prescreen final audit binds the ready jvc-meeting-notes dependency
+- prescreen findings=0
+
+final prescreen artifact fingerprint:
+- Secure Hash Algorithm 256-bit（SHA-256，安全散列算法 256 位，用于核对文件内容是否变化）=6012deeac24472367a04ee9d5b5d0daa301cdb9056d537863e5d5b9dc0a51c5d

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-07-22",
+  "generated_at": "2026-07-30",
   "mode": "production-governance",
-  "package_sha256": "51acb7f4dfa18502b692181f2e38446f83f430f4dabdbeb1b3b7a61da7fc9f50",
+  "package_sha256": "50376a35bf258272fbe62fea5035299d99e62b6b0efc1d827377b93be7a19462",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
@@ -19,7 +19,10 @@
   "network_policy": {
     "status": "pass",
     "policy_file": "security/network_policy.json",
-    "network_capable_scripts": []
+    "network_capable_scripts": [],
+    "notes": [
+      "No research-core, review-kit, or research-report renderer script has network capability."
+    ]
   },
   "permission_policy": {
     "status": "pass",
@@ -39,9 +42,10 @@
       "WeasyPrint==68.1"
     ],
     "notes": [
+      "The research core, install check, and review-kit renderer use the Python standard library only.",
       "All jvc-research-report Python runtime dependencies are version-pinned.",
-      "Some Python dependencies outside jvc-research-report are not version-pinned.",
-      "Homebrew dependencies for OCR are documented but not machine-pinned."
+      "Some existing DOCX and invoice dependencies are not version-pinned.",
+      "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
     ]
   },
   "research_report_evidence": {
@@ -81,6 +85,25 @@
       "help_surface": "none",
       "capabilities": [
         "file_read"
+      ]
+    },
+    {
+      "path": "scripts/check-research-core-install.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/render-output-review-kit.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read",
+        "file_write"
       ]
     },
     {
@@ -165,13 +188,31 @@
         "file_write",
         "copy_pdf"
       ]
+    },
+    {
+      "path": "skills/jvc-research-core/scripts/researchctl.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "skills/jvc-research-core/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
     }
   ],
   "warnings": [
     "Invoice scripts use manual sys.argv parsing rather than argparse --help.",
-    "Model-executed eval evidence is missing evidence.",
+    "Model-executed routing evidence is missing.",
     "The rendered research-report fixture is deterministic self-check evidence rather than blind-review evidence.",
-    "Runtime permission probes for packaged adapters are missing evidence because no dist package is generated in this local pass."
+    "Runtime permission probes for packaged adapters are missing because no dist package is generated in this local pass."
   ],
-  "release_rule": "No high-risk secrets or unrestricted remote inline execution detected. Production governance can proceed with warnings; do not claim governed public release readiness."
+  "release_rule": "No high-risk secrets or unrestricted remote inline execution detected. Repository-local production governance can proceed with warnings; do not claim governed public release readiness."
 }

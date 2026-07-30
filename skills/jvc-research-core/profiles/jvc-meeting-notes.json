@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill": "jvc-meeting-notes",
+  "required_record_types": ["scope", "source"],
+  "current_skill_record_types": ["source"],
+  "requires_counter_query": false,
+  "minimum_independent_sources": 1,
+  "artifact_policy": {
+    "kind": "docx",
+    "allowed_suffixes": [".docx"],
+    "required_names": [],
+    "required_sheets": []
+  }
+}

@@ -20,6 +20,12 @@
 | `jvc-talk-notes` | 本仓库 | `skills/jvc-talk-notes/SKILL.md` | 把高管访谈、客户访谈和专家访谈整理成问答式 `.docx` 纪要。 | `/jvc-talk-notes` |
 | `jvc-invoice-manager` | 本仓库，整合自 `invoice-manager` | `skills/jvc-invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | `/jvc-invoice-manager` |
 
+## Hidden support component
+
+| Component | 事实来源 | 本地入口 | 工具集角色 | 触发位置 |
+| --- | --- | --- | --- | --- |
+| `jvc-research-core` | 本仓库 | `skills/jvc-research-core/SKILL.md` | 维护追加式证据台账，并对研究产物执行确定性审查。 | 不提供 slash command；仅由已接入的研究 skill 调用。 |
+
 ## 接入规则
 
 - 原始材料保持本地存放。不要把 BP、逐字稿、财务文件、创始人沟通记录上传到第三方网页工具。

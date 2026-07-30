@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VC Analyst 2.0 输出盲审</title>
+  <style>
+    :root { --navy:#17365d; --ink:#20242a; --muted:#6e6a64; --line:#ded8cf; --paper:#fff; --soft:#f6f3ed; --accent:#b45309; --ok:#26734d; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:#eeeae3; color:var(--ink); font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    a { color:#155a9c; overflow-wrap:anywhere; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    .topbar { position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; gap:18px; padding:12px max(20px,calc((100vw - 1560px)/2)); background:rgba(255,255,255,.96); border-bottom:1px solid var(--line); }
+    .topbar strong { color:var(--navy); }
+    .topbar nav { display:flex; gap:18px; }
+    .topbar a { color:var(--navy); text-decoration:none; }
+    main { max-width:1560px; margin:auto; padding:28px 22px 80px; }
+    .hero, .panel, .case-card { background:var(--paper); border:1px solid var(--line); border-radius:12px; }
+    .hero { padding:34px; }
+    .eyebrow, .case-head span { color:var(--muted); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:5px 0 8px; color:var(--navy); font:700 clamp(36px,5vw,68px)/1.05 Georgia,"Songti SC",serif; }
+    .lede { max-width:780px; margin:0; color:var(--muted); font-size:19px; }
+    .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:24px; }
+    .stats div { padding:14px 16px; background:var(--soft); border-radius:8px; }
+    .stats span { display:block; color:var(--muted); font-size:13px; }
+    .stats strong { color:var(--navy); font-size:30px; }
+    .guide { display:grid; grid-template-columns:1.25fr .75fr; gap:16px; margin:18px 0; }
+    .panel { padding:20px 24px; }
+    h2, h3, h4 { color:var(--navy); }
+    h2 { margin:0 0 10px; }
+    .case-card { margin:22px 0; padding:24px; scroll-margin-top:64px; }
+    .case-head { display:flex; justify-content:space-between; gap:16px; align-items:start; }
+    .case-head h3 { margin:2px 0 0; font-size:24px; overflow-wrap:anywhere; }
+    .status { padding:5px 11px; border:1px solid var(--line); border-radius:999px; color:var(--accent); white-space:nowrap; }
+    .status.ready-for-adjudication { color:var(--ok); }
+    details.brief { margin:18px 0; padding:14px 16px; background:var(--soft); border-radius:8px; }
+    summary { color:var(--navy); cursor:pointer; font-weight:700; }
+    .prompt { margin-top:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+    .rubric { list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px; }
+    .rubric li { display:grid; grid-template-columns:190px 1fr 42px; gap:12px; align-items:start; }
+    .rubric code { overflow-wrap:anywhere; word-break:break-word; font-size:12px; }
+    .rubric strong { text-align:right; }
+    .variants { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start; }
+    .variant { min-width:0; border:1px solid var(--line); border-radius:10px; background:#fff; overflow:hidden; }
+    .variant-head { position:sticky; top:49px; z-index:10; display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#eef3f8; border-bottom:1px solid #ccd7e3; }
+    .variant-head h4 { margin:0; font-size:18px; }
+    .variant-head span { color:var(--muted); font-size:12px; }
+    .rendered-markdown { padding:18px; overflow-wrap:anywhere; }
+    .rendered-markdown h2 { margin:1.5em 0 .55em; padding-bottom:.25em; border-bottom:1px solid var(--line); font-size:24px; }
+    .rendered-markdown h3 { margin:1.35em 0 .45em; font-size:20px; }
+    .rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6 { margin:1.2em 0 .4em; font-size:17px; }
+    .rendered-markdown p { margin:.65em 0; }
+    .content-list { margin:.55em 0 1em; padding-left:1.45em; }
+    .content-list li { margin:.28em 0; }
+    blockquote { margin:1em 0; padding:.6em 1em; border-left:4px solid #9aaabd; background:var(--soft); color:var(--muted); }
+    .table-scroll { margin:12px 0 18px; overflow:auto; border:1px solid var(--line); border-radius:7px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; line-height:1.45; }
+    th { position:sticky; top:0; background:#eef3f8; color:var(--navy); text-align:left; }
+    th, td { min-width:90px; padding:8px 10px; border-bottom:1px solid var(--line); border-right:1px solid var(--line); vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    th:last-child, td:last-child { border-right:0; }
+    .sheet-grid th, .sheet-grid td { min-width:130px; }
+    .sheet-grid th:first-child, .sheet-grid td:first-child { position:sticky; left:0; z-index:2; min-width:46px; width:46px; background:#f4f6f8; color:var(--muted); text-align:right; }
+    .sheet-grid th:first-child { z-index:3; }
+    .render-warning { padding:12px 14px; border-left:4px solid var(--accent); background:#fff7ed; color:#7c2d12; }
+    .raw { margin:0 16px 16px; padding:10px 12px; border:1px dashed var(--line); border-radius:7px; }
+    .raw pre, .code-block { white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; line-height:1.55; }
+    footer { margin-top:16px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+    @media (max-width:900px) {
+      .stats, .guide, .variants { grid-template-columns:1fr; }
+      .rubric li { grid-template-columns:1fr; }
+      .rubric strong { text-align:left; }
+      .variant-head { position:static; }
+      main { padding-inline:12px; }
+      .hero, .case-card { padding:18px; }
+      .topbar nav { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar"><strong>VC Analyst 2.0 · 输出盲审</strong><nav><a href="#guide">审阅说明</a><a href="#cases">案例</a></nav></header>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Blind A/B Human Review</span>
+      <h1>先读结论，再核证据</h1>
+      <p class="lede">报告默认按 Markdown 排版；工作簿单元格导出自动转成表格。两个版本仍保持匿名，原始文本保留在折叠区供核对。</p>
+      <div class="stats">
+        <div><span>案例</span><strong>2</strong></div>
+        <div><span>可裁决</span><strong>2</strong></div>
+        <div><span>待判断</span><strong>0</strong></div>
+        <div><span>异常</span><strong>0</strong></div>
+      </div>
+    </section>
+    <section class="guide" id="guide">
+      <article class="panel"><h2>审阅流程</h2><ol><li>先阅读每个案例的任务口径与六项审阅标准。</li><li>对照版本 A 与版本 B 的结论、证据、冲突处理和下一步动作。</li><li>分别记录胜者 A/B、0–1 置信度和简短理由；不确定时降低置信度，不猜隐藏标签。</li><li>完成两个案例后，将判断交给项目维护者登记并裁决。</li></ol></article>
+      <aside class="panel"><h2>盲审边界</h2><ul><li>答案密钥未嵌入本页面。</li><li>做出两个判断前不要查看隐藏标签或答案密钥。</li><li>理由中不要粘贴私人数据。</li><li>未完成的判断必须保持待定，不能计为人工同意。</li></ul></aside>
+    </section>
+    <section id="cases">
+      <article class="case-card" id="case-glass-substrate-public-research-output">
+        <header class="case-head">
+          <div><span>案例 01</span><h3>glass-substrate-public-research-output</h3></div>
+          <strong class="status ready-for-adjudication">可裁决</strong>
+        </header>
+        <details class="brief" open>
+          <summary>任务与审阅标准</summary>
+          <div class="prompt rendered-markdown"><h2>玻璃基板先进封装公开研究任务</h2>
+<ul class="content-list"><li>研究日期：2026-07-29</li><li>地域：全球，兼顾中国早期风险投资研究</li><li>时间：2023-2026 年公开进展，展望未来 3-5 年</li><li>决策用途：判断下一轮尽调应优先核验技术性能、客户资格认证，还是稳定大批量制造（High-Volume Manufacturing，HVM，大批量制造，指稳定、可重复且有商业规模的生产状态）。</li><li>排除：显示面板盖板玻璃、仅作为临时载板的玻璃载体、未经实际打开的二手转载。</li></ul>
+<p>核心要求：</p>
+<ol class="content-list"><li>设施建成、样品、试验线、低量生产不能等同于稳定 HVM。</li><li>主动寻找量产良率、可靠性、破损、翘曲、通孔和客户认证方面的反证。</li><li>保留 SKC/Absolics 不同年份材料中“首座量产设施”与后续“继续可靠性测试、质量和良率提升”的时间序列张力。</li><li>保留 Sony/IEEE 工程证据中 SeWaRe 玻璃失效模式及可靠性边界。</li><li>无可比量产良率和客户放量数据时，收窄结论，不把“未找到”写成“不存在”。</li></ol></div>
+          <ul class="rubric"><li><code>factual_accuracy</code><span>事实准确：设施、样品、低量制造与稳定大批量制造不得混写。</span><strong>2.0</strong></li><li><code>traceability</code><span>可追溯：关键判断紧邻来源标签，并保留可检查的来源索引。</span><strong>2.0</strong></li><li><code>independent_sources</code><span>独立来源：公司时间线、政府阶段和工程证据分组使用，不把同组材料当独立互证。</span><strong>2.0</strong></li><li><code>conflict_counterevidence</code><span>冲突与反证：保留 SKC 时间序列张力、SeWaRe、微裂纹和客户认证缺口。</span><strong>2.0</strong></li><li><code>calibration</code><span>校准：结论只称证据边界 ready，不把 ready 写成量产或投资成立。</span><strong>1.5</strong></li><li><code>next_step_usefulness</code><span>下一步可用：给出停止条件、恢复触发条件及良率/报废/认证核验动作。</span><strong>1.5</strong></li></ul>
+        </details>
+        <section class="variants" aria-label="匿名输出版本">
+          <article class="variant">
+            <header class="variant-head"><h4>版本 A</h4><span>默认阅读视图</span></header>
+            <div class="rendered-markdown"><h2>先进封装玻璃基板产业知识图谱</h2>
+<h3>0. 研究设定与一页快照</h3>
+<ul class="content-list"><li>研究对象：用于先进半导体封装的玻璃芯基板、玻璃中介层和 Through-Glass Via（TGV，通玻璃孔，在玻璃中形成垂直导电连接的工艺）。</li><li>排除：显示面板盖板玻璃，以及只在加工过程中临时承载晶圆的玻璃载板。</li><li>地域与时间：全球，公开资料截至 2026-07-29，关注未来 3-5 年。</li><li>投资阶段：早期 Venture Capital（VC，风险投资，围绕创业公司融资与投资判断开展的专业投资活动）研究。</li><li>本轮用途：识别产业阶段、关键技术路线、玩家和下一轮尽调方向；不输出投资结论。</li></ul>
+<h4>一页快照</h4>
+<p>玻璃基板有更好的平整度、尺寸稳定性和高密度互连潜力，适合大尺寸、高性能封装。[S1][S4][S5] 产业仍处于导入期：多家公司已有设施、样品或量产目标，但公开资料没有给出可直接比较的客户认证、持续出货和生产良率。[S2][S3][S6][S8]</p>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>维度</th><th>初判</th></tr></thead><tbody><tr><td>可行性</td><td>样件已验证低翘曲和部分可靠性；热循环失效、微裂纹、搬运和 TGV 工艺仍需解决。[S4][S5]</td></tr><tr><td>规模性</td><td>需求方向明确，但公开出货和良率数据不足。</td></tr><tr><td>防守性</td><td>材料配方、TGV、金属化和封装协同可能形成工艺壁垒。</td></tr><tr><td>盈利性</td><td>暂无公开单位成本、合格面积价格和毛利数据。</td></tr></tbody></table></div>
+<p>当前生命周期判断为导入期，置信度中等。领先指标是客户送样、认证、重复订单和稳定出货；反向信号是设施建成后仍长期停留在可靠性测试和良率改善阶段。</p>
+<h3>A. 行业定义与边界</h3>
+<p>玻璃芯基板用玻璃替代传统有机核心材料；玻璃中介层位于芯粒和封装基板之间，以精细线路和 TGV 连接多颗芯片。玻璃的主要卖点是平整、低翘曲、尺寸稳定和更高互连密度。[S1]</p>
+<p>需要区分五个阶段：研发样件、客户送样、资格认证、低量制造、High-Volume Manufacturing（HVM，大批量制造，指稳定、可重复且具商业规模的生产）。本报告不把其中任何一个前置阶段直接视为稳定 HVM。</p>
+<h3>B. 行业简史与产业生命周期</h3>
+<p>玻璃先进封装已研发多年，近年因为高性能计算和多芯粒封装需要更大的封装尺寸和更细的互连而重新升温。Intel 把玻璃基板导入目标放在本十年后半段，并强调密度、平整度和大尺寸封装能力。[S1]</p>
+<p>SKC 在 2023 年表示 Absolics 将完成量产设施。[S2] 2024 年美国国家标准与技术研究院披露的资助项目仍包括原型开发、商业验证和低量制造。[S6] 到 2026 年，SKC 经营材料仍提到准备可靠性测试、改善质量和生产良率。[S3] 因此设施已经建设，但产品成熟度和客户放量仍需继续核验。</p>
+<p>Samsung Electro-Mechanics 在 2025 年推广样品，目标为 2027 年量产。[S8] 多家公司时间表说明方向受到重视，但不能替代实际量产数据。</p>
+<h3>C. 技术路线与商业可行性</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>路线</th><th>技术优势</th><th>主要难点</th><th>商业化状态</th></tr></thead><tbody><tr><td>玻璃芯封装基板</td><td>尺寸稳定、低翘曲、支持大尺寸封装 [S1]</td><td>微裂纹、热应力、build-up 层匹配 [S4][S5]</td><td>样件、认证与低量制造</td></tr><tr><td>玻璃中介层</td><td>精细互连、低介电损耗、可集成 TGV</td><td>成孔、金属化、界面可靠性 [S5]</td><td>研发和样件</td></tr><tr><td>玻璃—有机混合结构</td><td>保留玻璃性能并兼容部分既有工艺</td><td>界面和热膨胀系数匹配</td><td>工程开发</td></tr></tbody></table></div>
+<p>Sony Semiconductor Solutions 的样件呈现较小的温度和吸湿翘曲变化，也满足其一般用途可靠性；同一研究在热循环中观察到 SeWaRe 玻璃失效模式，并指出 build-up 厚度和应力会影响可靠性裕量。[S4]</p>
+<p>电气与电子工程师协会电子封装学会的综述记录了部分 daisy-chain 样件经过 1000 次热循环的结果，同时指出微裂纹、大尺寸薄板搬运、TGV 制造、金属化和应力缓解仍需继续推进。[S5]</p>
+<p>商业可行性的关键不是单个样件性能，而是客户是否愿意承担验证与切换成本，以及良率和单位合格面积成本能否随产量下降。当前公开材料不能回答这两个问题。</p>
+<h3>D. 产业链图谱</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>环节</th><th>参与者</th><th>价值点</th></tr></thead><tbody><tr><td>特种玻璃材料</td><td>玻璃材料供应商</td><td>厚度、尺寸、缺陷和热膨胀系数</td></tr><tr><td>TGV、金属化和线路</td><td>基板厂、设备商、材料商</td><td>成孔、镀层、精细线路和良率</td></tr><tr><td>封装集成</td><td>晶圆厂和封装测试服务商</td><td>组装、可靠性、客户设计规则</td></tr><tr><td>终端客户</td><td>数据中心、人工智能和高性能计算芯片厂商</td><td>认证、采购、重复订单</td></tr></tbody></table></div>
+<p>当前最接近客户预算的是封装集成和终端芯片环节。基板供应商只有在性能优势转化为系统级成本、功耗或良率收益时，才能建立议价权。</p>
+<h3>E. 产业趋势、景气度与周期位置</h3>
+<h4>政策趋势</h4>
+<p>美国半导体产业项目支持 Absolics 的原型、商业验证和低量制造能力。[S6] 政策可以降低建线成本，但不能证明客户需求和盈利。</p>
+<h4>技术趋势</h4>
+<p>更大封装、更细线路和多芯粒集成推动玻璃材料。与此同时，玻璃脆性、搬运、检测和标准化仍增加制造难度。Semiconductor Engineering 的多方行业采访显示，专线投资缺少即时业务支撑，采用速度可能低于技术宣传。[S7]</p>
+<h4>市场趋势</h4>
+<p>Intel、SKC/Absolics 和 Samsung Electro-Mechanics 都公布了路线图或设施进展。[S1][S2][S8] 最可能先采用的是高价值、大尺寸封装，而不是成熟通用封装。</p>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>周期</th><th>位置</th><th>指标</th></tr></thead><tbody><tr><td>需求/采纳</td><td>上行早期</td><td>样品、认证、重复订单</td></tr><tr><td>产能/库存</td><td>导入爬坡</td><td>实际良率、报废原因、连续出货</td></tr><tr><td>竞争/盈利</td><td>证据不足</td><td>客户集中度、单位成本、毛利</td></tr><tr><td>融资/政策</td><td>投入期</td><td>建线、补贴、设备采购</td></tr></tbody></table></div>
+<h3>F. 关键玩家分层</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>类型</th><th>玩家</th><th>定位</th></tr></thead><tbody><tr><td>大型芯片公司</td><td>Intel</td><td>长期研发玻璃基板，计划本十年后半段导入 [S1]</td></tr><tr><td>玻璃基板供应商</td><td>SKC/Absolics</td><td>建设美国设施并推进可靠性和良率 [S2][S3][S6]</td></tr><tr><td>电子组件公司</td><td>Samsung Electro-Mechanics</td><td>推广样品，目标 2027 年量产 [S8]</td></tr><tr><td>工程验证方</td><td>Sony Semiconductor Solutions</td><td>发布玻璃芯样件热与可靠性研究 [S4]</td></tr></tbody></table></div>
+<p>不以融资额、补贴额或设施面积代表技术领先。</p>
+<h3>G. 监管、政策与标准</h3>
+<p>美国项目材料确认了政策支持和低量制造范围。[S6] 公开资料未提供统一的量产良率定义。不同公司的良率数字只有在面积、层数、线宽/线距、TGV 数量、测试条件和客户认证阶段一致时才可比较。</p>
+<h3>H. 投资相关问题</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>问题</th><th>当前判断</th><th>反证条件</th><th>下一步</th></tr></thead><tbody><tr><td>客户是否真正付费</td><td>公开证据不足</td><td>客户订单、验收和复购</td><td>访谈封装厂与芯片客户</td></tr><tr><td>良率是否支持规模交付</td><td>尚未证实</td><td>连续季度同口径良率</td><td>索取月度良率和报废原因</td></tr><tr><td>技术优势是否转化为系统价值</td><td>有潜力但未量化</td><td>客户系统成本和性能对比</td><td>对比有机、硅和玻璃方案</td></tr><tr><td>专线是否具有经济性</td><td>暂无公开数据</td><td>设备利用率、单位合格面积成本</td><td>拆分资本开支、节拍和维护</td></tr><tr><td>可靠性风险是否可控</td><td>样件有进展，仍有失效模式</td><td>多客户寿命数据</td><td>核验热循环和现场失效率</td></tr></tbody></table></div>
+<h3>I. 后续工作交接包</h3>
+<ul class="content-list"><li><code>/jvc-comps-dd</code>：按设施、样品、认证、低量制造、稳定出货五级比较玩家。</li><li><code>/jvc-market-sizing</code>：收集单位合格面积价格、客户项目数量、认证转化率和出货节奏。</li><li><code>/jvc-bull-case</code>：验证玻璃在大尺寸封装上的系统级性能与成本优势。</li><li><code>/jvc-bear-case</code>：验证良率、微裂纹、TGV、专线投资和客户切换风险。</li><li>访谈对象：基板厂工艺负责人、封装厂采购/认证负责人和终端芯片封装架构师。</li></ul>
+<p>停止条件：两轮检索未取得可比客户量产良率或稳定出货数据，继续增加公司公告不会改变导入期判断。本轮停止，待取得客户认证、连续出货或同口径良率后恢复。</p>
+<h3>来源索引</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>来源编号</th><th>来源</th><th>日期</th><th>类型</th><th>链接</th></tr></thead><tbody><tr><td>[S1]</td><td>Intel Unveils Industry-Leading Glass Substrates / Intel</td><td>2023-09-18</td><td>公司材料</td><td><a href="https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates" target="_blank" rel="noreferrer">https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates</a></td></tr><tr><td>[S2]</td><td>SKC Glass Substrate Business Set to Take Off / SKC</td><td>2023-11-09</td><td>公司材料</td><td><a href="https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579" target="_blank" rel="noreferrer">https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579</a></td></tr><tr><td>[S3]</td><td>4Q25 Earnings Release / SKC</td><td>2026-02-05</td><td>公司披露</td><td><a href="https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf" target="_blank" rel="noreferrer">https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf</a></td></tr><tr><td>[S4]</td><td>Physical and Thermal Characteristics / Sony</td><td>2024</td><td>技术论文</td><td><a href="https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/" target="_blank" rel="noreferrer">https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/</a></td></tr><tr><td>[S5]</td><td>Glass Core Substrate / 电气与电子工程师协会电子封装学会</td><td>2025-11</td><td>技术综述</td><td><a href="https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf" target="_blank" rel="noreferrer">https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf</a></td></tr><tr><td>[S6]</td><td>Absolics Inc. Covington / 美国国家标准与技术研究院</td><td>2024-05-23</td><td>政府项目</td><td><a href="https://www.nist.gov/chips/absolics-inc-covington" target="_blank" rel="noreferrer">https://www.nist.gov/chips/absolics-inc-covington</a></td></tr><tr><td>[S7]</td><td>The Race To Glass Substrates / Semiconductor Engineering</td><td>2024-05-29</td><td>行业媒体</td><td><a href="https://semiengineering.com/the-race-to-glass-substrates/" target="_blank" rel="noreferrer">https://semiengineering.com/the-race-to-glass-substrates/</a></td></tr><tr><td>[S8]</td><td>Glass substrate sample promotion / Samsung Electro-Mechanics</td><td>2025-01-09</td><td>公司材料</td><td><a href="https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923" target="_blank" rel="noreferrer">https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923</a></td></tr></tbody></table></div></div>
+            <details class="raw"><summary>查看原始文本</summary><pre># 先进封装玻璃基板产业知识图谱
+
+## 0. 研究设定与一页快照
+
+- 研究对象：用于先进半导体封装的玻璃芯基板、玻璃中介层和 Through-Glass Via（TGV，通玻璃孔，在玻璃中形成垂直导电连接的工艺）。
+- 排除：显示面板盖板玻璃，以及只在加工过程中临时承载晶圆的玻璃载板。
+- 地域与时间：全球，公开资料截至 2026-07-29，关注未来 3-5 年。
+- 投资阶段：早期 Venture Capital（VC，风险投资，围绕创业公司融资与投资判断开展的专业投资活动）研究。
+- 本轮用途：识别产业阶段、关键技术路线、玩家和下一轮尽调方向；不输出投资结论。
+
+### 一页快照
+
+玻璃基板有更好的平整度、尺寸稳定性和高密度互连潜力，适合大尺寸、高性能封装。[S1][S4][S5] 产业仍处于导入期：多家公司已有设施、样品或量产目标，但公开资料没有给出可直接比较的客户认证、持续出货和生产良率。[S2][S3][S6][S8]
+
+| 维度 | 初判 |
+| --- | --- |
+| 可行性 | 样件已验证低翘曲和部分可靠性；热循环失效、微裂纹、搬运和 TGV 工艺仍需解决。[S4][S5] |
+| 规模性 | 需求方向明确，但公开出货和良率数据不足。 |
+| 防守性 | 材料配方、TGV、金属化和封装协同可能形成工艺壁垒。 |
+| 盈利性 | 暂无公开单位成本、合格面积价格和毛利数据。 |
+
+当前生命周期判断为导入期，置信度中等。领先指标是客户送样、认证、重复订单和稳定出货；反向信号是设施建成后仍长期停留在可靠性测试和良率改善阶段。
+
+## A. 行业定义与边界
+
+玻璃芯基板用玻璃替代传统有机核心材料；玻璃中介层位于芯粒和封装基板之间，以精细线路和 TGV 连接多颗芯片。玻璃的主要卖点是平整、低翘曲、尺寸稳定和更高互连密度。[S1]
+
+需要区分五个阶段：研发样件、客户送样、资格认证、低量制造、High-Volume Manufacturing（HVM，大批量制造，指稳定、可重复且具商业规模的生产）。本报告不把其中任何一个前置阶段直接视为稳定 HVM。
+
+## B. 行业简史与产业生命周期
+
+玻璃先进封装已研发多年，近年因为高性能计算和多芯粒封装需要更大的封装尺寸和更细的互连而重新升温。Intel 把玻璃基板导入目标放在本十年后半段，并强调密度、平整度和大尺寸封装能力。[S1]
+
+SKC 在 2023 年表示 Absolics 将完成量产设施。[S2] 2024 年美国国家标准与技术研究院披露的资助项目仍包括原型开发、商业验证和低量制造。[S6] 到 2026 年，SKC 经营材料仍提到准备可靠性测试、改善质量和生产良率。[S3] 因此设施已经建设，但产品成熟度和客户放量仍需继续核验。
+
+Samsung Electro-Mechanics 在 2025 年推广样品，目标为 2027 年量产。[S8] 多家公司时间表说明方向受到重视，但不能替代实际量产数据。
+
+## C. 技术路线与商业可行性
+
+| 路线 | 技术优势 | 主要难点 | 商业化状态 |
+| --- | --- | --- | --- |
+| 玻璃芯封装基板 | 尺寸稳定、低翘曲、支持大尺寸封装 [S1] | 微裂纹、热应力、build-up 层匹配 [S4][S5] | 样件、认证与低量制造 |
+| 玻璃中介层 | 精细互连、低介电损耗、可集成 TGV | 成孔、金属化、界面可靠性 [S5] | 研发和样件 |
+| 玻璃—有机混合结构 | 保留玻璃性能并兼容部分既有工艺 | 界面和热膨胀系数匹配 | 工程开发 |
+
+Sony Semiconductor Solutions 的样件呈现较小的温度和吸湿翘曲变化，也满足其一般用途可靠性；同一研究在热循环中观察到 SeWaRe 玻璃失效模式，并指出 build-up 厚度和应力会影响可靠性裕量。[S4]
+
+电气与电子工程师协会电子封装学会的综述记录了部分 daisy-chain 样件经过 1000 次热循环的结果，同时指出微裂纹、大尺寸薄板搬运、TGV 制造、金属化和应力缓解仍需继续推进。[S5]
+
+商业可行性的关键不是单个样件性能，而是客户是否愿意承担验证与切换成本，以及良率和单位合格面积成本能否随产量下降。当前公开材料不能回答这两个问题。
+
+## D. 产业链图谱
+
+| 环节 | 参与者 | 价值点 |
+| --- | --- | --- |
+| 特种玻璃材料 | 玻璃材料供应商 | 厚度、尺寸、缺陷和热膨胀系数 |
+| TGV、金属化和线路 | 基板厂、设备商、材料商 | 成孔、镀层、精细线路和良率 |
+| 封装集成 | 晶圆厂和封装测试服务商 | 组装、可靠性、客户设计规则 |
+| 终端客户 | 数据中心、人工智能和高性能计算芯片厂商 | 认证、采购、重复订单 |
+
+当前最接近客户预算的是封装集成和终端芯片环节。基板供应商只有在性能优势转化为系统级成本、功耗或良率收益时，才能建立议价权。
+
+## E. 产业趋势、景气度与周期位置
+
+### 政策趋势
+
+美国半导体产业项目支持 Absolics 的原型、商业验证和低量制造能力。[S6] 政策可以降低建线成本，但不能证明客户需求和盈利。
+
+### 技术趋势
+
+更大封装、更细线路和多芯粒集成推动玻璃材料。与此同时，玻璃脆性、搬运、检测和标准化仍增加制造难度。Semiconductor Engineering 的多方行业采访显示，专线投资缺少即时业务支撑，采用速度可能低于技术宣传。[S7]
+
+### 市场趋势
+
+Intel、SKC/Absolics 和 Samsung Electro-Mechanics 都公布了路线图或设施进展。[S1][S2][S8] 最可能先采用的是高价值、大尺寸封装，而不是成熟通用封装。
+
+| 周期 | 位置 | 指标 |
+| --- | --- | --- |
+| 需求/采纳 | 上行早期 | 样品、认证、重复订单 |
+| 产能/库存 | 导入爬坡 | 实际良率、报废原因、连续出货 |
+| 竞争/盈利 | 证据不足 | 客户集中度、单位成本、毛利 |
+| 融资/政策 | 投入期 | 建线、补贴、设备采购 |
+
+## F. 关键玩家分层
+
+| 类型 | 玩家 | 定位 |
+| --- | --- | --- |
+| 大型芯片公司 | Intel | 长期研发玻璃基板，计划本十年后半段导入 [S1] |
+| 玻璃基板供应商 | SKC/Absolics | 建设美国设施并推进可靠性和良率 [S2][S3][S6] |
+| 电子组件公司 | Samsung Electro-Mechanics | 推广样品，目标 2027 年量产 [S8] |
+| 工程验证方 | Sony Semiconductor Solutions | 发布玻璃芯样件热与可靠性研究 [S4] |
+
+不以融资额、补贴额或设施面积代表技术领先。
+
+## G. 监管、政策与标准
+
+美国项目材料确认了政策支持和低量制造范围。[S6] 公开资料未提供统一的量产良率定义。不同公司的良率数字只有在面积、层数、线宽/线距、TGV 数量、测试条件和客户认证阶段一致时才可比较。
+
+## H. 投资相关问题
+
+| 问题 | 当前判断 | 反证条件 | 下一步 |
+| --- | --- | --- | --- |
+| 客户是否真正付费 | 公开证据不足 | 客户订单、验收和复购 | 访谈封装厂与芯片客户 |
+| 良率是否支持规模交付 | 尚未证实 | 连续季度同口径良率 | 索取月度良率和报废原因 |
+| 技术优势是否转化为系统价值 | 有潜力但未量化 | 客户系统成本和性能对比 | 对比有机、硅和玻璃方案 |
+| 专线是否具有经济性 | 暂无公开数据 | 设备利用率、单位合格面积成本 | 拆分资本开支、节拍和维护 |
+| 可靠性风险是否可控 | 样件有进展，仍有失效模式 | 多客户寿命数据 | 核验热循环和现场失效率 |
+
+## I. 后续工作交接包
+
+- `/jvc-comps-dd`：按设施、样品、认证、低量制造、稳定出货五级比较玩家。
+- `/jvc-market-sizing`：收集单位合格面积价格、客户项目数量、认证转化率和出货节奏。
+- `/jvc-bull-case`：验证玻璃在大尺寸封装上的系统级性能与成本优势。
+- `/jvc-bear-case`：验证良率、微裂纹、TGV、专线投资和客户切换风险。
+- 访谈对象：基板厂工艺负责人、封装厂采购/认证负责人和终端芯片封装架构师。
+
+停止条件：两轮检索未取得可比客户量产良率或稳定出货数据，继续增加公司公告不会改变导入期判断。本轮停止，待取得客户认证、连续出货或同口径良率后恢复。
+
+## 来源索引
+
+| 来源编号 | 来源 | 日期 | 类型 | 链接 |
+| --- | --- | --- | --- | --- |
+| [S1] | Intel Unveils Industry-Leading Glass Substrates / Intel | 2023-09-18 | 公司材料 | https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates |
+| [S2] | SKC Glass Substrate Business Set to Take Off / SKC | 2023-11-09 | 公司材料 | https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579 |
+| [S3] | 4Q25 Earnings Release / SKC | 2026-02-05 | 公司披露 | https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf |
+| [S4] | Physical and Thermal Characteristics / Sony | 2024 | 技术论文 | https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/ |
+| [S5] | Glass Core Substrate / 电气与电子工程师协会电子封装学会 | 2025-11 | 技术综述 | https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf |
+| [S6] | Absolics Inc. Covington / 美国国家标准与技术研究院 | 2024-05-23 | 政府项目 | https://www.nist.gov/chips/absolics-inc-covington |
+| [S7] | The Race To Glass Substrates / Semiconductor Engineering | 2024-05-29 | 行业媒体 | https://semiengineering.com/the-race-to-glass-substrates/ |
+| [S8] | Glass substrate sample promotion / Samsung Electro-Mechanics | 2025-01-09 | 公司材料 | https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923 |
+</pre></details>
+          </article>
+          <article class="variant">
+            <header class="variant-head"><h4>版本 B</h4><span>默认阅读视图</span></header>
+            <div class="rendered-markdown"><h2>先进封装玻璃基板第一轮投资研究地图</h2>
+<p>研究状态：ready（完成的是“证据边界与下一轮验证优先级”，不是量产成立或投资结论）</p>
+<h3>0. 研究设定与一页快照</h3>
+<h4>研究口径</h4>
+<ul class="content-list"><li>对象：留在最终封装中的玻璃芯基板、玻璃中介层及 Through-Glass Via（TGV，通玻璃孔，在玻璃中形成垂直导电连接的工艺）。</li><li>排除：显示盖板玻璃、只作临时载体的玻璃载板。</li><li>决策：下一轮尽调是优先核验材料性能、客户资格认证，还是 High-Volume Manufacturing（HVM，大批量制造，指稳定、可重复且有商业规模的生产状态）。</li><li>证据截止：2026-07-29；不回答精确市场规模、单家公司估值或投资建议。</li></ul>
+<p>本文后续缩写：National Institute of Standards and Technology（NIST，美国国家标准与技术研究院，负责美国计量、标准和相关产业项目）；Institute of Electrical and Electronics Engineers（IEEE，电气与电子工程师协会，发布工程技术研究与标准）；IEEE Electronics Packaging Society（IEEE EPS，电气和电子工程师协会电子封装学会，聚焦电子封装工程）；Artificial Intelligence（AI，人工智能，使机器执行感知、推理等任务的技术）；High-Performance Computing（HPC，高性能计算，用大规模算力处理复杂任务）；Integrated Device Manufacturer（IDM，垂直整合器件制造商，同时覆盖芯片设计、制造或封装等环节）；Outsourced Semiconductor Assembly and Test（OSAT，半导体封装测试外包服务商，负责芯片后段封装与测试）；Bill of Materials（BOM，物料清单，列示产品组成和数量）；Creating Helpful Incentives to Produce Semiconductors for America（CHIPS，美国芯片激励计划，以资金和政策支持美国半导体能力建设）。</p>
+<h4>当前判断</h4>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>判断</th><th>证据—机制—含义</th><th>反证条件</th><th>置信度</th></tr></thead><tbody><tr><td>尚不能把设施、样品或低量制造写成稳定 HVM</td><td>SKC 2023 年称将完成量产设施 [S2]，但其 2026 年材料仍写准备可靠性测试、改善质量与良率 [S3]；NIST 对项目阶段的公开定义仍包括原型、商业验证和低量制造 [S6]。这说明“设施可用”和“稳定放量”是不同里程碑。</td><td>客户侧放量、同口径稳定量产良率与持续交付数据由两类独立来源互证。</td><td>高</td></tr><tr><td>玻璃有真实材料优势，但工程风险未消失</td><td>Sony 样件呈现低翘曲，同时在热循环中确认 SeWaRe 玻璃失效模式 [S4]；IEEE 综述记录部分样件可靠性结果，也保留微裂纹、薄板搬运、TGV 制造和应力问题 [S5]。</td><td>跨尺寸、跨客户、跨工艺的量产数据证明上述因素不再影响良率和寿命。</td><td>高</td></tr><tr><td>最可能先进入高价值、大尺寸先进封装，而非普遍替换</td><td>Intel 把导入场景指向数据中心、人工智能与大尺寸封装 [S1]；行业采访指出既有设备投资和标准缺口会放慢迁移 [S7]。</td><td>成熟产品或通用封装出现大范围迁移、标准化设备与客户复购。</td><td>中</td></tr></tbody></table></div>
+<p>生命周期判断：导入期。技术样件、设施建设、低量制造和客户验证并行，尚缺可比的稳定量产良率和客户放量证据。当前最重要的不是继续搜集“谁宣布做玻璃”，而是取得按产品结构归一化的客户认证、良率、失效分布和持续交付数据。</p>
+<h4>周期位置</h4>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>周期</th><th>位置</th><th>领先指标</th><th>反向信号</th></tr></thead><tbody><tr><td>需求/采纳</td><td>上行早期，证据有限</td><td>样品转客户认证、认证转重复订单</td><td>样品多年不转认证</td></tr><tr><td>产能/良率</td><td>导入与爬坡</td><td>实际良率、报废原因、连续季度出货</td><td>设施建成后仍反复改善良率 [S3]</td></tr><tr><td>竞争/盈利</td><td>证据不足</td><td>客户付费、加工成本、合格面积成本</td><td>只能靠补贴维持验证线</td></tr><tr><td>资本/政策</td><td>支持研发和验证</td><td>NIST 项目覆盖原型、验证、低量制造 [S6]</td><td>资助结束后没有商业订单</td></tr></tbody></table></div>
+<p>核心因果链：高性能计算推动更大封装与更密互连 → 玻璃的平整度和尺寸稳定性变得有价值 → 但薄玻璃搬运、TGV、金属化、微裂纹和应力控制提高工艺复杂度 → 设施和样品先于稳定良率出现 → 客户认证与持续交付成为商业化瓶颈。</p>
+<h3>A. 行业定义与边界</h3>
+<p>玻璃芯基板以玻璃作为封装基板核心；玻璃中介层位于芯粒与封装基板之间，用于高密度互连。二者都可能使用 TGV，但不能把使用玻璃临时载体的晶圆级工艺算作最终玻璃基板市场。</p>
+<p>本报告把“研发样件—客户送样—资格认证—低量制造—稳定 HVM”视为不同阶段。Mass production facility（量产设施）描述设备和场地能力，不自动证明客户认证、实际产出、良率或盈利。</p>
+<h3>B. 行业简史与产业生命周期</h3>
+<p>玻璃先进封装研发已经持续多年，但长期研发轨迹不证明今天已进入 HVM。近年驱动力来自大尺寸多芯粒封装：传统有机材料在精细互连、翘曲与尺寸稳定性上承压，Intel 因而把玻璃路线放在本十年后半段。[S1]</p>
+<p>商业化时间线存在必须保留的内部张力：</p>
+<ol class="content-list"><li>2023 年 SKC 称 Absolics 将在年底完成世界首座量产设施。[S2]</li><li>2024 年 NIST 仍把受资助项目用途写为原型开发、商业验证和低量制造。[S6]</li><li>2026 年 SKC 经营材料仍写准备可靠性测试、改善质量与生产良率。[S3]</li></ol>
+<p>三条记录并不互相否定：设施可以建成，而产品仍处于验证和良率爬坡。冲突来自“量产设施”和“稳定 HVM”定义不同。结论因此收敛为导入期，而不是把最早的“量产”措辞当作终点。</p>
+<h3>C. 技术路线与商业可行性</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>路线</th><th>价值</th><th>工程约束</th><th>成熟度证据</th></tr></thead><tbody><tr><td>玻璃芯封装基板</td><td>平整、尺寸稳定，支持大尺寸与高密度互连 [S1]</td><td>微裂纹、热循环应力、build-up 层厚度与 SeWaRe [S4][S5]</td><td>样件、验证、低量制造</td></tr><tr><td>玻璃中介层</td><td>可承载精细互连和 TGV</td><td>TGV 成孔、金属化、界面可靠性及大面积处理 [S5]</td><td>论文/样件为主</td></tr><tr><td>混合玻璃—有机结构</td><td>在玻璃性能与既有工艺间折中</td><td>材料界面、热膨胀系数匹配、流程复杂度</td><td>工程开发</td></tr></tbody></table></div>
+<p>Sony 的结果同时提供正向和反向证据：样件在温度和吸湿条件下的翘曲变化较小，也满足其“一般用途”可靠性；但热循环出现 SeWaRe，且可靠性裕量受 build-up 厚度和应力影响。[S4] 这不能被简化为“玻璃可靠性已解决”。</p>
+<p>IEEE EPS 的综述显示，部分 daisy-chain 样件在 1000 次热循环中未见明确 TGV 缺陷；同一材料也指出实际玻璃微裂纹会削弱强度，大尺寸薄板搬运困难，TGV 制造、金属化与应力缓解仍需推进。[S5] 作者包含 AGC（原 Asahi Glass Company，原旭硝子公司，现以 AGC 为公司品牌的玻璃材料供应商），故既保留实验结果，也披露供给侧立场。</p>
+<h3>D. 产业链图谱</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>环节</th><th>角色</th><th>关键验证</th></tr></thead><tbody><tr><td>玻璃材料</td><td>玻璃与特种材料供应商</td><td>尺寸、厚度、缺陷密度、微裂纹</td></tr><tr><td>TGV/金属化/线路</td><td>基板厂、设备与化学材料商</td><td>孔质量、镀层、界面可靠性、单位合格面积成本</td></tr><tr><td>封装集成</td><td>晶圆厂、OSAT、IDM</td><td>组装良率、热循环、翘曲、客户设计规则</td></tr><tr><td>终端客户</td><td>AI/HPC 芯片与系统厂商</td><td>资格认证、重复订单、现场失效率</td></tr></tbody></table></div>
+<p>OSAT 已有大量有机和硅工艺资产。行业采访指出若玻璃不能进入标准流程，专线缺少即时业务支撑，采用会更慢。[S7] 议价权因此暂时偏向能给出认证和放量的头部客户，而不是只有材料样品的供应商。</p>
+<h3>E. 产业趋势、景气度与周期位置</h3>
+<p>政策资本支持了原型、验证和低量制造，但不能替代商业需求。[S6] 技术趋势由更大封装、更密互连和低翘曲驱动；市场趋势则表现为多家公司给出未来目标：Intel 指向本十年后半段 [S1]，Samsung 2025 年推广样品并以 2027 年为量产目标 [S8]。这些目标互相印证的是“方向受到重视”，不是“当前已稳定放量”。</p>
+<p>3-5 年观察重点：</p>
+<ul class="content-list"><li>已发生事实：设施、样品和低量制造能力存在。[S2][S6][S8]</li><li>公司目标：在本十年后半段或 2027 年进入市场。[S1][S8]</li><li>代理推断：率先落地场景更可能是大尺寸、高价值、能够吸收验证成本的 AI/HPC 封装。</li><li>反向信号：可靠性测试和良率改善长期不收敛；客户认证不转重复订单；单位合格面积成本不降。</li></ul>
+<h3>F. 关键玩家分层</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>层级</th><th>玩家</th><th>当前可证实定位</th></tr></thead><tbody><tr><td>大型半导体/IDM</td><td>Intel</td><td>有长期研发、内部样品与后半十年导入路线图；性能与良率表述属于公司自述 [S1]</td></tr><tr><td>基板新业务</td><td>SKC/Absolics</td><td>设施已建设，但公开项目阶段仍覆盖验证和低量制造，且继续改善良率 [S2][S3][S6]</td></tr><tr><td>电子组件</td><td>Samsung Electro-Mechanics</td><td>2025 年样品推广，目标 2027 年量产 [S8]</td></tr><tr><td>工程验证</td><td>Sony Semiconductor Solutions</td><td>发布样件热与可靠性研究，同时披露 SeWaRe 失效模式 [S4]</td></tr></tbody></table></div>
+<p>不以融资、补贴、设施面积或“首座”措辞给技术领先排序。</p>
+<h3>G. 监管、政策与标准</h3>
+<p>NIST CHIPS 项目是实际政策证据，其公开用途覆盖原型、商业验证和低量制造。[S6] 它证明公共资金支持供应链能力建设，但不是客户采购或盈利证明。</p>
+<p>本轮未找到统一披露量产良率的行业标准，也未找到能让不同厂商的“良率”直接比较的公开定义。下一轮必须先统一面积、层数、线宽/线距、TGV 参数、产品结构、测试条件和客户认证阶段，才比较数字。</p>
+<h3>H. 投资相关问题</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>假设</th><th>现有证据</th><th>机制</th><th>反证条件</th><th>下一步动作</th></tr></thead><tbody><tr><td>HVM 仍是关键瓶颈</td><td>S2/S3 同组时间线、NIST 阶段 [S6]、行业采访 [S7]</td><td>设施早于稳定良率和客户认证</td><td>两类独立来源披露稳定良率、持续交付和复购</td><td>索取按产品结构分层的月度良率、报废 Pareto 与认证状态</td></tr><tr><td>玻璃工程优势可转成客户价值</td><td>Intel 性能主张 [S1]、Sony/IEEE 样件 [S4][S5]</td><td>更低翘曲和高密度可改善大封装</td><td>优势只在实验件出现，客户系统成本不降</td><td>对比有机/硅方案的系统级良率、功耗、成本</td></tr><tr><td>首批场景集中在 AI/HPC</td><td>Intel 场景定位 [S1]</td><td>高价值产品能吸收验证和工艺成本</td><td>通用封装更早规模采用</td><td>访谈封装厂和芯片客户，核验送样项目与付费阶段</td></tr><tr><td>标准与设备生态影响爬坡</td><td>行业采访列出搬运、检测、标准问题 [S7]</td><td>专用设备和流程抬高切换成本</td><td>现有标准线直接兼容且无额外成本</td><td>核查设备 BOM、节拍、维护与瓶颈工序</td></tr></tbody></table></div>
+<h3>I. 后续工作交接包</h3>
+<ul class="content-list"><li>给 <code>/jvc-comps-dd</code>：逐家比较“设施—样品—认证—低量—HVM”，禁止只比宣布日期。</li><li>给 <code>/jvc-market-sizing</code>：先取得单位合格面积价格、可服务封装数量、客户导入节奏；没有这些变量不建精确市场值。</li><li>给 <code>/jvc-bull-case</code>：验证大尺寸、高密度和低翘曲能否转化为客户系统级成本/性能收益。</li><li>给 <code>/jvc-bear-case</code>：攻击良率、微裂纹、TGV、设备专线、客户认证和补贴依赖。</li><li>给访谈：优先问客户资格认证状态、连续季度合格出货、报废原因、客户复购与单位合格面积成本。</li></ul>
+<h4>停止条件</h4>
+<p>本轮两轮定向检索均未改变“导入期、HVM 未证实、工程优势与失效边界并存”的核心判断。高优先级问题已有两类独立来源支持或被明确限定为证据缺口，因此停止继续堆积公司公告。恢复研究的触发条件是取得客户侧认证、同口径量产良率、持续出货或实际采购资料。</p>
+<h3>来源索引</h3>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>ID</th><th>标题/机构</th><th>日期</th><th>类型</th><th>链接</th><th>可信度与边界</th></tr></thead><tbody><tr><td>[S1]</td><td>Intel glass substrates / Intel</td><td>2023-09-18</td><td>公司材料</td><td><a href="https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates" target="_blank" rel="noreferrer">https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates</a></td><td>中；公司路线和性能自述</td></tr><tr><td>[S2]</td><td>SKC Glass Substrate Business / SKC</td><td>2023-11-09</td><td>公司材料</td><td><a href="https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579" target="_blank" rel="noreferrer">https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579</a></td><td>中；设施措辞</td></tr><tr><td>[S3]</td><td>4Q25 Earnings Release / SKC</td><td>2026-02-05</td><td>公司披露</td><td><a href="https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf" target="_blank" rel="noreferrer">https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf</a></td><td>中；同组后续阶段</td></tr><tr><td>[S4]</td><td>Physical and Thermal Characteristics / Sony</td><td>2024</td><td>技术论文</td><td><a href="https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/" target="_blank" rel="noreferrer">https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/</a></td><td>高；样件不可外推量产</td></tr><tr><td>[S5]</td><td>Glass Core Substrate / IEEE EPS</td><td>2025-11</td><td>技术综述</td><td><a href="https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf" target="_blank" rel="noreferrer">https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf</a></td><td>高；作者含供应商</td></tr><tr><td>[S6]</td><td>Absolics Inc. Covington / NIST</td><td>2024-05-23</td><td>政府项目</td><td><a href="https://www.nist.gov/chips/absolics-inc-covington" target="_blank" rel="noreferrer">https://www.nist.gov/chips/absolics-inc-covington</a></td><td>高；项目阶段，不给良率</td></tr><tr><td>[S7]</td><td>The Race To Glass Substrates / Semiconductor Engineering</td><td>2024-05-29</td><td>行业媒体</td><td><a href="https://semiengineering.com/the-race-to-glass-substrates/" target="_blank" rel="noreferrer">https://semiengineering.com/the-race-to-glass-substrates/</a></td><td>中高；多方定性采访</td></tr><tr><td>[S8]</td><td>Glass substrate sample promotion / Samsung Electro-Mechanics</td><td>2025-01-09</td><td>公司材料</td><td><a href="https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923" target="_blank" rel="noreferrer">https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923</a></td><td>中；目标时间表</td></tr></tbody></table></div></div>
+            <details class="raw"><summary>查看原始文本</summary><pre># 先进封装玻璃基板第一轮投资研究地图
+
+研究状态：ready（完成的是“证据边界与下一轮验证优先级”，不是量产成立或投资结论）
+
+## 0. 研究设定与一页快照
+
+### 研究口径
+
+- 对象：留在最终封装中的玻璃芯基板、玻璃中介层及 Through-Glass Via（TGV，通玻璃孔，在玻璃中形成垂直导电连接的工艺）。
+- 排除：显示盖板玻璃、只作临时载体的玻璃载板。
+- 决策：下一轮尽调是优先核验材料性能、客户资格认证，还是 High-Volume Manufacturing（HVM，大批量制造，指稳定、可重复且有商业规模的生产状态）。
+- 证据截止：2026-07-29；不回答精确市场规模、单家公司估值或投资建议。
+
+本文后续缩写：National Institute of Standards and Technology（NIST，美国国家标准与技术研究院，负责美国计量、标准和相关产业项目）；Institute of Electrical and Electronics Engineers（IEEE，电气与电子工程师协会，发布工程技术研究与标准）；IEEE Electronics Packaging Society（IEEE EPS，电气和电子工程师协会电子封装学会，聚焦电子封装工程）；Artificial Intelligence（AI，人工智能，使机器执行感知、推理等任务的技术）；High-Performance Computing（HPC，高性能计算，用大规模算力处理复杂任务）；Integrated Device Manufacturer（IDM，垂直整合器件制造商，同时覆盖芯片设计、制造或封装等环节）；Outsourced Semiconductor Assembly and Test（OSAT，半导体封装测试外包服务商，负责芯片后段封装与测试）；Bill of Materials（BOM，物料清单，列示产品组成和数量）；Creating Helpful Incentives to Produce Semiconductors for America（CHIPS，美国芯片激励计划，以资金和政策支持美国半导体能力建设）。
+
+### 当前判断
+
+| 判断 | 证据—机制—含义 | 反证条件 | 置信度 |
+| --- | --- | --- | --- |
+| 尚不能把设施、样品或低量制造写成稳定 HVM | SKC 2023 年称将完成量产设施 [S2]，但其 2026 年材料仍写准备可靠性测试、改善质量与良率 [S3]；NIST 对项目阶段的公开定义仍包括原型、商业验证和低量制造 [S6]。这说明“设施可用”和“稳定放量”是不同里程碑。 | 客户侧放量、同口径稳定量产良率与持续交付数据由两类独立来源互证。 | 高 |
+| 玻璃有真实材料优势，但工程风险未消失 | Sony 样件呈现低翘曲，同时在热循环中确认 SeWaRe 玻璃失效模式 [S4]；IEEE 综述记录部分样件可靠性结果，也保留微裂纹、薄板搬运、TGV 制造和应力问题 [S5]。 | 跨尺寸、跨客户、跨工艺的量产数据证明上述因素不再影响良率和寿命。 | 高 |
+| 最可能先进入高价值、大尺寸先进封装，而非普遍替换 | Intel 把导入场景指向数据中心、人工智能与大尺寸封装 [S1]；行业采访指出既有设备投资和标准缺口会放慢迁移 [S7]。 | 成熟产品或通用封装出现大范围迁移、标准化设备与客户复购。 | 中 |
+
+生命周期判断：导入期。技术样件、设施建设、低量制造和客户验证并行，尚缺可比的稳定量产良率和客户放量证据。当前最重要的不是继续搜集“谁宣布做玻璃”，而是取得按产品结构归一化的客户认证、良率、失效分布和持续交付数据。
+
+### 周期位置
+
+| 周期 | 位置 | 领先指标 | 反向信号 |
+| --- | --- | --- | --- |
+| 需求/采纳 | 上行早期，证据有限 | 样品转客户认证、认证转重复订单 | 样品多年不转认证 |
+| 产能/良率 | 导入与爬坡 | 实际良率、报废原因、连续季度出货 | 设施建成后仍反复改善良率 [S3] |
+| 竞争/盈利 | 证据不足 | 客户付费、加工成本、合格面积成本 | 只能靠补贴维持验证线 |
+| 资本/政策 | 支持研发和验证 | NIST 项目覆盖原型、验证、低量制造 [S6] | 资助结束后没有商业订单 |
+
+核心因果链：高性能计算推动更大封装与更密互连 → 玻璃的平整度和尺寸稳定性变得有价值 → 但薄玻璃搬运、TGV、金属化、微裂纹和应力控制提高工艺复杂度 → 设施和样品先于稳定良率出现 → 客户认证与持续交付成为商业化瓶颈。
+
+## A. 行业定义与边界
+
+玻璃芯基板以玻璃作为封装基板核心；玻璃中介层位于芯粒与封装基板之间，用于高密度互连。二者都可能使用 TGV，但不能把使用玻璃临时载体的晶圆级工艺算作最终玻璃基板市场。
+
+本报告把“研发样件—客户送样—资格认证—低量制造—稳定 HVM”视为不同阶段。Mass production facility（量产设施）描述设备和场地能力，不自动证明客户认证、实际产出、良率或盈利。
+
+## B. 行业简史与产业生命周期
+
+玻璃先进封装研发已经持续多年，但长期研发轨迹不证明今天已进入 HVM。近年驱动力来自大尺寸多芯粒封装：传统有机材料在精细互连、翘曲与尺寸稳定性上承压，Intel 因而把玻璃路线放在本十年后半段。[S1]
+
+商业化时间线存在必须保留的内部张力：
+
+1. 2023 年 SKC 称 Absolics 将在年底完成世界首座量产设施。[S2]
+2. 2024 年 NIST 仍把受资助项目用途写为原型开发、商业验证和低量制造。[S6]
+3. 2026 年 SKC 经营材料仍写准备可靠性测试、改善质量与生产良率。[S3]
+
+三条记录并不互相否定：设施可以建成，而产品仍处于验证和良率爬坡。冲突来自“量产设施”和“稳定 HVM”定义不同。结论因此收敛为导入期，而不是把最早的“量产”措辞当作终点。
+
+## C. 技术路线与商业可行性
+
+| 路线 | 价值 | 工程约束 | 成熟度证据 |
+| --- | --- | --- | --- |
+| 玻璃芯封装基板 | 平整、尺寸稳定，支持大尺寸与高密度互连 [S1] | 微裂纹、热循环应力、build-up 层厚度与 SeWaRe [S4][S5] | 样件、验证、低量制造 |
+| 玻璃中介层 | 可承载精细互连和 TGV | TGV 成孔、金属化、界面可靠性及大面积处理 [S5] | 论文/样件为主 |
+| 混合玻璃—有机结构 | 在玻璃性能与既有工艺间折中 | 材料界面、热膨胀系数匹配、流程复杂度 | 工程开发 |
+
+Sony 的结果同时提供正向和反向证据：样件在温度和吸湿条件下的翘曲变化较小，也满足其“一般用途”可靠性；但热循环出现 SeWaRe，且可靠性裕量受 build-up 厚度和应力影响。[S4] 这不能被简化为“玻璃可靠性已解决”。
+
+IEEE EPS 的综述显示，部分 daisy-chain 样件在 1000 次热循环中未见明确 TGV 缺陷；同一材料也指出实际玻璃微裂纹会削弱强度，大尺寸薄板搬运困难，TGV 制造、金属化与应力缓解仍需推进。[S5] 作者包含 AGC（原 Asahi Glass Company，原旭硝子公司，现以 AGC 为公司品牌的玻璃材料供应商），故既保留实验结果，也披露供给侧立场。
+
+## D. 产业链图谱
+
+| 环节 | 角色 | 关键验证 |
+| --- | --- | --- |
+| 玻璃材料 | 玻璃与特种材料供应商 | 尺寸、厚度、缺陷密度、微裂纹 |
+| TGV/金属化/线路 | 基板厂、设备与化学材料商 | 孔质量、镀层、界面可靠性、单位合格面积成本 |
+| 封装集成 | 晶圆厂、OSAT、IDM | 组装良率、热循环、翘曲、客户设计规则 |
+| 终端客户 | AI/HPC 芯片与系统厂商 | 资格认证、重复订单、现场失效率 |
+
+OSAT 已有大量有机和硅工艺资产。行业采访指出若玻璃不能进入标准流程，专线缺少即时业务支撑，采用会更慢。[S7] 议价权因此暂时偏向能给出认证和放量的头部客户，而不是只有材料样品的供应商。
+
+## E. 产业趋势、景气度与周期位置
+
+政策资本支持了原型、验证和低量制造，但不能替代商业需求。[S6] 技术趋势由更大封装、更密互连和低翘曲驱动；市场趋势则表现为多家公司给出未来目标：Intel 指向本十年后半段 [S1]，Samsung 2025 年推广样品并以 2027 年为量产目标 [S8]。这些目标互相印证的是“方向受到重视”，不是“当前已稳定放量”。
+
+3-5 年观察重点：
+
+- 已发生事实：设施、样品和低量制造能力存在。[S2][S6][S8]
+- 公司目标：在本十年后半段或 2027 年进入市场。[S1][S8]
+- 代理推断：率先落地场景更可能是大尺寸、高价值、能够吸收验证成本的 AI/HPC 封装。
+- 反向信号：可靠性测试和良率改善长期不收敛；客户认证不转重复订单；单位合格面积成本不降。
+
+## F. 关键玩家分层
+
+| 层级 | 玩家 | 当前可证实定位 |
+| --- | --- | --- |
+| 大型半导体/IDM | Intel | 有长期研发、内部样品与后半十年导入路线图；性能与良率表述属于公司自述 [S1] |
+| 基板新业务 | SKC/Absolics | 设施已建设，但公开项目阶段仍覆盖验证和低量制造，且继续改善良率 [S2][S3][S6] |
+| 电子组件 | Samsung Electro-Mechanics | 2025 年样品推广，目标 2027 年量产 [S8] |
+| 工程验证 | Sony Semiconductor Solutions | 发布样件热与可靠性研究，同时披露 SeWaRe 失效模式 [S4] |
+
+不以融资、补贴、设施面积或“首座”措辞给技术领先排序。
+
+## G. 监管、政策与标准
+
+NIST CHIPS 项目是实际政策证据，其公开用途覆盖原型、商业验证和低量制造。[S6] 它证明公共资金支持供应链能力建设，但不是客户采购或盈利证明。
+
+本轮未找到统一披露量产良率的行业标准，也未找到能让不同厂商的“良率”直接比较的公开定义。下一轮必须先统一面积、层数、线宽/线距、TGV 参数、产品结构、测试条件和客户认证阶段，才比较数字。
+
+## H. 投资相关问题
+
+| 假设 | 现有证据 | 机制 | 反证条件 | 下一步动作 |
+| --- | --- | --- | --- | --- |
+| HVM 仍是关键瓶颈 | S2/S3 同组时间线、NIST 阶段 [S6]、行业采访 [S7] | 设施早于稳定良率和客户认证 | 两类独立来源披露稳定良率、持续交付和复购 | 索取按产品结构分层的月度良率、报废 Pareto 与认证状态 |
+| 玻璃工程优势可转成客户价值 | Intel 性能主张 [S1]、Sony/IEEE 样件 [S4][S5] | 更低翘曲和高密度可改善大封装 | 优势只在实验件出现，客户系统成本不降 | 对比有机/硅方案的系统级良率、功耗、成本 |
+| 首批场景集中在 AI/HPC | Intel 场景定位 [S1] | 高价值产品能吸收验证和工艺成本 | 通用封装更早规模采用 | 访谈封装厂和芯片客户，核验送样项目与付费阶段 |
+| 标准与设备生态影响爬坡 | 行业采访列出搬运、检测、标准问题 [S7] | 专用设备和流程抬高切换成本 | 现有标准线直接兼容且无额外成本 | 核查设备 BOM、节拍、维护与瓶颈工序 |
+
+## I. 后续工作交接包
+
+- 给 `/jvc-comps-dd`：逐家比较“设施—样品—认证—低量—HVM”，禁止只比宣布日期。
+- 给 `/jvc-market-sizing`：先取得单位合格面积价格、可服务封装数量、客户导入节奏；没有这些变量不建精确市场值。
+- 给 `/jvc-bull-case`：验证大尺寸、高密度和低翘曲能否转化为客户系统级成本/性能收益。
+- 给 `/jvc-bear-case`：攻击良率、微裂纹、TGV、设备专线、客户认证和补贴依赖。
+- 给访谈：优先问客户资格认证状态、连续季度合格出货、报废原因、客户复购与单位合格面积成本。
+
+### 停止条件
+
+本轮两轮定向检索均未改变“导入期、HVM 未证实、工程优势与失效边界并存”的核心判断。高优先级问题已有两类独立来源支持或被明确限定为证据缺口，因此停止继续堆积公司公告。恢复研究的触发条件是取得客户侧认证、同口径量产良率、持续出货或实际采购资料。
+
+## 来源索引
+
+| ID | 标题/机构 | 日期 | 类型 | 链接 | 可信度与边界 |
+| --- | --- | --- | --- | --- | --- |
+| [S1] | Intel glass substrates / Intel | 2023-09-18 | 公司材料 | https://newsroom.intel.com/artificial-intelligence/intel-unveils-industry-leading-glass-substrates | 中；公司路线和性能自述 |
+| [S2] | SKC Glass Substrate Business / SKC | 2023-11-09 | 公司材料 | https://www.skc.kr/m/eng/Conmmunication/pr/newsDetail.do?gubun=004003&amp;seq=1579 | 中；设施措辞 |
+| [S3] | 4Q25 Earnings Release / SKC | 2026-02-05 | 公司披露 | https://www.skc.kr/upload/ir/20260212/20260212093406953002.pdf | 中；同组后续阶段 |
+| [S4] | Physical and Thermal Characteristics / Sony | 2024 | 技术论文 | https://www.sony.com/ja/SonyInfo/technology/publications/physical-and-thermal-characteristics-of-the-advanced-package-with-glass-core-substrate/ | 高；样件不可外推量产 |
+| [S5] | Glass Core Substrate / IEEE EPS | 2025-11 | 技术综述 | https://eps.ieee.org/wp-content/uploads/2025/11/Glass_Substrates_Adv_Substrates_TC_UPDATED_Nov25.pdf | 高；作者含供应商 |
+| [S6] | Absolics Inc. Covington / NIST | 2024-05-23 | 政府项目 | https://www.nist.gov/chips/absolics-inc-covington | 高；项目阶段，不给良率 |
+| [S7] | The Race To Glass Substrates / Semiconductor Engineering | 2024-05-29 | 行业媒体 | https://semiengineering.com/the-race-to-glass-substrates/ | 中高；多方定性采访 |
+| [S8] | Glass substrate sample promotion / Samsung Electro-Mechanics | 2025-01-09 | 公司材料 | https://www.samsungsem.com/jp/newsroom/news/view.do?id=8923 | 中；目标时间表 |
+</pre></details>
+          </article>
+        </section>
+        <footer>人工判断字段完整，可以进入裁决。</footer>
+      </article>
+
+      <article class="case-card" id="case-industrial-vision-market-model-output">
+        <header class="case-head">
+          <div><span>案例 02</span><h3>industrial-vision-market-model-output</h3></div>
+          <strong class="status ready-for-adjudication">可裁决</strong>
+        </header>
+        <details class="brief" open>
+          <summary>任务与审阅标准</summary>
+          <div class="prompt rendered-markdown"><h2>中国工业机器视觉质检软件市场建模任务</h2>
+<ul class="content-list"><li>研究日期：2026-07-29</li><li>地域：中国大陆</li><li>时间口径：外部事实使用其原始年份；情景模型统一到 2026 年人民币年化口径</li><li>决策用途：形成可复核的市场情景，并明确下一轮需要补的客户、价格和渗透率证据。</li></ul>
+<p>用户给定假设（不是外部事实）：</p>
+<ul class="content-list"><li>U1：可服务客户占制造业法人单位的 1%。</li><li>U2：工业视觉质检软件年支出为 12 万元/客户。</li><li>U3：三年可获得渗透率为 8%。</li><li>U4：工业企业营业收入中用于工业视觉质检软件的比例为 0.02%。</li><li>U5：上述顶部口径中 60% 属于可服务范围。</li></ul>
+<p>约束：</p>
+<ol class="content-list"><li>不得把 404.8 万制造业法人单位直接视为工业视觉客户数。</li><li>不得把任一数字化或工业互联网采用率直接视为机器视觉渗透率。</li><li>不得把整机视觉系统平均售价直接视为纯软件年价格。</li><li>181.47 亿元、395.4 亿元和约 400 亿元来自不同定义，必须并列，不得合并或平均。</li><li>Total Addressable Market（TAM，总可及市场，理论上所有目标需求对应的收入池）、Serviceable Available Market（SAM，可服务市场，产品和地域实际覆盖的收入池）与 Serviceable Obtainable Market（SOM，可获得市场，给定期间可现实取得的收入池）必须分开。</li></ol></div>
+          <ul class="rubric"><li><code>factual_accuracy</code><span>事实准确：法人、数字化采用和整机价格不得直接变成视觉客户、渗透率或纯软件价格。</span><strong>2.0</strong></li><li><code>traceability</code><span>可追溯：外部事实、用户假设和模型公式在六张表中有来源或标签。</span><strong>2.0</strong></li><li><code>independent_sources</code><span>独立来源：政府、监管披露、行业/技术材料和公司材料不混成单一来源。</span><strong>1.5</strong></li><li><code>conflict_counterevidence</code><span>冲突与反证：181.47/395.4/400 亿元按定义并列，禁止合并或平均。</span><strong>2.0</strong></li><li><code>calibration</code><span>校准：市场数字只作为情景，明确低置信度及非市场事实边界。</span><strong>1.5</strong></li><li><code>next_step_usefulness</code><span>下一步可用：对账后指出优先验证纯软件收入、客户定义和可访谈变量。</span><strong>1.0</strong></li></ul>
+        </details>
+        <section class="variants" aria-label="匿名输出版本">
+          <article class="variant">
+            <header class="variant-head"><h4>版本 A</h4><span>默认阅读视图</span></header>
+            <div class="rendered-markdown"><h2>工业视觉质检软件中国市场工作簿完整单元格导出</h2>
+<p>工作表顺序：assumptions, top_down, bottom_up, reconciliation, orthogonality_check, sources</p>
+<h3>assumptions</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th></tr></thead><tbody><tr><td>1</td><td>assumption_id</td><td>variable</td><td>value</td><td>unit</td><td>year</td><td>geography</td><td>source_id</td><td>confidence</td><td>notes</td></tr><tr><td>2</td><td>DEF1</td><td>Total Addressable Market（TAM，总可及市场，理论上所有目标需求对应的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>本模型只输出情景，不把 TAM 当已验证事实</td></tr><tr><td>3</td><td>DEF2</td><td>Serviceable Available Market（SAM，可服务市场，产品和地域实际覆盖的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>SAM 必须小于或等于相同口径 TAM</td></tr><tr><td>4</td><td>DEF3</td><td>Serviceable Obtainable Market（SOM，可获得市场，给定期间可现实取得的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>SOM 必须小于或等于相同口径 SAM</td></tr><tr><td>5</td><td>DEF4</td><td>Chinese Yuan Renminbi（CNY，人民币元，本工作簿金额的币种单位）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>所有人民币模型行使用 CNY</td></tr><tr><td>6</td><td>DEF5</td><td>模型标签</td><td>[外部事实]/[用户假设]/[模型估算]</td><td></td><td></td><td></td><td>分类</td><td>高</td><td>三类信息不得互相升级</td></tr><tr><td>7</td><td>F1</td><td>2023工业企业营业收入</td><td>152400000000000</td><td>人民币元</td><td>2023</td><td>中国大陆</td><td>[S1]</td><td>高</td><td>[外部事实] 国家统计局口径；不是软件支出</td></tr><tr><td>8</td><td>F2</td><td>制造业企业法人单位</td><td>4048000</td><td>个法人单位</td><td>2023</td><td>中国大陆</td><td>[S1]</td><td>高</td><td>[外部事实] 不是工厂、产线或客户数</td></tr><tr><td>9</td><td>U1</td><td>可服务客户占制造法人比例</td><td>0.01</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>不得写成外部渗透率</td></tr><tr><td>10</td><td>U2</td><td>质检软件年支出</td><td>120000</td><td>人民币元/客户/年</td><td>2026</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>不得用含硬件/定制/调试的整机价格 [S4] 替代</td></tr><tr><td>11</td><td>U3</td><td>三年可获得渗透率</td><td>0.08</td><td>比例</td><td>2026-2028</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>数字化率 [S2] 不是视觉渗透率</td></tr><tr><td>12</td><td>U4</td><td>工业收入中质检软件支出率</td><td>0.0002</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>仅用于顶部敏感性情景</td></tr><tr><td>13</td><td>U5</td><td>顶部市场可服务比例</td><td>0.6</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>仅用于顶部敏感性情景</td></tr><tr><td>14</td><td>M1</td><td>自上而下 SOM 情景</td><td>=top_down!G4</td><td>人民币元/年</td><td>2026</td><td>中国大陆</td><td>[S1]+[用户假设]</td><td>低</td><td>[模型估算] 不是市场事实</td></tr><tr><td>15</td><td>M2</td><td>自下而上 SOM 情景</td><td>=bottom_up!G4</td><td>人民币元/年</td><td>2026</td><td>中国大陆</td><td>[S1]+[用户假设]</td><td>低</td><td>[模型估算] 优先作尽调基准，仍需验证</td></tr><tr><td>16</td><td>B1</td><td>三组行业绝对额不可合并</td><td>181.47/395.4/&gt;400</td><td>人民币亿元</td><td>2024-2025</td><td>中国大陆</td><td>[S3][S6][S7]</td><td>低</td><td>定义分别为剔除集成市场转引、市场转引、总产值；不平均</td></tr><tr><td>17</td><td>B2</td><td>智能工厂与典型产线只作边界</td><td>30000+/70道</td><td>工厂/视觉系统</td><td>2024-2025</td><td>中国大陆</td><td>[S8][S10]</td><td>中</td><td>领先样本和典型高端手机线，不外推全国</td></tr></tbody></table></div>
+<h3>top_down</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th></tr></thead><tbody><tr><td>1</td><td>line_id</td><td>level</td><td>parent_line_id</td><td>market_item</td><td>base_value</td><td>filter_or_share</td><td>calculated_value</td><td>formula</td><td>currency</td><td>year</td><td>source_id</td><td>notes</td></tr><tr><td>2</td><td>T1</td><td>TAM</td><td></td><td>工业收入支出率情景</td><td>152400000000000</td><td>0.0002</td><td>=E2*F2</td><td>=E2*F2</td><td>CNY</td><td>2026</td><td>[S1]+[U4]</td><td>[模型估算] 304.8 亿元；支出率为用户假设，不是已验证 TAM</td></tr><tr><td>3</td><td>T2</td><td>SAM</td><td>T1</td><td>可服务范围情景</td><td>=G2</td><td>0.6</td><td>=E3*F3</td><td>=E3*F3</td><td>CNY</td><td>2026</td><td>[S1]+[U4]+[U5]</td><td>[模型估算] 182.88 亿元</td></tr><tr><td>4</td><td>T3</td><td>SOM</td><td>T2</td><td>三年可获得情景</td><td>=G3</td><td>0.08</td><td>=E4*F4</td><td>=E4*F4</td><td>CNY</td><td>2026-2028</td><td>[S1]+[U3]+[U4]+[U5]</td><td>[模型估算] 14.6304 亿元</td></tr></tbody></table></div>
+<h3>bottom_up</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th></tr></thead><tbody><tr><td>1</td><td>line_id</td><td>segment</td><td>customer_count</td><td>units_per_customer</td><td>annual_price_or_spend</td><td>penetration_rate</td><td>calculated_value</td><td>formula</td><td>currency</td><td>year</td><td>source_id</td><td>notes</td></tr><tr><td>2</td><td>B1</td><td>全部制造法人上界</td><td>4048000</td><td>1</td><td>120000</td><td>1</td><td>=C2*D2*E2*F2</td><td>=C2*D2*E2*F2</td><td>CNY</td><td>2026</td><td>[S1]+[U2]</td><td>TAM 情景上界；法人不是客户，不能当事实</td></tr><tr><td>3</td><td>B2</td><td>用户假设的可服务客户</td><td>=C2*1%</td><td>1</td><td>120000</td><td>1</td><td>=C3*D3*E3*F3</td><td>=C3*D3*E3*F3</td><td>CNY</td><td>2026</td><td>[S1]+[U1]+[U2]</td><td>SAM 情景；1% 为用户假设</td></tr><tr><td>4</td><td>B3</td><td>三年可获得客户</td><td>=C3</td><td>1</td><td>120000</td><td>0.08</td><td>=C4*D4*E4*F4</td><td>=C4*D4*E4*F4</td><td>CNY</td><td>2026-2028</td><td>[S1]+[U1]+[U2]+[U3]</td><td>SOM 情景 3.88608 亿元；不是市场事实</td></tr></tbody></table></div>
+<h3>reconciliation</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr></thead><tbody><tr><td>1</td><td>metric</td><td>top_down_value</td><td>bottom_up_value</td><td>difference</td><td>difference_pct</td><td>explanation</td><td>preferred_value</td><td>reason</td></tr><tr><td>2</td><td>TAM</td><td>=top_down!G2</td><td>=bottom_up!G2</td><td>=ABS(B2-C2)</td><td>=D2/MAX(B2,C2)</td><td>顶部用工业收入支出率，底部用全部制造法人和软件年支出；两者均被用户假设放大，不能据差值取平均</td><td>不选点估计</td><td>先验证纯软件收入与客户定义</td></tr><tr><td>3</td><td>SAM</td><td>=top_down!G3</td><td>=bottom_up!G3</td><td>=ABS(B3-C3)</td><td>=D3/MAX(B3,C3)</td><td>顶部服务比例与底部可服务客户比例口径不同</td><td>=C3</td><td>底部变量更可访谈验证，但仍是低置信情景</td></tr><tr><td>4</td><td>SOM</td><td>=top_down!G4</td><td>=bottom_up!G4</td><td>=ABS(B4-C4)</td><td>=D4/MAX(B4,C4)</td><td>顶部与底部相差约 73%；不平均，保留分歧</td><td>=C4</td><td>采用更窄的 3.88608 亿元作尽调基准，不宣称市场事实</td></tr></tbody></table></div>
+<h3>orthogonality_check</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead><tbody><tr><td>1</td><td>item_a</td><td>item_b</td><td>overlap_risk</td><td>overlap_description</td><td>resolution</td><td>status</td></tr><tr><td>2</td><td>安防视频监控</td><td>工业产线质检软件</td><td>是</td><td>视觉技术可重叠但买方预算和应用不同</td><td>排除安防预算</td><td>clear</td></tr><tr><td>3</td><td>硬件/光源/相机</td><td>软件许可/订阅/维护</td><td>是</td><td>整机合同常含硬件、软件、定制、调试 [S4]</td><td>本模型只保留用户给定软件年支出，不用整机平均销售价格</td><td>clear</td></tr><tr><td>4</td><td>整线自动化集成</td><td>工业视觉软件</td><td>是</td><td>181.47 亿元口径声称剔除集成，但只是年报二次转引 [S3]</td><td>不把 181.47 亿元作为本模型输入</td><td>clear</td></tr><tr><td>5</td><td>法人单位</td><td>工厂/产线/客户</td><td>是</td><td>404.8 万是法人，不是装机点 [S1]</td><td>以 U1 折减并保留敏感性</td><td>needs_review</td></tr><tr><td>6</td><td>数字化/工业互联网/人工智能使用</td><td>机器视觉渗透率</td><td>是</td><td>统计口径不是机器视觉 [S2]</td><td>不使用该比例；渗透率只保留 U3 用户假设</td><td>clear</td></tr><tr><td>7</td><td>智能工厂样本/高端手机典型线</td><td>全国制造业</td><td>是</td><td>领先样本 [S8] 与典型场景 [S10] 不能外推</td><td>只作访谈分层，不进入点估计</td><td>clear</td></tr></tbody></table></div>
+<h3>sources</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr></thead><tbody><tr><td>1</td><td>source_id</td><td>source_name</td><td>source_type</td><td>url_or_location</td><td>date</td><td>fields_supported</td><td>reliability</td></tr><tr><td>2</td><td>[S1]</td><td>国家统计局第五次全国经济普查工业结果</td><td>政府</td><td><a href="https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html" target="_blank" rel="noreferrer">https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html</a></td><td>2025-02-27</td><td>工业收入、制造法人单位</td><td>高</td></tr><tr><td>3</td><td>[S2]</td><td>国家统计局企业数字化转型</td><td>政府</td><td><a href="https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html" target="_blank" rel="noreferrer">https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html</a></td><td>2025-02-28</td><td>数字化率反向边界</td><td>高</td></tr><tr><td>4</td><td>[S3]</td><td>奥普特 2025 年年度报告</td><td>公司年报</td><td><a href="https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf" target="_blank" rel="noreferrer">https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf</a></td><td>2026-04-03</td><td>公司收入、181.47 亿元二次转引</td><td>中高</td></tr><tr><td>5</td><td>[S4]</td><td>双元科技第二轮问询回复</td><td>监管披露</td><td><a href="https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf" target="_blank" rel="noreferrer">https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf</a></td><td>2023-03-31</td><td>整机系统价、验收滞后</td><td>高</td></tr><tr><td>6</td><td>[S5]</td><td>中国机器视觉产业联盟报告发布页</td><td>行业协会</td><td><a href="https://www.china-vision.org/user/bilin.html" target="_blank" rel="noreferrer">https://www.china-vision.org/user/bilin.html</a></td><td>2025-06-19</td><td>2024 销售额增速；绝对额/样本缺失</td><td>中</td></tr><tr><td>7</td><td>[S6]</td><td>凌云光 2025 VisionChina 活动稿</td><td>公司材料</td><td><a href="https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/" target="_blank" rel="noreferrer">https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/</a></td><td>2025-06-19</td><td>395.4 亿元二次转引</td><td>低</td></tr><tr><td>8</td><td>[S7]</td><td>凌云光 2026 VisionChina 活动稿</td><td>公司材料</td><td><a href="https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/" target="_blank" rel="noreferrer">https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/</a></td><td>2026-06-26</td><td>&gt;400 亿元总产值</td><td>低</td></tr><tr><td>9</td><td>[S8]</td><td>工业和信息化部智能工厂进展</td><td>政府</td><td><a href="https://wap.miit.gov.cn/xwfb/gxdt/sjdt/art/2025/art_70c95052e16e44eb9bb49eae85f71e70.html" target="_blank" rel="noreferrer">https://wap.miit.gov.cn/xwfb/gxdt/sjdt/art/2025/art_70c95052e16e44eb9bb49eae85f71e70.html</a></td><td>2025-02-07</td><td>智能工厂分级样本</td><td>高</td></tr><tr><td>10</td><td>[S10]</td><td>智能检测装备产业发展研究报告——机器视觉篇</td><td>技术白皮书</td><td><a href="https://www.cesi.cn/images/editor/20240621/20240621150737979.pdf" target="_blank" rel="noreferrer">https://www.cesi.cn/images/editor/20240621/20240621150737979.pdf</a></td><td>2024-07-18</td><td>高端手机典型线、数据孤岛</td><td>中高</td></tr><tr><td>11</td><td>STATE</td><td>研究状态：ready</td><td>状态</td><td>本工作簿</td><td>2026-07-29</td><td>外部事实/用户假设/模型估算分离；结论为情景而非市场事实</td><td>高</td></tr></tbody></table></div></div>
+            <details class="raw"><summary>查看原始文本</summary><pre># 工业视觉质检软件中国市场工作簿完整单元格导出
+
+工作表顺序：assumptions, top_down, bottom_up, reconciliation, orthogonality_check, sources
+
+## assumptions
+
+- `A1` (s): &quot;assumption_id&quot;
+- `B1` (s): &quot;variable&quot;
+- `C1` (s): &quot;value&quot;
+- `D1` (s): &quot;unit&quot;
+- `E1` (s): &quot;year&quot;
+- `F1` (s): &quot;geography&quot;
+- `G1` (s): &quot;source_id&quot;
+- `H1` (s): &quot;confidence&quot;
+- `I1` (s): &quot;notes&quot;
+- `A2` (s): &quot;DEF1&quot;
+- `B2` (s): &quot;Total Addressable Market（TAM，总可及市场，理论上所有目标需求对应的收入池）&quot;
+- `C2` (s): &quot;术语定义&quot;
+- `G2` (s): &quot;术语&quot;
+- `H2` (s): &quot;高&quot;
+- `I2` (s): &quot;本模型只输出情景，不把 TAM 当已验证事实&quot;
+- `A3` (s): &quot;DEF2&quot;
+- `B3` (s): &quot;Serviceable Available Market（SAM，可服务市场，产品和地域实际覆盖的收入池）&quot;
+- `C3` (s): &quot;术语定义&quot;
+- `G3` (s): &quot;术语&quot;
+- `H3` (s): &quot;高&quot;
+- `I3` (s): &quot;SAM 必须小于或等于相同口径 TAM&quot;
+- `A4` (s): &quot;DEF3&quot;
+- `B4` (s): &quot;Serviceable Obtainable Market（SOM，可获得市场，给定期间可现实取得的收入池）&quot;
+- `C4` (s): &quot;术语定义&quot;
+- `G4` (s): &quot;术语&quot;
+- `H4` (s): &quot;高&quot;
+- `I4` (s): &quot;SOM 必须小于或等于相同口径 SAM&quot;
+- `A5` (s): &quot;DEF4&quot;
+- `B5` (s): &quot;Chinese Yuan Renminbi（CNY，人民币元，本工作簿金额的币种单位）&quot;
+- `C5` (s): &quot;术语定义&quot;
+- `G5` (s): &quot;术语&quot;
+- `H5` (s): &quot;高&quot;
+- `I5` (s): &quot;所有人民币模型行使用 CNY&quot;
+- `A6` (s): &quot;DEF5&quot;
+- `B6` (s): &quot;模型标签&quot;
+- `C6` (s): &quot;[外部事实]/[用户假设]/[模型估算]&quot;
+- `G6` (s): &quot;分类&quot;
+- `H6` (s): &quot;高&quot;
+- `I6` (s): &quot;三类信息不得互相升级&quot;
+- `A7` (s): &quot;F1&quot;
+- `B7` (s): &quot;2023工业企业营业收入&quot;
+- `C7` (n): 152400000000000
+- `D7` (s): &quot;人民币元&quot;
+- `E7` (s): &quot;2023&quot;
+- `F7` (s): &quot;中国大陆&quot;
+- `G7` (s): &quot;[S1]&quot;
+- `H7` (s): &quot;高&quot;
+- `I7` (s): &quot;[外部事实] 国家统计局口径；不是软件支出&quot;
+- `A8` (s): &quot;F2&quot;
+- `B8` (s): &quot;制造业企业法人单位&quot;
+- `C8` (n): 4048000
+- `D8` (s): &quot;个法人单位&quot;
+- `E8` (s): &quot;2023&quot;
+- `F8` (s): &quot;中国大陆&quot;
+- `G8` (s): &quot;[S1]&quot;
+- `H8` (s): &quot;高&quot;
+- `I8` (s): &quot;[外部事实] 不是工厂、产线或客户数&quot;
+- `A9` (s): &quot;U1&quot;
+- `B9` (s): &quot;可服务客户占制造法人比例&quot;
+- `C9` (n): 0.01
+- `D9` (s): &quot;比例&quot;
+- `E9` (s): &quot;2026&quot;
+- `F9` (s): &quot;中国大陆&quot;
+- `G9` (s): &quot;[用户假设]&quot;
+- `H9` (s): &quot;低&quot;
+- `I9` (s): &quot;不得写成外部渗透率&quot;
+- `A10` (s): &quot;U2&quot;
+- `B10` (s): &quot;质检软件年支出&quot;
+- `C10` (n): 120000
+- `D10` (s): &quot;人民币元/客户/年&quot;
+- `E10` (s): &quot;2026&quot;
+- `F10` (s): &quot;中国大陆&quot;
+- `G10` (s): &quot;[用户假设]&quot;
+- `H10` (s): &quot;低&quot;
+- `I10` (s): &quot;不得用含硬件/定制/调试的整机价格 [S4] 替代&quot;
+- `A11` (s): &quot;U3&quot;
+- `B11` (s): &quot;三年可获得渗透率&quot;
+- `C11` (n): 0.08
+- `D11` (s): &quot;比例&quot;
+- `E11` (s): &quot;2026-2028&quot;
+- `F11` (s): &quot;中国大陆&quot;
+- `G11` (s): &quot;[用户假设]&quot;
+- `H11` (s): &quot;低&quot;
+- `I11` (s): &quot;数字化率 [S2] 不是视觉渗透率&quot;
+- `A12` (s): &quot;U4&quot;
+- `B12` (s): &quot;工业收入中质检软件支出率&quot;
+- `C12` (n): 0.0002
+- `D12` (s): &quot;比例&quot;
+- `E12` (s): &quot;2026&quot;
+- `F12` (s): &quot;中国大陆&quot;
+- `G12` (s): &quot;[用户假设]&quot;
+- `H12` (s): &quot;低&quot;
+- `I12` (s): &quot;仅用于顶部敏感性情景&quot;
+- `A13` (s): &quot;U5&quot;
+- `B13` (s): &quot;顶部市场可服务比例&quot;
+- `C13` (n): 0.6
+- `D13` (s): &quot;比例&quot;
+- `E13` (s): &quot;2026&quot;
+- `F13` (s): &quot;中国大陆&quot;
+- `G13` (s): &quot;[用户假设]&quot;
+- `H13` (s): &quot;低&quot;
+- `I13` (s): &quot;仅用于顶部敏感性情景&quot;
+- `A14` (s): &quot;M1&quot;
+- `B14` (s): &quot;自上而下 SOM 情景&quot;
+- `C14` (f): &quot;=top_down!G4&quot;
+- `D14` (s): &quot;人民币元/年&quot;
+- `E14` (s): &quot;2026&quot;
+- `F14` (s): &quot;中国大陆&quot;
+- `G14` (s): &quot;[S1]+[用户假设]&quot;
+- `H14` (s): &quot;低&quot;
+- `I14` (s): &quot;[模型估算] 不是市场事实&quot;
+- `A15` (s): &quot;M2&quot;
+- `B15` (s): &quot;自下而上 SOM 情景&quot;
+- `C15` (f): &quot;=bottom_up!G4&quot;
+- `D15` (s): &quot;人民币元/年&quot;
+- `E15` (s): &quot;2026&quot;
+- `F15` (s): &quot;中国大陆&quot;
+- `G15` (s): &quot;[S1]+[用户假设]&quot;
+- `H15` (s): &quot;低&quot;
+- `I15` (s): &quot;[模型估算] 优先作尽调基准，仍需验证&quot;
+- `A16` (s): &quot;B1&quot;
+- `B16` (s): &quot;三组行业绝对额不可合并&quot;
+- `C16` (s): &quot;181.47/395.4/&gt;400&quot;
+- `D16` (s): &quot;人民币亿元&quot;
+- `E16` (s): &quot;2024-2025&quot;
+- `F16` (s): &quot;中国大陆&quot;
+- `G16` (s): &quot;[S3][S6][S7]&quot;
+- `H16` (s): &quot;低&quot;
+- `I16` (s): &quot;定义分别为剔除集成市场转引、市场转引、总产值；不平均&quot;
+- `A17` (s): &quot;B2&quot;
+- `B17` (s): &quot;智能工厂与典型产线只作边界&quot;
+- `C17` (s): &quot;30000+/70道&quot;
+- `D17` (s): &quot;工厂/视觉系统&quot;
+- `E17` (s): &quot;2024-2025&quot;
+- `F17` (s): &quot;中国大陆&quot;
+- `G17` (s): &quot;[S8][S10]&quot;
+- `H17` (s): &quot;中&quot;
+- `I17` (s): &quot;领先样本和典型高端手机线，不外推全国&quot;
+
+## top_down
+
+- `A1` (s): &quot;line_id&quot;
+- `B1` (s): &quot;level&quot;
+- `C1` (s): &quot;parent_line_id&quot;
+- `D1` (s): &quot;market_item&quot;
+- `E1` (s): &quot;base_value&quot;
+- `F1` (s): &quot;filter_or_share&quot;
+- `G1` (s): &quot;calculated_value&quot;
+- `H1` (s): &quot;formula&quot;
+- `I1` (s): &quot;currency&quot;
+- `J1` (s): &quot;year&quot;
+- `K1` (s): &quot;source_id&quot;
+- `L1` (s): &quot;notes&quot;
+- `A2` (s): &quot;T1&quot;
+- `B2` (s): &quot;TAM&quot;
+- `D2` (s): &quot;工业收入支出率情景&quot;
+- `E2` (n): 152400000000000
+- `F2` (n): 0.0002
+- `G2` (f): &quot;=E2*F2&quot;
+- `H2` (f): &quot;=E2*F2&quot;
+- `I2` (s): &quot;CNY&quot;
+- `J2` (s): &quot;2026&quot;
+- `K2` (s): &quot;[S1]+[U4]&quot;
+- `L2` (s): &quot;[模型估算] 304.8 亿元；支出率为用户假设，不是已验证 TAM&quot;
+- `A3` (s): &quot;T2&quot;
+- `B3` (s): &quot;SAM&quot;
+- `C3` (s): &quot;T1&quot;
+- `D3` (s): &quot;可服务范围情景&quot;
+- `E3` (f): &quot;=G2&quot;
+- `F3` (n): 0.6
+- `G3` (f): &quot;=E3*F3&quot;
+- `H3` (f): &quot;=E3*F3&quot;
+- `I3` (s): &quot;CNY&quot;
+- `J3` (s): &quot;2026&quot;
+- `K3` (s): &quot;[S1]+[U4]+[U5]&quot;
+- `L3` (s): &quot;[模型估算] 182.88 亿元&quot;
+- `A4` (s): &quot;T3&quot;
+- `B4` (s): &quot;SOM&quot;
+- `C4` (s): &quot;T2&quot;
+- `D4` (s): &quot;三年可获得情景&quot;
+- `E4` (f): &quot;=G3&quot;
+- `F4` (n): 0.08
+- `G4` (f): &quot;=E4*F4&quot;
+- `H4` (f): &quot;=E4*F4&quot;
+- `I4` (s): &quot;CNY&quot;
+- `J4` (s): &quot;2026-2028&quot;
+- `K4` (s): &quot;[S1]+[U3]+[U4]+[U5]&quot;
+- `L4` (s): &quot;[模型估算] 14.6304 亿元&quot;
+
+## bottom_up
+
+- `A1` (s): &quot;line_id&quot;
+- `B1` (s): &quot;segment&quot;
+- `C1` (s): &quot;customer_count&quot;
+- `D1` (s): &quot;units_per_customer&quot;
+- `E1` (s): &quot;annual_price_or_spend&quot;
+- `F1` (s): &quot;penetration_rate&quot;
+- `G1` (s): &quot;calculated_value&quot;
+- `H1` (s): &quot;formula&quot;
+- `I1` (s): &quot;currency&quot;
+- `J1` (s): &quot;year&quot;
+- `K1` (s): &quot;source_id&quot;
+- `L1` (s): &quot;notes&quot;
+- `A2` (s): &quot;B1&quot;
+- `B2` (s): &quot;全部制造法人上界&quot;
+- `C2` (n): 4048000
+- `D2` (n): 1
+- `E2` (n): 120000
+- `F2` (n): 1
+- `G2` (f): &quot;=C2*D2*E2*F2&quot;
+- `H2` (f): &quot;=C2*D2*E2*F2&quot;
+- `I2` (s): &quot;CNY&quot;
+- `J2` (s): &quot;2026&quot;
+- `K2` (s): &quot;[S1]+[U2]&quot;
+- `L2` (s): &quot;TAM 情景上界；法人不是客户，不能当事实&quot;
+- `A3` (s): &quot;B2&quot;
+- `B3` (s): &quot;用户假设的可服务客户&quot;
+- `C3` (f): &quot;=C2*1%&quot;
+- `D3` (n): 1
+- `E3` (n): 120000
+- `F3` (n): 1
+- `G3` (f): &quot;=C3*D3*E3*F3&quot;
+- `H3` (f): &quot;=C3*D3*E3*F3&quot;
+- `I3` (s): &quot;CNY&quot;
+- `J3` (s): &quot;2026&quot;
+- `K3` (s): &quot;[S1]+[U1]+[U2]&quot;
+- `L3` (s): &quot;SAM 情景；1% 为用户假设&quot;
+- `A4` (s): &quot;B3&quot;
+- `B4` (s): &quot;三年可获得客户&quot;
+- `C4` (f): &quot;=C3&quot;
+- `D4` (n): 1
+- `E4` (n): 120000
+- `F4` (n): 0.08
+- `G4` (f): &quot;=C4*D4*E4*F4&quot;
+- `H4` (f): &quot;=C4*D4*E4*F4&quot;
+- `I4` (s): &quot;CNY&quot;
+- `J4` (s): &quot;2026-2028&quot;
+- `K4` (s): &quot;[S1]+[U1]+[U2]+[U3]&quot;
+- `L4` (s): &quot;SOM 情景 3.88608 亿元；不是市场事实&quot;
+
+## reconciliation
+
+- `A1` (s): &quot;metric&quot;
+- `B1` (s): &quot;top_down_value&quot;
+- `C1` (s): &quot;bottom_up_value&quot;
+- `D1` (s): &quot;difference&quot;
+- `E1` (s): &quot;difference_pct&quot;
+- `F1` (s): &quot;explanation&quot;
+- `G1` (s): &quot;preferred_value&quot;
+- `H1` (s): &quot;reason&quot;
+- `A2` (s): &quot;TAM&quot;
+- `B2` (f): &quot;=top_down!G2&quot;
+- `C2` (f): &quot;=bottom_up!G2&quot;
+- `D2` (f): &quot;=ABS(B2-C2)&quot;
+- `E2` (f): &quot;=D2/MAX(B2,C2)&quot;
+- `F2` (s): &quot;顶部用工业收入支出率，底部用全部制造法人和软件年支出；两者均被用户假设放大，不能据差值取平均&quot;
+- `G2` (s): &quot;不选点估计&quot;
+- `H2` (s): &quot;先验证纯软件收入与客户定义&quot;
+- `A3` (s): &quot;SAM&quot;
+- `B3` (f): &quot;=top_down!G3&quot;
+- `C3` (f): &quot;=bottom_up!G3&quot;
+- `D3` (f): &quot;=ABS(B3-C3)&quot;
+- `E3` (f): &quot;=D3/MAX(B3,C3)&quot;
+- `F3` (s): &quot;顶部服务比例与底部可服务客户比例口径不同&quot;
+- `G3` (f): &quot;=C3&quot;
+- `H3` (s): &quot;底部变量更可访谈验证，但仍是低置信情景&quot;
+- `A4` (s): &quot;SOM&quot;
+- `B4` (f): &quot;=top_down!G4&quot;
+- `C4` (f): &quot;=bottom_up!G4&quot;
+- `D4` (f): &quot;=ABS(B4-C4)&quot;
+- `E4` (f): &quot;=D4/MAX(B4,C4)&quot;
+- `F4` (s): &quot;顶部与底部相差约 73%；不平均，保留分歧&quot;
+- `G4` (f): &quot;=C4&quot;
+- `H4` (s): &quot;采用更窄的 3.88608 亿元作尽调基准，不宣称市场事实&quot;
+
+## orthogonality_check
+
+- `A1` (s): &quot;item_a&quot;
+- `B1` (s): &quot;item_b&quot;
+- `C1` (s): &quot;overlap_risk&quot;
+- `D1` (s): &quot;overlap_description&quot;
+- `E1` (s): &quot;resolution&quot;
+- `F1` (s): &quot;status&quot;
+- `A2` (s): &quot;安防视频监控&quot;
+- `B2` (s): &quot;工业产线质检软件&quot;
+- `C2` (s): &quot;是&quot;
+- `D2` (s): &quot;视觉技术可重叠但买方预算和应用不同&quot;
+- `E2` (s): &quot;排除安防预算&quot;
+- `F2` (s): &quot;clear&quot;
+- `A3` (s): &quot;硬件/光源/相机&quot;
+- `B3` (s): &quot;软件许可/订阅/维护&quot;
+- `C3` (s): &quot;是&quot;
+- `D3` (s): &quot;整机合同常含硬件、软件、定制、调试 [S4]&quot;
+- `E3` (s): &quot;本模型只保留用户给定软件年支出，不用整机平均销售价格&quot;
+- `F3` (s): &quot;clear&quot;
+- `A4` (s): &quot;整线自动化集成&quot;
+- `B4` (s): &quot;工业视觉软件&quot;
+- `C4` (s): &quot;是&quot;
+- `D4` (s): &quot;181.47 亿元口径声称剔除集成，但只是年报二次转引 [S3]&quot;
+- `E4` (s): &quot;不把 181.47 亿元作为本模型输入&quot;
+- `F4` (s): &quot;clear&quot;
+- `A5` (s): &quot;法人单位&quot;
+- `B5` (s): &quot;工厂/产线/客户&quot;
+- `C5` (s): &quot;是&quot;
+- `D5` (s): &quot;404.8 万是法人，不是装机点 [S1]&quot;
+- `E5` (s): &quot;以 U1 折减并保留敏感性&quot;
+- `F5` (s): &quot;needs_review&quot;
+- `A6` (s): &quot;数字化/工业互联网/人工智能使用&quot;
+- `B6` (s): &quot;机器视觉渗透率&quot;
+- `C6` (s): &quot;是&quot;
+- `D6` (s): &quot;统计口径不是机器视觉 [S2]&quot;
+- `E6` (s): &quot;不使用该比例；渗透率只保留 U3 用户假设&quot;
+- `F6` (s): &quot;clear&quot;
+- `A7` (s): &quot;智能工厂样本/高端手机典型线&quot;
+- `B7` (s): &quot;全国制造业&quot;
+- `C7` (s): &quot;是&quot;
+- `D7` (s): &quot;领先样本 [S8] 与典型场景 [S10] 不能外推&quot;
+- `E7` (s): &quot;只作访谈分层，不进入点估计&quot;
+- `F7` (s): &quot;clear&quot;
+
+## sources
+
+- `A1` (s): &quot;source_id&quot;
+- `B1` (s): &quot;source_name&quot;
+- `C1` (s): &quot;source_type&quot;
+- `D1` (s): &quot;url_or_location&quot;
+- `E1` (s): &quot;date&quot;
+- `F1` (s): &quot;fields_supported&quot;
+- `G1` (s): &quot;reliability&quot;
+- `A2` (s): &quot;[S1]&quot;
+- `B2` (s): &quot;国家统计局第五次全国经济普查工业结果&quot;
+- `C2` (s): &quot;政府&quot;
+- `D2` (s): &quot;https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html&quot;
+- `E2` (s): &quot;2025-02-27&quot;
+- `F2` (s): &quot;工业收入、制造法人单位&quot;
+- `G2` (s): &quot;高&quot;
+- `A3` (s): &quot;[S2]&quot;
+- `B3` (s): &quot;国家统计局企业数字化转型&quot;
+- `C3` (s): &quot;政府&quot;
+- `D3` (s): &quot;https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html&quot;
+- `E3` (s): &quot;2025-02-28&quot;
+- `F3` (s): &quot;数字化率反向边界&quot;
+- `G3` (s): &quot;高&quot;
+- `A4` (s): &quot;[S3]&quot;
+- `B4` (s): &quot;奥普特 2025 年年度报告&quot;
+- `C4` (s): &quot;公司年报&quot;
+- `D4` (s): &quot;https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf&quot;
+- `E4` (s): &quot;2026-04-03&quot;
+- `F4` (s): &quot;公司收入、181.47 亿元二次转引&quot;
+- `G4` (s): &quot;中高&quot;
+- `A5` (s): &quot;[S4]&quot;
+- `B5` (s): &quot;双元科技第二轮问询回复&quot;
+- `C5` (s): &quot;监管披露&quot;
+- `D5` (s): &quot;https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf&quot;
+- `E5` (s): &quot;2023-03-31&quot;
+- `F5` (s): &quot;整机系统价、验收滞后&quot;
+- `G5` (s): &quot;高&quot;
+- `A6` (s): &quot;[S5]&quot;
+- `B6` (s): &quot;中国机器视觉产业联盟报告发布页&quot;
+- `C6` (s): &quot;行业协会&quot;
+- `D6` (s): &quot;https://www.china-vision.org/user/bilin.html&quot;
+- `E6` (s): &quot;2025-06-19&quot;
+- `F6` (s): &quot;2024 销售额增速；绝对额/样本缺失&quot;
+- `G6` (s): &quot;中&quot;
+- `A7` (s): &quot;[S6]&quot;
+- `B7` (s): &quot;凌云光 2025 VisionChina 活动稿&quot;
+- `C7` (s): &quot;公司材料&quot;
+- `D7` (s): &quot;https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/&quot;
+- `E7` (s): &quot;2025-06-19&quot;
+- `F7` (s): &quot;395.4 亿元二次转引&quot;
+- `G7` (s): &quot;低&quot;
+- `A8` (s): &quot;[S7]&quot;
+- `B8` (s): &quot;凌云光 2026 VisionChina 活动稿&quot;
+- `C8` (s): &quot;公司材料&quot;
+- `D8` (s): &quot;https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/&quot;
+- `E8` (s): &quot;2026-06-26&quot;
+- `F8` (s): &quot;&gt;400 亿元总产值&quot;
+- `G8` (s): &quot;低&quot;
+- `A9` (s): &quot;[S8]&quot;
+- `B9` (s): &quot;工业和信息化部智能工厂进展&quot;
+- `C9` (s): &quot;政府&quot;
+- `D9` (s): &quot;https://wap.miit.gov.cn/xwfb/gxdt/sjdt/art/2025/art_70c95052e16e44eb9bb49eae85f71e70.html&quot;
+- `E9` (s): &quot;2025-02-07&quot;
+- `F9` (s): &quot;智能工厂分级样本&quot;
+- `G9` (s): &quot;高&quot;
+- `A10` (s): &quot;[S10]&quot;
+- `B10` (s): &quot;智能检测装备产业发展研究报告——机器视觉篇&quot;
+- `C10` (s): &quot;技术白皮书&quot;
+- `D10` (s): &quot;https://www.cesi.cn/images/editor/20240621/20240621150737979.pdf&quot;
+- `E10` (s): &quot;2024-07-18&quot;
+- `F10` (s): &quot;高端手机典型线、数据孤岛&quot;
+- `G10` (s): &quot;中高&quot;
+- `A11` (s): &quot;STATE&quot;
+- `B11` (s): &quot;研究状态：ready&quot;
+- `C11` (s): &quot;状态&quot;
+- `D11` (s): &quot;本工作簿&quot;
+- `E11` (s): &quot;2026-07-29&quot;
+- `F11` (s): &quot;外部事实/用户假设/模型估算分离；结论为情景而非市场事实&quot;
+- `G11` (s): &quot;高&quot;
+</pre></details>
+          </article>
+          <article class="variant">
+            <header class="variant-head"><h4>版本 B</h4><span>默认阅读视图</span></header>
+            <div class="rendered-markdown"><h2>工业视觉质检软件中国市场工作簿完整单元格导出</h2>
+<p>工作表顺序：assumptions, top_down, bottom_up, reconciliation, orthogonality_check, sources</p>
+<h3>assumptions</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th></tr></thead><tbody><tr><td>1</td><td>assumption_id</td><td>variable</td><td>value</td><td>unit</td><td>year</td><td>geography</td><td>source_id</td><td>confidence</td><td>notes</td></tr><tr><td>2</td><td>DEF1</td><td>Total Addressable Market（TAM，总可及市场，理论上全部目标需求对应的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>本模型为情景测算</td></tr><tr><td>3</td><td>DEF2</td><td>Serviceable Available Market（SAM，可服务市场，产品与地域可覆盖的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>SAM 不超过同口径 TAM</td></tr><tr><td>4</td><td>DEF3</td><td>Serviceable Obtainable Market（SOM，可获得市场，给定期间现实可取得的收入池）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>SOM 不超过同口径 SAM</td></tr><tr><td>5</td><td>DEF4</td><td>Chinese Yuan Renminbi（CNY，人民币元，本工作簿金额币种）</td><td>术语定义</td><td></td><td></td><td></td><td>术语</td><td>高</td><td>公式结果以人民币元计</td></tr><tr><td>6</td><td>F1</td><td>2024 中国机器视觉市场（剔除自动化集成）</td><td>181.47</td><td>人民币亿元</td><td>2024</td><td>中国大陆</td><td>[S3]</td><td>中</td><td>奥普特年报转引高工数据，原报告定义未取得</td></tr><tr><td>7</td><td>F2</td><td>制造业企业法人单位</td><td>4048000</td><td>个法人单位</td><td>2023</td><td>中国大陆</td><td>[S1]</td><td>高</td><td>法人不等于工厂、产线或实际客户</td></tr><tr><td>8</td><td>U1</td><td>机器视觉市场中的软件收入占比</td><td>0.4</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[推测]</td><td>低</td><td>未取得纯软件拆分</td></tr><tr><td>9</td><td>U2</td><td>可服务行业和地域比例</td><td>0.6</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[推测]</td><td>低</td><td>需按行业和渠道校准</td></tr><tr><td>10</td><td>U3</td><td>三年可获得渗透率</td><td>0.08</td><td>比例</td><td>2026-2028</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>不得解释为当前行业渗透率</td></tr><tr><td>11</td><td>U4</td><td>可服务客户占制造法人比例</td><td>0.01</td><td>比例</td><td>2026</td><td>中国大陆</td><td>[推测]</td><td>低</td><td>法人到适配客户的换算待验证</td></tr><tr><td>12</td><td>U5</td><td>单客户质检软件年支出</td><td>120000</td><td>人民币元/客户/年</td><td>2026</td><td>中国大陆</td><td>[用户假设]</td><td>低</td><td>不使用含硬件、定制和调试的整机价格 [S4]</td></tr></tbody></table></div>
+<h3>top_down</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th></tr></thead><tbody><tr><td>1</td><td>line_id</td><td>level</td><td>parent_line_id</td><td>market_item</td><td>base_value</td><td>filter_or_share</td><td>calculated_value</td><td>formula</td><td>currency</td><td>year</td><td>source_id</td><td>notes</td></tr><tr><td>2</td><td>T1</td><td>TAM</td><td></td><td>机器视觉市场（剔除自动化集成）</td><td>18147000000</td><td>1</td><td>=E2*F2</td><td>=E2*F2</td><td>CNY</td><td>2024</td><td>[S3]</td><td>年报转引值；原始行业报告未取得</td></tr><tr><td>3</td><td>T2</td><td>SAM</td><td>T1</td><td>其中软件收入情景</td><td>=G2</td><td>0.4</td><td>=E3*F3</td><td>=E3*F3</td><td>CNY</td><td>2026</td><td>[S3]+[推测]</td><td>40% 为推测</td></tr><tr><td>4</td><td>T3</td><td>SAM</td><td>T2</td><td>可服务行业和地域情景</td><td>=G3</td><td>0.6</td><td>=E4*F4</td><td>=E4*F4</td><td>CNY</td><td>2026</td><td>[推测]</td><td>60% 为推测</td></tr><tr><td>5</td><td>T4</td><td>SOM</td><td>T3</td><td>三年可获得情景</td><td>=G4</td><td>0.08</td><td>=E5*F5</td><td>=E5*F5</td><td>CNY</td><td>2026-2028</td><td>[用户假设]</td><td>8% 为用户假设；结果 3.484224 亿元</td></tr></tbody></table></div>
+<h3>bottom_up</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th></tr></thead><tbody><tr><td>1</td><td>line_id</td><td>segment</td><td>customer_count</td><td>units_per_customer</td><td>annual_price_or_spend</td><td>penetration_rate</td><td>calculated_value</td><td>formula</td><td>currency</td><td>year</td><td>source_id</td><td>notes</td></tr><tr><td>2</td><td>B1</td><td>全部制造法人上界</td><td>4048000</td><td>1</td><td>120000</td><td>1</td><td>=C2*D2*E2*F2</td><td>=C2*D2*E2*F2</td><td>CNY</td><td>2026</td><td>[S1]+[用户假设]</td><td>数学上界；法人不是实际客户</td></tr><tr><td>3</td><td>B2</td><td>可服务客户情景</td><td>=C2*1%</td><td>1</td><td>120000</td><td>1</td><td>=C3*D3*E3*F3</td><td>=C3*D3*E3*F3</td><td>CNY</td><td>2026</td><td>[S1]+[推测]+[用户假设]</td><td>1% 为推测</td></tr><tr><td>4</td><td>B3</td><td>三年可获得客户</td><td>=C3</td><td>1</td><td>120000</td><td>0.08</td><td>=C4*D4*E4*F4</td><td>=C4*D4*E4*F4</td><td>CNY</td><td>2026-2028</td><td>[S1]+[推测]+[用户假设]</td><td>结果 3.88608 亿元</td></tr></tbody></table></div>
+<h3>reconciliation</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr></thead><tbody><tr><td>1</td><td>metric</td><td>top_down_value</td><td>bottom_up_value</td><td>difference</td><td>difference_pct</td><td>explanation</td><td>preferred_value</td><td>reason</td></tr><tr><td>2</td><td>TAM</td><td>=top_down!G2</td><td>=bottom_up!G2</td><td>=ABS(B2-C2)</td><td>=D2/MAX(B2,C2)</td><td>顶部以行业额为起点，底部把全部法人视为上界；定义不同</td><td>不选点估计</td><td>底部上界明显过宽</td></tr><tr><td>3</td><td>SAM</td><td>=top_down!G4</td><td>=bottom_up!G3</td><td>=ABS(B3-C3)</td><td>=D3/MAX(B3,C3)</td><td>顶部软件占比与服务比例均为推测，底部客户比例也是推测</td><td>=C3</td><td>底部变量可通过客户访谈校准</td></tr><tr><td>4</td><td>SOM</td><td>=top_down!G5</td><td>=bottom_up!G4</td><td>=ABS(B4-C4)</td><td>=D4/MAX(B4,C4)</td><td>两种情景约为 3.48 亿元和 3.89 亿元</td><td>=AVERAGE(B4,C4)</td><td>仅作情景中点，不是市场事实</td></tr></tbody></table></div>
+<h3>orthogonality_check</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead><tbody><tr><td>1</td><td>item_a</td><td>item_b</td><td>overlap_risk</td><td>overlap_description</td><td>resolution</td><td>status</td></tr><tr><td>2</td><td>安防视频监控</td><td>工业产线质检软件</td><td>是</td><td>视觉技术重叠但采购预算不同</td><td>排除安防预算</td><td>clear</td></tr><tr><td>3</td><td>硬件/光源/相机</td><td>软件许可/订阅/维护</td><td>是</td><td>整机合同混含硬件、软件、定制和调试 [S4]</td><td>模型只使用给定软件年支出</td><td>clear</td></tr><tr><td>4</td><td>自动化集成</td><td>工业视觉软件</td><td>是</td><td>181.47 亿元声称剔除集成但原始定义未取得 [S3]</td><td>不再叠加集成收入</td><td>needs_review</td></tr><tr><td>5</td><td>法人单位</td><td>工厂/产线/客户</td><td>是</td><td>404.8 万法人不是实际客户 [S1]</td><td>使用 1% 推测折减并做敏感性</td><td>needs_review</td></tr><tr><td>6</td><td>数字化采用率</td><td>机器视觉渗透率</td><td>是</td><td>统计口径不同 [S2]</td><td>不使用数字化率作为视觉渗透率</td><td>clear</td></tr></tbody></table></div>
+<h3>sources</h3>
+<div class="table-scroll"><table class="data-table sheet-grid"><thead><tr><th>行</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr></thead><tbody><tr><td>1</td><td>source_id</td><td>source_name</td><td>source_type</td><td>url_or_location</td><td>date</td><td>fields_supported</td><td>reliability</td></tr><tr><td>2</td><td>[S1]</td><td>国家统计局第五次全国经济普查工业结果</td><td>政府</td><td><a href="https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html" target="_blank" rel="noreferrer">https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html</a></td><td>2025-02-27</td><td>工业收入、制造法人单位</td><td>高</td></tr><tr><td>3</td><td>[S2]</td><td>国家统计局企业数字化转型</td><td>政府</td><td><a href="https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html" target="_blank" rel="noreferrer">https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html</a></td><td>2025-02-28</td><td>数字化率边界</td><td>高</td></tr><tr><td>4</td><td>[S3]</td><td>奥普特 2025 年年度报告</td><td>公司年报</td><td><a href="https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf" target="_blank" rel="noreferrer">https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf</a></td><td>2026-04-03</td><td>181.47 亿元二次转引</td><td>中</td></tr><tr><td>5</td><td>[S4]</td><td>双元科技第二轮问询回复</td><td>监管披露</td><td><a href="https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf" target="_blank" rel="noreferrer">https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf</a></td><td>2023-03-31</td><td>整机价格与验收滞后</td><td>高</td></tr><tr><td>6</td><td>[S5]</td><td>中国机器视觉产业联盟报告发布页</td><td>行业协会</td><td><a href="https://www.china-vision.org/user/bilin.html" target="_blank" rel="noreferrer">https://www.china-vision.org/user/bilin.html</a></td><td>2025-06-19</td><td>2024 销售额增速；绝对额缺失</td><td>中</td></tr><tr><td>7</td><td>[S6]</td><td>凌云光 VisionChina 活动稿</td><td>公司材料</td><td><a href="https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/" target="_blank" rel="noreferrer">https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/</a></td><td>2025-06-19</td><td>395.4 亿元转引；未用于公式</td><td>低</td></tr><tr><td>8</td><td>[S7]</td><td>凌云光 VisionChina 活动稿</td><td>公司材料</td><td><a href="https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/" target="_blank" rel="noreferrer">https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/</a></td><td>2026-06-26</td><td>超过 400 亿元总产值；未用于公式</td><td>低</td></tr></tbody></table></div></div>
+            <details class="raw"><summary>查看原始文本</summary><pre># 工业视觉质检软件中国市场工作簿完整单元格导出
+
+工作表顺序：assumptions, top_down, bottom_up, reconciliation, orthogonality_check, sources
+
+## assumptions
+
+- `A1` (s): &quot;assumption_id&quot;
+- `B1` (s): &quot;variable&quot;
+- `C1` (s): &quot;value&quot;
+- `D1` (s): &quot;unit&quot;
+- `E1` (s): &quot;year&quot;
+- `F1` (s): &quot;geography&quot;
+- `G1` (s): &quot;source_id&quot;
+- `H1` (s): &quot;confidence&quot;
+- `I1` (s): &quot;notes&quot;
+- `A2` (s): &quot;DEF1&quot;
+- `B2` (s): &quot;Total Addressable Market（TAM，总可及市场，理论上全部目标需求对应的收入池）&quot;
+- `C2` (s): &quot;术语定义&quot;
+- `G2` (s): &quot;术语&quot;
+- `H2` (s): &quot;高&quot;
+- `I2` (s): &quot;本模型为情景测算&quot;
+- `A3` (s): &quot;DEF2&quot;
+- `B3` (s): &quot;Serviceable Available Market（SAM，可服务市场，产品与地域可覆盖的收入池）&quot;
+- `C3` (s): &quot;术语定义&quot;
+- `G3` (s): &quot;术语&quot;
+- `H3` (s): &quot;高&quot;
+- `I3` (s): &quot;SAM 不超过同口径 TAM&quot;
+- `A4` (s): &quot;DEF3&quot;
+- `B4` (s): &quot;Serviceable Obtainable Market（SOM，可获得市场，给定期间现实可取得的收入池）&quot;
+- `C4` (s): &quot;术语定义&quot;
+- `G4` (s): &quot;术语&quot;
+- `H4` (s): &quot;高&quot;
+- `I4` (s): &quot;SOM 不超过同口径 SAM&quot;
+- `A5` (s): &quot;DEF4&quot;
+- `B5` (s): &quot;Chinese Yuan Renminbi（CNY，人民币元，本工作簿金额币种）&quot;
+- `C5` (s): &quot;术语定义&quot;
+- `G5` (s): &quot;术语&quot;
+- `H5` (s): &quot;高&quot;
+- `I5` (s): &quot;公式结果以人民币元计&quot;
+- `A6` (s): &quot;F1&quot;
+- `B6` (s): &quot;2024 中国机器视觉市场（剔除自动化集成）&quot;
+- `C6` (n): 181.47
+- `D6` (s): &quot;人民币亿元&quot;
+- `E6` (s): &quot;2024&quot;
+- `F6` (s): &quot;中国大陆&quot;
+- `G6` (s): &quot;[S3]&quot;
+- `H6` (s): &quot;中&quot;
+- `I6` (s): &quot;奥普特年报转引高工数据，原报告定义未取得&quot;
+- `A7` (s): &quot;F2&quot;
+- `B7` (s): &quot;制造业企业法人单位&quot;
+- `C7` (n): 4048000
+- `D7` (s): &quot;个法人单位&quot;
+- `E7` (s): &quot;2023&quot;
+- `F7` (s): &quot;中国大陆&quot;
+- `G7` (s): &quot;[S1]&quot;
+- `H7` (s): &quot;高&quot;
+- `I7` (s): &quot;法人不等于工厂、产线或实际客户&quot;
+- `A8` (s): &quot;U1&quot;
+- `B8` (s): &quot;机器视觉市场中的软件收入占比&quot;
+- `C8` (n): 0.4
+- `D8` (s): &quot;比例&quot;
+- `E8` (s): &quot;2026&quot;
+- `F8` (s): &quot;中国大陆&quot;
+- `G8` (s): &quot;[推测]&quot;
+- `H8` (s): &quot;低&quot;
+- `I8` (s): &quot;未取得纯软件拆分&quot;
+- `A9` (s): &quot;U2&quot;
+- `B9` (s): &quot;可服务行业和地域比例&quot;
+- `C9` (n): 0.6
+- `D9` (s): &quot;比例&quot;
+- `E9` (s): &quot;2026&quot;
+- `F9` (s): &quot;中国大陆&quot;
+- `G9` (s): &quot;[推测]&quot;
+- `H9` (s): &quot;低&quot;
+- `I9` (s): &quot;需按行业和渠道校准&quot;
+- `A10` (s): &quot;U3&quot;
+- `B10` (s): &quot;三年可获得渗透率&quot;
+- `C10` (n): 0.08
+- `D10` (s): &quot;比例&quot;
+- `E10` (s): &quot;2026-2028&quot;
+- `F10` (s): &quot;中国大陆&quot;
+- `G10` (s): &quot;[用户假设]&quot;
+- `H10` (s): &quot;低&quot;
+- `I10` (s): &quot;不得解释为当前行业渗透率&quot;
+- `A11` (s): &quot;U4&quot;
+- `B11` (s): &quot;可服务客户占制造法人比例&quot;
+- `C11` (n): 0.01
+- `D11` (s): &quot;比例&quot;
+- `E11` (s): &quot;2026&quot;
+- `F11` (s): &quot;中国大陆&quot;
+- `G11` (s): &quot;[推测]&quot;
+- `H11` (s): &quot;低&quot;
+- `I11` (s): &quot;法人到适配客户的换算待验证&quot;
+- `A12` (s): &quot;U5&quot;
+- `B12` (s): &quot;单客户质检软件年支出&quot;
+- `C12` (n): 120000
+- `D12` (s): &quot;人民币元/客户/年&quot;
+- `E12` (s): &quot;2026&quot;
+- `F12` (s): &quot;中国大陆&quot;
+- `G12` (s): &quot;[用户假设]&quot;
+- `H12` (s): &quot;低&quot;
+- `I12` (s): &quot;不使用含硬件、定制和调试的整机价格 [S4]&quot;
+
+## top_down
+
+- `A1` (s): &quot;line_id&quot;
+- `B1` (s): &quot;level&quot;
+- `C1` (s): &quot;parent_line_id&quot;
+- `D1` (s): &quot;market_item&quot;
+- `E1` (s): &quot;base_value&quot;
+- `F1` (s): &quot;filter_or_share&quot;
+- `G1` (s): &quot;calculated_value&quot;
+- `H1` (s): &quot;formula&quot;
+- `I1` (s): &quot;currency&quot;
+- `J1` (s): &quot;year&quot;
+- `K1` (s): &quot;source_id&quot;
+- `L1` (s): &quot;notes&quot;
+- `A2` (s): &quot;T1&quot;
+- `B2` (s): &quot;TAM&quot;
+- `D2` (s): &quot;机器视觉市场（剔除自动化集成）&quot;
+- `E2` (n): 18147000000
+- `F2` (n): 1
+- `G2` (f): &quot;=E2*F2&quot;
+- `H2` (f): &quot;=E2*F2&quot;
+- `I2` (s): &quot;CNY&quot;
+- `J2` (s): &quot;2024&quot;
+- `K2` (s): &quot;[S3]&quot;
+- `L2` (s): &quot;年报转引值；原始行业报告未取得&quot;
+- `A3` (s): &quot;T2&quot;
+- `B3` (s): &quot;SAM&quot;
+- `C3` (s): &quot;T1&quot;
+- `D3` (s): &quot;其中软件收入情景&quot;
+- `E3` (f): &quot;=G2&quot;
+- `F3` (n): 0.4
+- `G3` (f): &quot;=E3*F3&quot;
+- `H3` (f): &quot;=E3*F3&quot;
+- `I3` (s): &quot;CNY&quot;
+- `J3` (s): &quot;2026&quot;
+- `K3` (s): &quot;[S3]+[推测]&quot;
+- `L3` (s): &quot;40% 为推测&quot;
+- `A4` (s): &quot;T3&quot;
+- `B4` (s): &quot;SAM&quot;
+- `C4` (s): &quot;T2&quot;
+- `D4` (s): &quot;可服务行业和地域情景&quot;
+- `E4` (f): &quot;=G3&quot;
+- `F4` (n): 0.6
+- `G4` (f): &quot;=E4*F4&quot;
+- `H4` (f): &quot;=E4*F4&quot;
+- `I4` (s): &quot;CNY&quot;
+- `J4` (s): &quot;2026&quot;
+- `K4` (s): &quot;[推测]&quot;
+- `L4` (s): &quot;60% 为推测&quot;
+- `A5` (s): &quot;T4&quot;
+- `B5` (s): &quot;SOM&quot;
+- `C5` (s): &quot;T3&quot;
+- `D5` (s): &quot;三年可获得情景&quot;
+- `E5` (f): &quot;=G4&quot;
+- `F5` (n): 0.08
+- `G5` (f): &quot;=E5*F5&quot;
+- `H5` (f): &quot;=E5*F5&quot;
+- `I5` (s): &quot;CNY&quot;
+- `J5` (s): &quot;2026-2028&quot;
+- `K5` (s): &quot;[用户假设]&quot;
+- `L5` (s): &quot;8% 为用户假设；结果 3.484224 亿元&quot;
+
+## bottom_up
+
+- `A1` (s): &quot;line_id&quot;
+- `B1` (s): &quot;segment&quot;
+- `C1` (s): &quot;customer_count&quot;
+- `D1` (s): &quot;units_per_customer&quot;
+- `E1` (s): &quot;annual_price_or_spend&quot;
+- `F1` (s): &quot;penetration_rate&quot;
+- `G1` (s): &quot;calculated_value&quot;
+- `H1` (s): &quot;formula&quot;
+- `I1` (s): &quot;currency&quot;
+- `J1` (s): &quot;year&quot;
+- `K1` (s): &quot;source_id&quot;
+- `L1` (s): &quot;notes&quot;
+- `A2` (s): &quot;B1&quot;
+- `B2` (s): &quot;全部制造法人上界&quot;
+- `C2` (n): 4048000
+- `D2` (n): 1
+- `E2` (n): 120000
+- `F2` (n): 1
+- `G2` (f): &quot;=C2*D2*E2*F2&quot;
+- `H2` (f): &quot;=C2*D2*E2*F2&quot;
+- `I2` (s): &quot;CNY&quot;
+- `J2` (s): &quot;2026&quot;
+- `K2` (s): &quot;[S1]+[用户假设]&quot;
+- `L2` (s): &quot;数学上界；法人不是实际客户&quot;
+- `A3` (s): &quot;B2&quot;
+- `B3` (s): &quot;可服务客户情景&quot;
+- `C3` (f): &quot;=C2*1%&quot;
+- `D3` (n): 1
+- `E3` (n): 120000
+- `F3` (n): 1
+- `G3` (f): &quot;=C3*D3*E3*F3&quot;
+- `H3` (f): &quot;=C3*D3*E3*F3&quot;
+- `I3` (s): &quot;CNY&quot;
+- `J3` (s): &quot;2026&quot;
+- `K3` (s): &quot;[S1]+[推测]+[用户假设]&quot;
+- `L3` (s): &quot;1% 为推测&quot;
+- `A4` (s): &quot;B3&quot;
+- `B4` (s): &quot;三年可获得客户&quot;
+- `C4` (f): &quot;=C3&quot;
+- `D4` (n): 1
+- `E4` (n): 120000
+- `F4` (n): 0.08
+- `G4` (f): &quot;=C4*D4*E4*F4&quot;
+- `H4` (f): &quot;=C4*D4*E4*F4&quot;
+- `I4` (s): &quot;CNY&quot;
+- `J4` (s): &quot;2026-2028&quot;
+- `K4` (s): &quot;[S1]+[推测]+[用户假设]&quot;
+- `L4` (s): &quot;结果 3.88608 亿元&quot;
+
+## reconciliation
+
+- `A1` (s): &quot;metric&quot;
+- `B1` (s): &quot;top_down_value&quot;
+- `C1` (s): &quot;bottom_up_value&quot;
+- `D1` (s): &quot;difference&quot;
+- `E1` (s): &quot;difference_pct&quot;
+- `F1` (s): &quot;explanation&quot;
+- `G1` (s): &quot;preferred_value&quot;
+- `H1` (s): &quot;reason&quot;
+- `A2` (s): &quot;TAM&quot;
+- `B2` (f): &quot;=top_down!G2&quot;
+- `C2` (f): &quot;=bottom_up!G2&quot;
+- `D2` (f): &quot;=ABS(B2-C2)&quot;
+- `E2` (f): &quot;=D2/MAX(B2,C2)&quot;
+- `F2` (s): &quot;顶部以行业额为起点，底部把全部法人视为上界；定义不同&quot;
+- `G2` (s): &quot;不选点估计&quot;
+- `H2` (s): &quot;底部上界明显过宽&quot;
+- `A3` (s): &quot;SAM&quot;
+- `B3` (f): &quot;=top_down!G4&quot;
+- `C3` (f): &quot;=bottom_up!G3&quot;
+- `D3` (f): &quot;=ABS(B3-C3)&quot;
+- `E3` (f): &quot;=D3/MAX(B3,C3)&quot;
+- `F3` (s): &quot;顶部软件占比与服务比例均为推测，底部客户比例也是推测&quot;
+- `G3` (f): &quot;=C3&quot;
+- `H3` (s): &quot;底部变量可通过客户访谈校准&quot;
+- `A4` (s): &quot;SOM&quot;
+- `B4` (f): &quot;=top_down!G5&quot;
+- `C4` (f): &quot;=bottom_up!G4&quot;
+- `D4` (f): &quot;=ABS(B4-C4)&quot;
+- `E4` (f): &quot;=D4/MAX(B4,C4)&quot;
+- `F4` (s): &quot;两种情景约为 3.48 亿元和 3.89 亿元&quot;
+- `G4` (f): &quot;=AVERAGE(B4,C4)&quot;
+- `H4` (s): &quot;仅作情景中点，不是市场事实&quot;
+
+## orthogonality_check
+
+- `A1` (s): &quot;item_a&quot;
+- `B1` (s): &quot;item_b&quot;
+- `C1` (s): &quot;overlap_risk&quot;
+- `D1` (s): &quot;overlap_description&quot;
+- `E1` (s): &quot;resolution&quot;
+- `F1` (s): &quot;status&quot;
+- `A2` (s): &quot;安防视频监控&quot;
+- `B2` (s): &quot;工业产线质检软件&quot;
+- `C2` (s): &quot;是&quot;
+- `D2` (s): &quot;视觉技术重叠但采购预算不同&quot;
+- `E2` (s): &quot;排除安防预算&quot;
+- `F2` (s): &quot;clear&quot;
+- `A3` (s): &quot;硬件/光源/相机&quot;
+- `B3` (s): &quot;软件许可/订阅/维护&quot;
+- `C3` (s): &quot;是&quot;
+- `D3` (s): &quot;整机合同混含硬件、软件、定制和调试 [S4]&quot;
+- `E3` (s): &quot;模型只使用给定软件年支出&quot;
+- `F3` (s): &quot;clear&quot;
+- `A4` (s): &quot;自动化集成&quot;
+- `B4` (s): &quot;工业视觉软件&quot;
+- `C4` (s): &quot;是&quot;
+- `D4` (s): &quot;181.47 亿元声称剔除集成但原始定义未取得 [S3]&quot;
+- `E4` (s): &quot;不再叠加集成收入&quot;
+- `F4` (s): &quot;needs_review&quot;
+- `A5` (s): &quot;法人单位&quot;
+- `B5` (s): &quot;工厂/产线/客户&quot;
+- `C5` (s): &quot;是&quot;
+- `D5` (s): &quot;404.8 万法人不是实际客户 [S1]&quot;
+- `E5` (s): &quot;使用 1% 推测折减并做敏感性&quot;
+- `F5` (s): &quot;needs_review&quot;
+- `A6` (s): &quot;数字化采用率&quot;
+- `B6` (s): &quot;机器视觉渗透率&quot;
+- `C6` (s): &quot;是&quot;
+- `D6` (s): &quot;统计口径不同 [S2]&quot;
+- `E6` (s): &quot;不使用数字化率作为视觉渗透率&quot;
+- `F6` (s): &quot;clear&quot;
+
+## sources
+
+- `A1` (s): &quot;source_id&quot;
+- `B1` (s): &quot;source_name&quot;
+- `C1` (s): &quot;source_type&quot;
+- `D1` (s): &quot;url_or_location&quot;
+- `E1` (s): &quot;date&quot;
+- `F1` (s): &quot;fields_supported&quot;
+- `G1` (s): &quot;reliability&quot;
+- `A2` (s): &quot;[S1]&quot;
+- `B2` (s): &quot;国家统计局第五次全国经济普查工业结果&quot;
+- `C2` (s): &quot;政府&quot;
+- `D2` (s): &quot;https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html&quot;
+- `E2` (s): &quot;2025-02-27&quot;
+- `F2` (s): &quot;工业收入、制造法人单位&quot;
+- `G2` (s): &quot;高&quot;
+- `A3` (s): &quot;[S2]&quot;
+- `B3` (s): &quot;国家统计局企业数字化转型&quot;
+- `C3` (s): &quot;政府&quot;
+- `D3` (s): &quot;https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html&quot;
+- `E3` (s): &quot;2025-02-28&quot;
+- `F3` (s): &quot;数字化率边界&quot;
+- `G3` (s): &quot;高&quot;
+- `A4` (s): &quot;[S3]&quot;
+- `B4` (s): &quot;奥普特 2025 年年度报告&quot;
+- `C4` (s): &quot;公司年报&quot;
+- `D4` (s): &quot;https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf&quot;
+- `E4` (s): &quot;2026-04-03&quot;
+- `F4` (s): &quot;181.47 亿元二次转引&quot;
+- `G4` (s): &quot;中&quot;
+- `A5` (s): &quot;[S4]&quot;
+- `B5` (s): &quot;双元科技第二轮问询回复&quot;
+- `C5` (s): &quot;监管披露&quot;
+- `D5` (s): &quot;https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf&quot;
+- `E5` (s): &quot;2023-03-31&quot;
+- `F5` (s): &quot;整机价格与验收滞后&quot;
+- `G5` (s): &quot;高&quot;
+- `A6` (s): &quot;[S5]&quot;
+- `B6` (s): &quot;中国机器视觉产业联盟报告发布页&quot;
+- `C6` (s): &quot;行业协会&quot;
+- `D6` (s): &quot;https://www.china-vision.org/user/bilin.html&quot;
+- `E6` (s): &quot;2025-06-19&quot;
+- `F6` (s): &quot;2024 销售额增速；绝对额缺失&quot;
+- `G6` (s): &quot;中&quot;
+- `A7` (s): &quot;[S6]&quot;
+- `B7` (s): &quot;凌云光 VisionChina 活动稿&quot;
+- `C7` (s): &quot;公司材料&quot;
+- `D7` (s): &quot;https://www.lusterinc.com/%E6%99%BA%E9%80%A0%E6%96%B0%E8%A7%86%E7%95%8C%EF%BC%81%E5%87%8C%E4%BA%91%E5%85%89%E4%BA%AE%E7%9B%B82025-visionchina%E5%8C%97%E4%BA%AC%E5%B1%95/&quot;
+- `E7` (s): &quot;2025-06-19&quot;
+- `F7` (s): &quot;395.4 亿元转引；未用于公式&quot;
+- `G7` (s): &quot;低&quot;
+- `A8` (s): &quot;[S7]&quot;
+- `B8` (s): &quot;凌云光 VisionChina 活动稿&quot;
+- `C8` (s): &quot;公司材料&quot;
+- `D8` (s): &quot;https://www.lusterinc.com/%E4%BB%8E%E5%A4%A7%E5%92%96%E8%A7%82%E7%82%B9%E5%88%B0%E7%A1%AC%E6%A0%B8%E5%B1%95%E5%93%81%EF%BC%8C%E5%87%8C%E4%BA%91%E5%85%89-x-jai%E7%9A%84visionchina%E4%B9%8B%E6%97%85/&quot;
+- `E8` (s): &quot;2026-06-26&quot;
+- `F8` (s): &quot;超过 400 亿元总产值；未用于公式&quot;
+- `G8` (s): &quot;低&quot;
+</pre></details>
+          </article>
+        </section>
+        <footer>人工判断字段完整，可以进入裁决。</footer>
+      </article></section>
+  </main>
+</body>
+</html>

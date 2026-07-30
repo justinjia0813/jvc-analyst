@@ -1,15 +1,15 @@
 # Trust Report
 
-日期：2026-07-22
+日期：2026-07-30
 
-证据边界：这是 production governance 的本地 trust report，不是 public governed release 的完整安全认证。
+证据边界：这是 production governance（生产治理）的本地 trust report（信任报告），不是 public governed release（受治理的公开发布）的完整安全认证。
 
 ## 缩写说明
 
 | 缩写 | 英文全称 | 中文全称 | 含义 |
 | --- | --- | --- | --- |
 | CLI | Command-Line Interface | 命令行接口 | 脚本通过终端命令运行的接口 |
-| OCR | Optical Character Recognition | 光学字符识别 | 从 PDF 发票中识别文字 |
+| OCR | Optical Character Recognition | 光学字符识别 | 从发票中识别文字 |
 | PDF | Portable Document Format | 便携式文档格式 | 发票和归档票据格式 |
 | HTML | HyperText Markup Language | 超文本标记语言 | 浏览器预览使用的页面结构格式 |
 | DOCX | Office Open XML Word Document | Word 文档格式 | 访谈纪要输出格式 |
@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`51acb7f4dfa18502b692181f2e38446f83f430f4dabdbeb1b3b7a61da7fc9f50`
+`50376a35bf258272fbe62fea5035299d99e62b6b0efc1d827377b93be7a19462`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
@@ -27,12 +27,13 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Secret scan | pass | No obvious secret patterns are expected in package files |
-| Network scripts | pass | `security/network_policy.json` declares no shipped network-capable scripts |
-| Permission approvals | pass | `security/permission_policy.json` approves file read, file write, subprocess |
-| Dependency review | warn | `jvc-research-report` Python dependencies are pinned; some other Python and OCR dependencies remain incompletely machine-pinned |
-| Script help surface | warn | Invoice scripts use manual `sys.argv`; governance, workbook, DOCX, and report-builder scripts use `argparse` |
-| Runtime permission probes | warn | Packaged adapter probes are missing evidence because no `dist` package is generated |
+| Secret scan | pass | 本地治理检查未发现预设的高风险凭据模式 |
+| Network scripts | pass | `security/network_policy.json` 声明脚本网络默认拒绝，清单为空 |
+| Packaged-script network | pass | research core、review-kit renderer 和 research-report renderer 均无网络能力；report 只内嵌本地 `data:` URI |
+| Permission approvals | pass | 本地 file read、file write、subprocess 已按范围批准 |
+| Dependency review | warn | research core 为标准库，report Python 依赖已锁定；既有 DOCX/发票依赖仍有未固定版本项 |
+| Script help surface | warn | research core、report renderer 与其他生成器有明确接口；既有发票脚本仍使用手工 `sys.argv` |
+| Runtime permission probes | warn | 本轮没有生成分发包，因此没有适配器运行时权限探针 |
 
 ## Pinned Report Dependencies
 
@@ -65,6 +66,8 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | --- | --- | --- |
 | `scripts/check-governance.py` | argparse CLI | file read, file write |
 | `scripts/check-skill-evals.py` | CLI | file read |
+| `scripts/check-research-core-install.py` | self-check | file read, file write, subprocess；仅在临时目录模拟安装与回滚 |
+| `scripts/render-output-review-kit.py` | argparse CLI | file read, file write；无网络 |
 | `scripts/generate-workbook.py` | argparse CLI | file read, file write |
 | `scripts/validate-workbook.py` | argparse CLI | file read |
 | `skills/jvc-knowledge-tree-builder/scripts/collect_sources.py` | argparse CLI | file read, file write |
@@ -74,7 +77,9 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | `skills/jvc-meeting-notes/scripts/generate_meeting_notes.py` | argparse CLI | file read, file write |
 | `skills/jvc-invoice-manager/scripts/process_invoices.py` | manual CLI | file read, file write, OCR |
 | `skills/jvc-invoice-manager/scripts/generate_summary.py` | manual CLI | file read, file write, PDF copy |
+| `skills/jvc-research-core/scripts/researchctl.py` | argparse CLI | file read, file write；无网络 |
+| `skills/jvc-research-core/scripts/check_package.py` | self-check | file read, file write；无网络 |
 
 ## Release Rule
 
-No high-risk secrets or unrestricted remote inline execution are documented. This supports production governance with visible warnings. It does not support claiming full governed public release readiness.
+未发现高风险凭据或不受限的远程内联执行。证据支持仓库内 production governance with warnings（带警告的生产治理），不支持声称完整的公开受治理发布就绪。

@@ -2,15 +2,21 @@
 name: jvc-invoice-manager
 description: |
   发票整理：OCR 识别 PDF 发票，生成报销汇总 Excel，并按月份、地点、项目自动归档差旅票据；这是运营辅助，不进入投资决策流程。
-  Use when user says '整理发票', '处理发票', '报销归档', '发票汇总', 'invoice manager'.
+  Use when user says '/jvc-invoice-manager', '整理发票', '处理发票', '报销归档', '发票汇总', 'invoice manager'.
 integrated_from: invoice-manager
+user_invocable: true
+version: "1.0.0"
 ---
 
 # /jvc-invoice-manager — 发票管理器
 
 `/jvc-invoice-manager` 是 `jvc-analyst` 内置的运营辅助 skill，用于出差后或月底报销周期。它处理 PDF 发票 OCR、人工复核后的发票 JSON、报销汇总 Excel 和 PDF 归档。
 
-它不属于投资决策流程。除非用户明确把发票作为项目原始素材提供，否则发票数据不得进入尽调判断。
+它不属于投资决策流程。本 invoice skill 永不把发票数据传入研究链；若用户另行要求研究票据，只能由相应 research skill 使用经用户确认的脱敏摘录，并排除报销人、支付标识、发票号等个人或支付标识。
+
+## 2.0 边界
+
+本 skill 不接入 `jvc-research-core`，不创建投资证据账本，也不把发票、报销人或支付信息传入投资研究链。
 
 ## 输入
 

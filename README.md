@@ -41,7 +41,7 @@ cd jvc-analyst
 ./setup
 ```
 
-`setup` 会自动检测本机已有的 AI 编码平台，将 `skills/jvc-*` 注册到对应目录：
+`setup` 会自动检测本机已有的 AI 编码平台，将 `skills/jvc-*` 注册到对应目录。安装包包含 `13 user skills + 1 hidden research core`；隐藏的 `jvc-research-core` 只为研究 skill 提供本地证据台账与审查，不提供 slash command。
 
 | 平台 | 目录 |
 | --- | --- |
@@ -53,6 +53,19 @@ cd jvc-analyst
 | Cursor | `.cursor/skills/` |
 
 安装完成后即可在对话中通过 `/jvc-prescreen`、`/jvc-bear-case` 等 slash command 调用。
+
+### 研究 core
+
+已接入的研究 skill 会按需调用四个固定命令：
+
+```bash
+python3 "<core>/scripts/researchctl.py" init --skill "<skill>" --run-dir "<run-dir>" --scope-file "<scope.json>"
+python3 "<core>/scripts/researchctl.py" record --run-dir "<run-dir>" --input "<records.jsonl>"
+python3 "<core>/scripts/researchctl.py" audit --run-dir "<run-dir>" --skill "<skill>" --artifact "<artifact>"
+python3 "<core>/scripts/researchctl.py" waive --run-dir "<run-dir>" --skill "<skill>" --rule "<rule>" --reason "<reason>" --scope "<scope>" --approved-by "<person>" --residual-risk "<risk>"
+```
+
+审查状态只有 `ready`、`partial`、`blocked`：只有 `ready` 可以声称研究完成；`partial` 必须标注不完整并缩小结论；`blocked` 只交付证据缺口和下一步。公开资料搜索仍由代理使用平台搜索工具完成，包内脚本没有网络代码。
 
 ## 使用原则
 
@@ -268,6 +281,7 @@ tracks/{track-slug}/
 │   ├── jvc-market-sizing/
 │   ├── jvc-meeting-notes/
 │   ├── jvc-prescreen/
+│   ├── jvc-research-core/      # 隐藏的本地证据台账与审查 runtime
 │   ├── jvc-research-report/
 │   ├── jvc-roi-modeler/
 │   ├── jvc-talk-notes/

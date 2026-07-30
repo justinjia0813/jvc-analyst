@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "local-interview-to-prescreen",
+      "skill_chain": ["jvc-meeting-notes", "jvc-prescreen"],
+      "input": "脱敏虚构工业视觉公司逐字稿、用户随笔和 deck 摘要",
+      "expected_status": "ready",
+      "must_prove": ["受访者自述与用户观察分离", "初筛主张可追溯"]
+    },
+    {
+      "id": "glass-substrate-conflicting-public-sources",
+      "skill_chain": ["jvc-track-research"],
+      "input": "玻璃基板先进封装赛道，要求主动寻找量产良率与商业化相反证据",
+      "expected_status": "ready",
+      "must_prove": ["两类独立来源", "冲突口径保留", "反向检索", "停止条件"]
+    },
+    {
+      "id": "market-model-fact-vs-assumption",
+      "skill_chain": ["jvc-market-sizing"],
+      "input": "工业视觉质检软件中国市场，给定用户渗透率假设",
+      "expected_status": "ready",
+      "must_prove": ["外部事实与用户假设分离", "模型估算可追溯"]
+    },
+    {
+      "id": "audited-chain-to-ic-memo",
+      "skill_chain": ["jvc-bull-case", "jvc-bear-case", "jvc-ic-memo"],
+      "input": "复用前三类已审材料形成投决备忘录",
+      "expected_status": "ready",
+      "must_prove": ["前序审查仍有效", "新增事实先登记", "风险与反证保留"]
+    },
+    {
+      "id": "missing-critical-commercial-proof",
+      "skill_chain": ["jvc-track-research"],
+      "input": "只有公司融资稿支持规模收入，且无独立客户或财务证据",
+      "expected_status": "blocked",
+      "must_prove": ["公司主张不升级为事实", "不能伪装成 ready"]
+    }
+  ]
+}

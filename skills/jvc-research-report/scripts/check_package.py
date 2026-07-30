@@ -77,6 +77,9 @@ def expect_error(label: str, text: str, report_path: Path, expected: str) -> Non
 
 
 def run_builder(report_path: Path, brand_path: Path, output: Path) -> subprocess.CompletedProcess[str]:
+    cache = output.parent / ".cache"
+    cache.mkdir(exist_ok=True)
+    env = {**os.environ, "XDG_CACHE_HOME": str(cache)}
     return subprocess.run(
         (
             sys.executable,
@@ -87,6 +90,7 @@ def run_builder(report_path: Path, brand_path: Path, output: Path) -> subprocess
             "--output",
             str(output),
         ),
+        env=env,
         text=True,
         capture_output=True,
         check=False,

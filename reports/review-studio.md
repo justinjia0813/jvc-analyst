@@ -1,6 +1,6 @@
 # Review Studio
 
-日期：2026-07-22
+日期：2026-07-30
 
 Decision: `reviewable_with_warnings`
 
@@ -22,23 +22,24 @@ Decision: `reviewable_with_warnings`
 | Gate | Status | Evidence | Review Action |
 | --- | --- | --- | --- |
 | Intent Canvas | pass | `reports/skill-ir.json` |  |
-| Trigger Lab | warn | `evals/trigger_cases.json`, `reports/route_scorecard.md` | Add model-executed route evidence plus blind/adversarial holdout |
-| Output Lab | warn | 13 个 output cases；`jvc-research-report` 的 file-backed fixture 实际生成 A4 13 页 PDF，`pdftotext` 提取预期文本，`pdftoppm` 与逐页视觉检查覆盖 13/13 页；首轮重复封面图已移除并复核 | 保留 `warn`；继续补其余产物 fixture、baseline vs with-skill、model-executed evidence 和 blind A/B review |
-| Context Budget | pass | `reports/yao-meta-skill-audit-2026-06-20.md` |  |
-| Runtime Matrix | warn | `agents/interface.yaml` | Generate packaged adapters and conformance matrix before external distribution |
-| Trust Report | warn | `reports/trust_report.md`；报告依赖已锁定，local-only、`data:` URI、resource guards 与 transactional outputs 有本地证据 | Pin remaining suite dependencies where needed and convert invoice CLIs to argparse |
-| Permission Gates | pass | `security/permission_policy.json` |  |
-| Runtime Permission Probes | warn | `agents/interface.yaml` | Run packaged adapter permission probes after a dist package exists |
-| Skill Atlas | warn | `reports/skill-ir.json` | Generate full route atlas before library release |
-| Operations Loop | warn | audit report | Add drift reporting only after real team usage data exists |
-| Review Waivers | pass | this file | No warning waivers accepted in this pass |
-| Registry Audit | warn | `manifest.json` | Add package/install simulation before external registry release |
-| Release Notes | pass | this file |  |
+| Trigger Lab | warn | 14 个 deterministic trigger cases | 补模型实际运行的盲测和对抗路由保留集 |
+| Output Lab | pass | 14 个输出契约；5 个 core 真实路径案例；2 个基线/候选案例；2 个已裁决盲审案例；report 的 13 页文件渲染与视觉检查 |  |
+| Context Budget | pass | Yao resource boundary check |  |
+| Runtime Matrix | warn | `agents/interface.yaml` | 外部分发前生成并运行各目标平台适配器 |
+| Trust Report | warn | `reports/trust_report.md`；report 依赖已锁定 | 固定其余依赖版本并保留发票命令行警告 |
+| Permission Gates | pass | 本地读写/子进程审批；脚本网络默认拒绝 |  |
+| Runtime Permission Probes | warn | 没有 dist package | 分发包存在后运行适配器权限探针 |
+| Skill Atlas | warn | Skill IR + 14 个静态路由案例 | 补模型实际的冲突和 stale-skill 证据 |
+| Operations Loop | warn | 无真实团队使用 telemetry | 有真实使用数据后再做采用率和漂移报告 |
+| Review Waivers | pass | 5 个真实案例 waiver=0 |  |
+| Registry Audit | pass | `check-research-core-install.py` 临时目录安装/回滚模拟 |  |
+| Release Notes | pass | `reports/research-core-2.0-release.md` |  |
 
 ## Release Notes
 
-- Added production governance assets: `manifest.json`, `agents/interface.yaml`, Skill IR, security policies, trust report, and Review Studio.
-- Added local deterministic eval coverage for 13 `jvc-*` skills: 14 trigger cases and 13 output cases.
-- Added a fictional file-backed report fixture and real A4 13-page PDF text, page-rendering, and visual evidence; the initial duplicate cover artwork was fixed before final inspection.
-- This fixture evidence is self-check evidence, not model-executed or blind-review evidence.
-- Current release posture is production governance with warnings, not governed public release readiness.
+- 13 个用户可调用 skill 与 1 个 hidden core 均有确定性路由/输出覆盖；其中 11 个研究业务 skill 通过固定 `jvc-research-core` 命令协议获得记录与审计能力。
+- `jvc-research-report` 保持只校验、排版、不改正文的边界；虚构样例已完成 A4 13 页文本、渲染和逐页视觉检查。
+- 确定性输出对照为 64.09% → 100.00%，delta +35.91 个百分点，0 regression。
+- 5 个真实路径案例得到 4 `ready` 和 1 个预期 `blocked`（exit 20），无 waiver。
+- Justin 的 n=2 人工盲审一胜一负：玻璃案例支持 2.0 的实用性；市场案例低置信度偏好 1.0 的格式。
+- 当前状态支持仓库内 `2.0.0` 发布，不支持 governed public release（受治理的公开发布）或跨平台质量声明。

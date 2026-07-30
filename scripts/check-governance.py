@@ -118,6 +118,9 @@ def check_interface() -> None:
     require_text("agents/interface.yaml", "remote_inline_execution: \"forbid\"")
     for skill_path in (ROOT / "skills").glob("jvc-*/SKILL.md"):
         require_text("agents/interface.yaml", f"skills/{skill_path.parent.name}/SKILL.md")
+    require_text("skills/jvc-research-core/SKILL.md", "user_invocable: false")
+    require_text("setup", "SUPPORT_COMPONENTS")
+    require_text("setup", "jvc-research-core")
 
 
 def check_skill_ir() -> None:
@@ -135,11 +138,32 @@ def check_security() -> None:
     permission = load_json("security/permission_policy.json")
     require(network.get("schema_version") == 1, "network policy schema_version must be 1")
     require(isinstance(network.get("network_capable_scripts"), list), "network policy missing script list")
+    require(not network.get("network_capable_scripts"), "research core must not add network-capable scripts")
     approvals = permission.get("approvals")
     require(isinstance(approvals, list) and approvals, "permission policy missing approvals")
     approved = {approval.get("capability") for approval in approvals if approval.get("decision") == "approved"}
     for capability in {"file_read", "file_write", "subprocess"}:
         require(capability in approved, f"permission policy missing approved {capability}")
+
+
+def check_script_inventory(inventory: Any) -> None:
+    require(isinstance(inventory, list) and inventory, "trust report missing script inventory")
+    script_paths: set[str] = set()
+    for index, entry in enumerate(inventory):
+        require(isinstance(entry, dict), f"script inventory entry {index} must be an object")
+        path = entry.get("path")
+        require(isinstance(path, str) and path, f"script inventory entry {index} missing path")
+        require(path not in script_paths, f"duplicate script inventory path: {path}")
+        require((ROOT / path).is_file(), f"script inventory path does not exist: {path}")
+        script_paths.add(path)
+
+    required_paths = {
+        "skills/jvc-research-core/scripts/researchctl.py",
+        "skills/jvc-research-core/scripts/check_package.py",
+        "scripts/check-research-core-install.py",
+    }
+    missing = required_paths - script_paths
+    require(not missing, f"script inventory missing research core scripts: {sorted(missing)}")
 
 
 def check_trust_report() -> None:
@@ -150,7 +174,7 @@ def check_trust_report() -> None:
     expected_hash = trust.get("package_sha256")
     require(expected_hash != HASH_PLACEHOLDER, "trust report package_sha256 placeholder was not replaced")
     require(expected_hash == actual_hash, f"trust report hash mismatch: expected {actual_hash}, got {expected_hash}")
-    require(isinstance(trust.get("script_inventory"), list) and trust["script_inventory"], "trust report missing script inventory")
+    check_script_inventory(trust.get("script_inventory"))
     require_text("reports/trust_report.md", expected_hash)
 
 

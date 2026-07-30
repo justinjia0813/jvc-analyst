@@ -45,6 +45,7 @@
 - `/jvc-prescreen`、`/jvc-bear-case` 和 `/jvc-ic-memo` 的输出**必须**包含"未覆盖的关键问题"和"反面证据/反向假设"
 - `/jvc-comps-dd`、`/jvc-market-sizing` 和 `/jvc-roi-modeler` 的输出**必须**包含来源、覆盖缺口、口径限制、敏感项或正交/稀释检查
 - 创始人讲的话要标注是否经过外部验证；未经验证的描述用 `[创始人自述]` 标签
+- 已接入 `jvc-research-core` 的研究 skill，只有在最终稳定产物通过当前 core audit 且状态为 `ready` 后才能声称完成；`partial` 或 `blocked` 不得包装为完成。
 
 ### 2.4 不用英文术语堆砌装专业
 

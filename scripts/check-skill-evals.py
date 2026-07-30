@@ -60,6 +60,35 @@ def require_unique_ids(cases: list[dict[str, Any]], source: str) -> None:
         seen.add(case_id)
 
 
+def require_signal_list(case: dict[str, Any], key: str, *, required: bool = False) -> list[str]:
+    case_id = case["id"]
+    signals = case.get(key, [])
+    require(isinstance(signals, list), f"{case_id}: {key} must be a list")
+    require(not required or signals, f"{case_id}: {key} must be non-empty")
+    require(
+        all(isinstance(signal, str) and signal.strip() for signal in signals),
+        f"{case_id}: {key} must contain only non-empty strings",
+    )
+    require(len(signals) == len(set(signals)), f"{case_id}: {key} contains duplicate signals")
+    return signals
+
+
+def all_skill_names() -> set[str]:
+    return {path.parent.name for path in (ROOT / "skills").glob("jvc-*/SKILL.md")}
+
+
+def user_invocable_skill_names() -> set[str]:
+    names: set[str] = set()
+    for path in (ROOT / "skills").glob("jvc-*/SKILL.md"):
+        text = path.read_text(encoding="utf-8")
+        parts = text.split("---", 2)
+        require(len(parts) == 3 and not parts[0].strip(), f"{path.parent.name}: malformed frontmatter")
+        frontmatter_lines = {line.strip() for line in parts[1].splitlines()}
+        if "user_invocable: false" not in frontmatter_lines:
+            names.add(path.parent.name)
+    return names
+
+
 def check_trigger_cases() -> int:
     data = load_json("evals/trigger_cases.json")
     cases = data.get("cases")
@@ -104,8 +133,10 @@ def check_trigger_cases() -> int:
 
         require(isinstance(expected_skill, str) and expected_skill, f"{case_id}: missing expected_skill")
         skill_text = require_skill(expected_skill)
-        for signal in case.get("skill_contract_signals", []):
+        for signal in require_signal_list(case, "skill_contract_signals", required=True):
             require(signal in skill_text, f"{case_id}: {expected_skill} missing contract signal {signal!r}")
+        for signal in require_signal_list(case, "skill_contract_forbidden_signals"):
+            require(signal not in skill_text, f"{case_id}: {expected_skill} contains forbidden contract signal {signal!r}")
 
         neighbors = case.get("near_neighbors", [])
         require(isinstance(neighbors, list) and neighbors, f"{case_id}: expected at least one near neighbor")
@@ -121,8 +152,7 @@ def check_trigger_cases() -> int:
     require(not missing_pairs, f"missing near-neighbor trigger coverage: {sorted(missing_pairs)}")
     require(no_route_count >= 1, "trigger evals should include at least one no-route teaching/explanation case")
     routed_skills = {case.get("expected_skill") for case in cases if case.get("expected_skill")}
-    skill_dirs = {path.parent.name for path in (ROOT / "skills").glob("jvc-*/SKILL.md")}
-    missing_skills = skill_dirs - routed_skills
+    missing_skills = user_invocable_skill_names() - routed_skills
     require(not missing_skills, f"missing trigger coverage for skills: {sorted(missing_skills)}")
     return len(cases)
 
@@ -212,8 +242,7 @@ def check_output_cases() -> int:
     missing_families = required_families - families
     require(not missing_families, f"missing output artifact families: {sorted(missing_families)}")
     output_skills = {case.get("skill") for case in cases}
-    skill_dirs = {path.parent.name for path in (ROOT / "skills").glob("jvc-*/SKILL.md")}
-    missing_skills = skill_dirs - output_skills
+    missing_skills = all_skill_names() - output_skills
     require(not missing_skills, f"missing output coverage for skills: {sorted(missing_skills)}")
     return len(cases)
 

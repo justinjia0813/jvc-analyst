@@ -2,7 +2,7 @@
   "schema_version": 1,
   "package": {
     "name": "jvc-analyst",
-    "version": "0.2.1",
+    "version": "2.0.0",
     "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",
@@ -113,6 +113,24 @@
       "near_neighbors": ["jvc-meeting-notes"],
       "scripts": ["skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"],
       "failure_modes": ["Returns old summary/original quote/tag fields", "Puts Q headings in body content", "Lowers information extraction completeness"]
+    },
+    {
+      "name": "jvc-research-core",
+      "job": "Maintain one append-only evidence registry and deterministically audit calling-skill artifacts.",
+      "outputs": ["JSONL evidence registry", "JSON audit", "Markdown audit", "ready/partial/blocked status"],
+      "near_neighbors": [],
+      "scripts": [
+        "skills/jvc-research-core/scripts/researchctl.py",
+        "skills/jvc-research-core/scripts/check_package.py"
+      ],
+      "user_invocable": false,
+      "failure_modes": [
+        "Direct ledger edit",
+        "Same-origin sources counted as independent",
+        "Unverified company claim promoted to fact",
+        "Stale artifact reported as audited",
+        "Waiver produces ready"
+      ]
     },
     {
       "name": "jvc-invoice-manager",

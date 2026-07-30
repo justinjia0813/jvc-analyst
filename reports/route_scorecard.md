@@ -1,8 +1,8 @@
 # Route Scorecard
 
-日期：2026-07-22
+日期：2026-07-30
 
-证据类型：deterministic fixture evidence（确定性样例证据）。这不是 model-executed evidence（模型运行证据），也不是 blind holdout（盲测保留集）。
+证据类型：deterministic fixture evidence（确定性样例证据）。14 个 trigger case（触发案例）全部通过完整性与 source-contract（源码契约）检查；这不是模型实际路由准确率。
 
 ## 缩写说明
 
@@ -23,8 +23,10 @@
 | 项目 | 当前状态 |
 | --- | --- |
 | Trigger cases | 14 |
+| User-routable skill cases | 13 |
 | Near-neighbor pairs | 15 |
 | No-route teaching case | 1 |
+| Hidden core route | 无；`jvc-research-core` 为 `user_invocable: false`，由 11 个研究业务 skill 固定调用；发票和 report renderer 保持排除 |
 | Verification command | `python3 scripts/check-skill-evals.py` |
 | Latest local result | pass |
 
@@ -49,6 +51,7 @@
 
 ## Remaining Gaps
 
-- 还没有 model-executed route run，不能声称真实模型路由准确率。
-- 还没有 blind holdout 或 adversarial holdout，不能声称 Production promotion gate 已完整通过。
-- 当前 14 个样例验证的是 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage；`jvc-research-report` 的 file-backed rendering 与真实 PDF 文本、页数和视觉检查增强了产物证据，但不是 model-executed routing evidence 或 blind-review evidence。
+- 没有 model-executed route run（模型实际路由运行），不能声称真实路由准确率。
+- 没有 blind holdout（盲测保留集）或 adversarial holdout（对抗性保留集）。
+- hidden core 不应新增独立 route；它的正确入口是业务 skill 内的固定命令协议。
+- 当前 14 个样例验证 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage；report 的文件渲染证据不是模型路由或盲审证据。

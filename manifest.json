@@ -1,8 +1,8 @@
 {
   "name": "jvc-analyst",
-  "version": "0.3.0",
+  "version": "2.0.0",
   "owner": "jvc-analyst",
-  "updated_at": "2026-07-21",
+  "updated_at": "2026-07-30",
   "status": "active",
   "maturity_tier": "production",
   "lifecycle_stage": "production",
@@ -28,7 +28,8 @@
     "Branded research PDF and HTML previews",
     "Excel workbooks",
     "DOCX interview notes",
-    "Excel plus PDF invoice archive"
+    "Excel plus PDF invoice archive",
+    "evidence ledger and deterministic audit"
   ],
   "rollback_boundary": "Revert the governance commit or restore the previous skill package from Git history; raw project materials and local custom templates are outside the package boundary."
 }

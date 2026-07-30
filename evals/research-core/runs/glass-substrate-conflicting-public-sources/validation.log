@@ -1,0 +1,24 @@
+2026-07-29 Task 7 acceptance validation
+
+researchctl init: exit 0
+researchctl record input/records.jsonl: exit 0
+first researchctl audit: exit 20
+finding: counter_query_missing C2
+resolution: appended QU5 through researchctl record; no direct ledger edit and no waiver
+researchctl record input/records_followup.jsonl: exit 0
+post-fix audit: ready, exit 0
+final stable-artifact audit rerun 1: ready, exit 0
+final stable-artifact audit rerun 2: ready, exit 0
+
+Manual artifact checks:
+- complete 0 and A-I Markdown structure
+- all current claim sources [S1]-[S8] visible
+- SKC/Absolics same-origin timeline preserved, not counted as independent corroboration
+- facility, sample, low-volume manufacturing and stable HVM kept separate
+- Sony and IEEE engineering counterevidence retained
+- conclusion narrowed to HVM not proven
+- two-round search stability and stop condition visible
+- first-use abbreviation definitions checked
+
+Final artifact fingerprint:
+f8e637386a984104b8a63a6588130610fe4bc419713b8009ba5af4555d2c2039

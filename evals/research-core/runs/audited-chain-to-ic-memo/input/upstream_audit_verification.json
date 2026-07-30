@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-07-30T00:01:00Z",
+  "artifacts": [
+    {
+      "role": "local_interview_docx",
+      "path": "evals/research-core/runs/local-interview-to-prescreen/artifacts/【2026年07月29日访谈】澄像智检（虚构）.docx",
+      "skill": "jvc-meeting-notes",
+      "status": "ready",
+      "ledger_sequence": 10,
+      "artifact_fingerprint": "91ea8a6d1e90f5e9da96db22a0347aab55f2bff194d9cad64d08797df826469f",
+      "audit_key": "6b2cee287559f8b13fbbf10d060f504a107c7d5aeb4f5395598059f3a6331e0f"
+    },
+    {
+      "role": "local_prescreen",
+      "path": "evals/research-core/runs/local-interview-to-prescreen/artifacts/prescreen.md",
+      "skill": "jvc-prescreen",
+      "status": "ready",
+      "ledger_sequence": 10,
+      "artifact_fingerprint": "6012deeac24472367a04ee9d5b5d0daa301cdb9056d537863e5d5b9dc0a51c5d",
+      "audit_key": "4a0f6337fb113ca6cadce2ebc636477946b31909daa6527b9c9fb0cb77b79192"
+    },
+    {
+      "role": "glass_substrate_track_report",
+      "path": "evals/research-core/runs/glass-substrate-conflicting-public-sources/glass_substrate_track_research.md",
+      "skill": "jvc-track-research",
+      "status": "ready",
+      "ledger_sequence": 18,
+      "artifact_fingerprint": "f8e637386a984104b8a63a6588130610fe4bc419713b8009ba5af4555d2c2039",
+      "audit_key": "33a553285b1893b38bf5e55458237d984262ae4cd880c591d3228d9532bd1aae"
+    },
+    {
+      "role": "industrial_vision_market_workbook",
+      "path": "evals/research-core/runs/market-model-fact-vs-assumption/industrial_vision_software_market_20260729.xlsx",
+      "skill": "jvc-market-sizing",
+      "status": "ready",
+      "ledger_sequence": 19,
+      "artifact_fingerprint": "7f1841ead914ef0edd67bfc108023f5b5dd445f381d289c0f08b7b4839da76cb",
+      "audit_key": "4a8ffabb95965419882af5f48a988b0255839850213b2c3b971876979151d11a"
+    }
+  ]
+}

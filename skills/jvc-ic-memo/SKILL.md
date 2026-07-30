@@ -2,7 +2,9 @@
 name: jvc-ic-memo
 description: |
   投决备忘录：汇总所有前序素材，按十段式标准结构合成 IC memo 初稿。风险篇幅不少于投资逻辑篇幅。
-  Use when user says 'IC memo', '投决备忘录', '写memo', '出memo', '投委会材料'.
+  Use when user says '/jvc-ic-memo', 'IC memo', '投决备忘录', '写memo', '出memo', '投委会材料'.
+user_invocable: true
+version: "2.0.0"
 ---
 
 # /jvc-ic-memo — 投决备忘录
@@ -13,6 +15,24 @@ description: |
 
 - 项目相关的所有素材（deck、prescreen、尽调笔记、bull-case、bear-case、背调、赛道研究、comps、market-sizing、roi-model 等）
 - 用户的核心投资逻辑（几句话即可，LLM 来展开和补充论据）
+
+## 2.0 证据内核（必须）
+
+从本 `SKILL.md` 的实际目录解析同级 `../jvc-research-core/scripts/researchctl.py`，并使用绝对路径执行；不要依赖当前工作目录。
+
+执行前必须读取同级 `../jvc-research-core/references/evidence-contract.md` 和当前 profile `../jvc-research-core/profiles/jvc-ic-memo.json`。
+
+1. 新研究先准备完整 `scope` JSON，再运行 `init --skill jvc-ic-memo --run-dir <研究目录> --scope-file <scope.json>`；初始 `scope` 只能通过 `init --scope-file` 创建。
+2. 复用已有研究链时运行 `init --skill jvc-ic-memo --run-dir <研究目录> --resume`。后续 `scope` 更正必须通过 `record --run-dir <研究目录> --input <records.jsonl>` 登记，并用 `supersedes` 指向当前 effective scope；问题、检索、来源、主张和更正也只能通过该命令登记，不得直接编辑 `evidence_registry.jsonl`，generic `record` 不得创建 waiver。
+3. 跨 skill 消费已有主张时，在新主张的 `derived_from_claim_ids` 中登记上游主张编号；缺失或失效的上游审计会阻断下游完成。
+4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；Markdown 写在对应主张后，工作簿写入 `sources` 表，DOCX 写入来源附注，多文件产物至少在 `evidence_index.md` 建立映射。
+5. 完成现有产物生成与格式校验后，运行 `audit --run-dir <研究目录> --skill jvc-ic-memo --artifact <最终产物>`；多文件产物重复传入 `--artifact`。每次 audit 必须同时读取命令退出状态和 `audit.json`。
+6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才按产物补写 `研究状态：partial`：Markdown 写入标题与结论，XLSX 在 `sources` 表表头和列结构不变的前提下追加一条可见状态数据行，DOCX 写入首段与来源附注，多文件产物至少写入 `knowledge_tree.md` 与 `evidence_index.md`；任何类型写回标签后，必须先重新运行原有产物格式校验/validator，确认结构仍有效，再重跑 audit；存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
+7. 只有用户明确批准、且 blocker 与同 skill 最新有效 blocked audit 精确匹配时，才可运行 `waive --run-dir <研究目录> --skill jvc-ic-memo --rule <阻断规则> --reason <批准理由> --scope <批准范围> --approved-by <批准人> --residual-risk <剩余风险>`；不得自我批准，waiver 最多降级为 partial。
+
+找不到内核、profile 不兼容、账本损坏或终审异常时，不得退回纯 prompt 模式。
+
+本 skill 只消费有效审查记录；新增事实必须先登记，不能在 memo 中补造来源。
 
 ## 执行步骤
 

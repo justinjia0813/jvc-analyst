@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "record_id": "SC1",
+  "record_type": "scope",
+  "created_at": "2026-07-29T01:00:00Z",
+  "actor": "acceptance-agent",
+  "created_by_skill": "jvc-meeting-notes",
+  "subject": "澄像智检（脱敏虚构工业视觉公司）",
+  "decision": "判断现有本地材料是否支持进入下一轮商业与产品尽调",
+  "inclusions": ["创始人逐字稿", "用户现场观察", "公司融资稿摘要", "访谈纪要", "项目初筛"],
+  "exclusions": ["公开来源检索", "投资建议", "市场规模建模"],
+  "geography": "中国",
+  "time_range": "截至 2026-07-29 的本地材料",
+  "user_assumptions": ["所有公司、人物和数据均为脱敏虚构案例"]
+}

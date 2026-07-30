@@ -1,0 +1,86 @@
+{
+  "audits": [
+    {
+      "artifacts": [
+        {
+          "fingerprint": "91ea8a6d1e90f5e9da96db22a0347aab55f2bff194d9cad64d08797df826469f",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/artifacts/【2026年07月29日访谈】澄像智检（虚构）.docx"
+        }
+      ],
+      "audit_key": "0a28917162d7d3bb74909c2793e386b92d9a14ad6ff184b669105a80271c4b18",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/audit.json",
+      "audited_at": "2026-07-29T16:00:40Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [],
+      "findings": [],
+      "ledger_prefix_fingerprint": "636c3152e5a05ddca146a67f1e32fe741201c8bdcad8cd0f3f8a1e860199b958",
+      "ledger_sequence": 4,
+      "profile_fingerprint": "bbac69946a3977db3657b140db38dd5f8d7185d2df7e2e06a51bb5a2a977fe0b",
+      "schema_version": 1,
+      "skill": "jvc-meeting-notes",
+      "status": "ready"
+    },
+    {
+      "artifacts": [
+        {
+          "fingerprint": "91ea8a6d1e90f5e9da96db22a0347aab55f2bff194d9cad64d08797df826469f",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/artifacts/【2026年07月29日访谈】澄像智检（虚构）.docx"
+        }
+      ],
+      "audit_key": "6b2cee287559f8b13fbbf10d060f504a107c7d5aeb4f5395598059f3a6331e0f",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/audit.json",
+      "audited_at": "2026-07-29T16:01:19Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [],
+      "findings": [],
+      "ledger_prefix_fingerprint": "9d46e44d40fbb4bb4fb111f09c56e7c569949ac5eaae865b99dbe43cd529078c",
+      "ledger_sequence": 10,
+      "profile_fingerprint": "bbac69946a3977db3657b140db38dd5f8d7185d2df7e2e06a51bb5a2a977fe0b",
+      "schema_version": 1,
+      "skill": "jvc-meeting-notes",
+      "status": "ready"
+    },
+    {
+      "artifacts": [
+        {
+          "fingerprint": "6012deeac24472367a04ee9d5b5d0daa301cdb9056d537863e5d5b9dc0a51c5d",
+          "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/artifacts/prescreen.md"
+        }
+      ],
+      "audit_key": "817df1da53c8540bdffeb5641a29fe4aa92c6cc68e0febc4173d87a7a5bfba3b",
+      "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/audit.json",
+      "audited_at": "2026-07-30T01:47:32Z",
+      "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+      "dependency_audits": [
+        {
+          "artifacts": [
+            {
+              "fingerprint": "91ea8a6d1e90f5e9da96db22a0347aab55f2bff194d9cad64d08797df826469f",
+              "path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/artifacts/【2026年07月29日访谈】澄像智检（虚构）.docx"
+            }
+          ],
+          "audit_key": "6b2cee287559f8b13fbbf10d060f504a107c7d5aeb4f5395598059f3a6331e0f",
+          "audit_path": "/Users/justinjia/Desktop/personal project/vc-analyst/evals/research-core/runs/local-interview-to-prescreen/audit.json",
+          "audited_at": "2026-07-29T16:01:19Z",
+          "core_runtime_fingerprint": "7bf60ffcf8e1c49b394205adfcb51dc74ded6401a85fe8b5326401e165905953",
+          "dependency_audits": [],
+          "findings": [],
+          "ledger_prefix_fingerprint": "9d46e44d40fbb4bb4fb111f09c56e7c569949ac5eaae865b99dbe43cd529078c",
+          "ledger_sequence": 10,
+          "profile_fingerprint": "bbac69946a3977db3657b140db38dd5f8d7185d2df7e2e06a51bb5a2a977fe0b",
+          "schema_version": 1,
+          "skill": "jvc-meeting-notes",
+          "status": "ready"
+        }
+      ],
+      "findings": [],
+      "ledger_prefix_fingerprint": "9d46e44d40fbb4bb4fb111f09c56e7c569949ac5eaae865b99dbe43cd529078c",
+      "ledger_sequence": 10,
+      "profile_fingerprint": "c5b8f05b8d68c90712dfeb85a41d4c9ab0763c5fa9edf35ba3218c9284be7b7f",
+      "schema_version": 1,
+      "skill": "jvc-prescreen",
+      "status": "ready"
+    }
+  ],
+  "schema_version": 1
+}

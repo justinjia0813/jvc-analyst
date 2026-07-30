@@ -1,0 +1,28 @@
+2026-07-29 Task 7 acceptance validation
+
+generate-workbook.py: exit 0
+validate-workbook.py after fill: exit 0
+researchctl init: exit 0
+researchctl record input/records.jsonl: exit 0
+first audit: ready, exit 0
+researchctl record input/records_followup.jsonl: exit 0
+reason: corrected S9 title by append-only S10 supersession; no direct ledger edit and no waiver
+validate-workbook.py after final edits: exit 0
+final stable-artifact audit rerun 1: ready, exit 0
+final stable-artifact audit rerun 2: ready, exit 0
+
+Manual workbook checks:
+- exact six required sheets and unchanged headers
+- XLSX archive integrity passed
+- live formulas present in top_down, bottom_up and reconciliation
+- top-down SOM arithmetic: 152400000000000 * 0.0002 * 0.6 * 0.08 = 1463040000 CNY
+- bottom-up SOM arithmetic: 4048000 * 0.01 * 120000 * 0.08 = 388608000 CNY
+- source rows [S1]-[S8], corrected [S10], and visible STATE row present
+- TAM/SAM/SOM/CNY first-use definitions present in assumptions
+- external facts, user assumptions and model estimates remain separate
+- 181.47/395.4/>400 billion-yuan definitions are not merged or averaged
+- 404.8 million legal entities, digitalization rates and system prices are not promoted to software customer count, penetration or software annual spend
+- orthogonality and reconciliation sheets manually spot-checked
+
+Final artifact fingerprint:
+7f1841ead914ef0edd67bfc108023f5b5dd445f381d289c0f08b7b4839da76cb

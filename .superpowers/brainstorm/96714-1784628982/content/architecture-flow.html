@@ -1,0 +1,57 @@
+<style>
+  .flow { display:grid; grid-template-columns:1fr 54px 1fr 54px 1fr; align-items:stretch; gap:10px; margin:28px 0; }
+  .stage { border:1px solid #d7dde6; border-top:5px solid #a06b2c; border-radius:12px; padding:18px; background:#fff; min-height:180px; }
+  .stage strong { display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#a06b2c; margin-bottom:10px; }
+  .stage h3 { margin:0 0 12px; font-size:18px; color:#20252b; }
+  .stage ul { margin:0; padding-left:18px; color:#5e6878; font-size:13px; line-height:1.65; }
+  .arrow { display:flex; align-items:center; justify-content:center; color:#8a93a3; font-size:28px; }
+  .outputs { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; }
+  .output { background:#20252b; color:#fff; border-radius:9px; padding:13px 15px; }
+  .output b { display:block; color:#d7aa70; font-size:13px; margin-bottom:4px; }
+  .output span { font-size:12px; color:#c7ced8; }
+  .rule { padding:14px 16px; border-left:4px solid #a06b2c; background:#f7f3ed; border-radius:0 8px 8px 0; font-size:13px; color:#4b5563; }
+  @media (max-width:900px){ .flow{grid-template-columns:1fr;} .arrow{transform:rotate(90deg); min-height:24px;} .outputs{grid-template-columns:1fr;} }
+</style>
+
+<h2>设计 1：最小生成链路</h2>
+<p class="subtitle">一个输入目录、一条生成命令、三个可检查的输出；内容与排版职责分离。</p>
+
+<div class="flow">
+  <div class="stage">
+    <strong>01 · Input</strong>
+    <h3>固定格式 Markdown</h3>
+    <ul>
+      <li>报告元数据与品牌参数</li>
+      <li>规定章节结构</li>
+      <li>本地图片与来源索引</li>
+    </ul>
+  </div>
+  <div class="arrow">→</div>
+  <div class="stage">
+    <strong>02 · Build</strong>
+    <h3>校验与排版</h3>
+    <ul>
+      <li>检查必填字段和资源路径</li>
+      <li>Markdown 转网页结构</li>
+      <li>套用 lustinus RESEARCH 样式</li>
+    </ul>
+  </div>
+  <div class="arrow">→</div>
+  <div class="stage">
+    <strong>03 · Render</strong>
+    <h3>WeasyPrint 输出</h3>
+    <ul>
+      <li>A4 打印版分页</li>
+      <li>页眉、页脚与页码</li>
+      <li>字体、图片和链接嵌入</li>
+    </ul>
+  </div>
+</div>
+
+<div class="outputs">
+  <div class="output"><b>report.pdf</b><span>最终交付文件</span></div>
+  <div class="output"><b>report.html</b><span>浏览器预览与问题定位</span></div>
+  <div class="output"><b>build-report.txt</b><span>校验结果、警告与页数</span></div>
+</div>
+
+<div class="rule" style="margin-top:18px"><b>边界：</b>生成器不改写正文、不补充事实；结构或资源不合格时明确失败，不静默猜测。</div>

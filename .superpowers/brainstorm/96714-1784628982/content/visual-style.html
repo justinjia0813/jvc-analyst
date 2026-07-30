@@ -1,0 +1,90 @@
+<style>
+  .report-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:22px; }
+  .report-card { cursor:pointer; border:2px solid #d8dee8; border-radius:14px; overflow:hidden; background:#fff; transition:.16s ease; }
+  .report-card:hover { transform:translateY(-2px); box-shadow:0 12px 26px rgba(31,41,55,.12); }
+  .report-card.selected { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.14); }
+  .page { aspect-ratio:210/297; padding:22px; position:relative; color:#172033; background:#fff; }
+  .page .eyebrow { font-size:9px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; }
+  .page h3 { font-size:22px; line-height:1.15; margin:18px 0 10px; }
+  .page .dek { font-size:11px; line-height:1.55; color:#526071; }
+  .page .metric-row { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin:19px 0; }
+  .page .metric { padding:9px 7px; border-top:2px solid currentColor; font-size:8px; }
+  .page .metric b { display:block; font-size:14px; margin-bottom:3px; }
+  .page .chart { height:72px; margin-top:14px; position:relative; overflow:hidden; }
+  .page .chart:before { content:""; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 24%,#dfe5ec 25%,transparent 26%,transparent 49%,#dfe5ec 50%,transparent 51%,transparent 74%,#dfe5ec 75%,transparent 76%); }
+  .page .chart svg { width:100%; height:100%; position:relative; z-index:1; }
+  .page .footer { position:absolute; left:22px; right:22px; bottom:18px; font-size:7px; display:flex; justify-content:space-between; color:#657186; }
+  .dense { background:#f8f6ef; border-top:9px solid #111827; }
+  .dense h3 { font-family:Georgia,serif; font-weight:500; }
+  .dense .metric { color:#111827; }
+  .blue { border-top:9px solid #1b4f9c; }
+  .blue h3 { color:#173e77; font-weight:650; }
+  .blue .metric { color:#1b4f9c; background:#f2f6fb; }
+  .jvc { background:#fbfcfd; border-top:9px solid #171717; }
+  .jvc:after { content:"JVC RESEARCH"; position:absolute; right:-28px; top:83px; transform:rotate(90deg); font-size:8px; letter-spacing:.2em; color:#9a6b31; }
+  .jvc h3 { font-weight:750; letter-spacing:-.03em; }
+  .jvc .metric { color:#9a6b31; }
+  .card-copy { padding:14px 16px 16px; border-top:1px solid #e5e7eb; }
+  .card-copy h3 { margin:0 0 5px; font-size:15px; }
+  .card-copy p { margin:0; font-size:12px; color:#667085; line-height:1.45; }
+  @media (max-width:900px){ .report-grid{grid-template-columns:1fr;} .page{max-height:520px;} }
+</style>
+
+<h2>第一版采用哪种研究报告视觉语言？</h2>
+<p class="subtitle">三者都不使用外部机构标识；比较的是信息密度、层级和阅读节奏。点击选择一个方向。</p>
+
+<div class="report-grid">
+  <div class="report-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="page dense">
+      <div class="eyebrow">Industry deep dive · 21 July 2026</div>
+      <h3>先进封装散热：从材料性能到客户预算</h3>
+      <div class="dek">需求正在从实验室性能指标转向可验证的系统级总拥有成本。真正的产业分水岭，是谁能进入客户验证与规模交付。</div>
+      <div class="metric-row">
+        <div class="metric"><b>3–5年</b>研究周期</div>
+        <div class="metric"><b>4条</b>技术路线</div>
+        <div class="metric"><b>12项</b>反证指标</div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 260 75" preserveAspectRatio="none"><polyline points="0,65 38,57 76,61 114,38 152,42 190,19 228,24 260,8" fill="none" stroke="#111827" stroke-width="3"/></svg>
+      </div>
+      <div class="footer"><span>Institutional Research</span><span>1</span></div>
+    </div>
+    <div class="card-copy"><h3>A · 高密度机构风</h3><p>严肃、克制、信息密度高；适合长篇深度报告，但阅读压力最大。</p></div>
+  </div>
+
+  <div class="report-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="page blue">
+      <div class="eyebrow" style="color:#1b4f9c">Thematic Research</div>
+      <h3>先进封装散热<br>产业深度报告</h3>
+      <div class="dek">结构清晰、图表优先，用蓝白色层级快速区分事实、判断与待验证问题。</div>
+      <div class="metric-row">
+        <div class="metric"><b>01</b>核心结论</div>
+        <div class="metric"><b>02</b>产业链</div>
+        <div class="metric"><b>03</b>风险</div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 260 75" preserveAspectRatio="none"><path d="M0 66 C45 64,50 36,92 45 S150 28,180 31 S220 8,260 13" fill="none" stroke="#1b4f9c" stroke-width="4"/></svg>
+      </div>
+      <div class="footer"><span>Thematic Research</span><span>1</span></div>
+    </div>
+    <div class="card-copy"><h3>B · 蓝白研究风</h3><p>清楚、现代、图表友好；最接近常见国际投行研究报告的阅读体验。</p></div>
+  </div>
+
+  <div class="report-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="page jvc">
+      <div class="eyebrow" style="color:#9a6b31">JVC · Evidence before narrative</div>
+      <h3>先进封装散热：<br>产业验证地图</h3>
+      <div class="dek">把机构研究的秩序感与一级市场的证据边界结合：结论、证据、机制、反证条件同页出现。</div>
+      <div class="metric-row">
+        <div class="metric"><b>事实</b>来源可追溯</div>
+        <div class="metric"><b>推断</b>机制可检验</div>
+        <div class="metric"><b>未知</b>缺口可行动</div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 260 75" preserveAspectRatio="none"><polyline points="0,61 42,55 84,50 126,34 168,36 210,20 260,10" fill="none" stroke="#9a6b31" stroke-width="3"/><polyline points="0,67 42,63 84,57 126,52 168,45 210,42 260,35" fill="none" stroke="#20252b" stroke-width="2" stroke-dasharray="5 4"/></svg>
+      </div>
+      <div class="footer"><span>JVC Research · Internal</span><span>1</span></div>
+    </div>
+    <div class="card-copy"><h3>C · JVC 自有研究风（推荐）</h3><p>保留投行质感，但形成自己的品牌语法，并强化证据与投资判断。</p></div>
+  </div>
+</div>

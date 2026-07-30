@@ -1,0 +1,28 @@
+<svg width="1080" height="1440" viewBox="0 0 1080 1440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="看项目之前，先把赛道看明白">
+<defs>
+  <pattern id="grid" width="90" height="120" patternUnits="userSpaceOnUse"><path d="M90 0H0V120" fill="none" stroke="#293038" stroke-width="1" opacity=".45"/></pattern>
+  <style>.cn{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC",sans-serif;letter-spacing:0}.mono{font-family:Menlo,Monaco,Consolas,monospace;letter-spacing:0}</style>
+</defs>
+<rect width="1080" height="1440" fill="#0B0D10"/><rect width="1080" height="1440" fill="url(#grid)"/>
+<rect x="54" y="54" width="972" height="1332" fill="none" stroke="#3A414C" stroke-width="2"/>
+<rect x="78" y="78" width="924" height="76" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="126" fill="#35D39A" class="mono" font-size="23" font-weight="800">HOW TO USE AI / TRACK RESEARCH</text>
+<text x="956" y="126" fill="#A9B0AD" class="mono" font-size="23" font-weight="700" text-anchor="end">01 / 07</text>
+<text x="92" y="286" fill="#F7F5EF" class="cn" font-size="78" font-weight="900">看项目之前</text>
+<text x="92" y="382" fill="#F7F5EF" class="cn" font-size="78" font-weight="900">先把赛道看明白</text>
+<text x="94" y="468" fill="#C3C8C3" class="cn" font-size="31" font-weight="600">一轮研究，先搭边界、证据和问题地图</text>
+<rect x="92" y="540" width="896" height="112" fill="#F3F0E8"/>
+<rect x="92" y="540" width="12" height="112" fill="#35D39A"/>
+<text x="128" y="590" fill="#111419" class="mono" font-size="31" font-weight="900">/jvc-track-research</text>
+<text x="128" y="626" fill="#68706B" class="cn" font-size="24" font-weight="650">给一个细分赛道，生成第一轮投资研究地图</text>
+<path d="M118 804H292L378 730H546L628 880H818L920 764" fill="none" stroke="#35D39A" stroke-width="7"/>
+<g fill="#0B0D10" stroke="#35D39A" stroke-width="5"><circle cx="118" cy="804" r="18"/><circle cx="378" cy="730" r="18"/><circle cx="628" cy="880" r="18"/><circle cx="920" cy="764" r="18"/></g>
+<g class="cn" font-size="24" font-weight="800"><text x="92" y="870" fill="#F7F5EF">定义边界</text><text x="322" y="690" fill="#F7F5EF">技术路线</text><text x="570" y="950" fill="#F7F5EF">证据互证</text><text x="840" y="724" fill="#F7F5EF">待验证项</text></g>
+<rect x="92" y="1036" width="896" height="146" fill="#171B21" stroke="#3A414C"/>
+<text x="124" y="1083" fill="#35D39A" class="mono" font-size="22" font-weight="800">AI = ARTIFICIAL INTELLIGENCE / 人工智能</text>
+<text x="124" y="1128" fill="#E6E9E3" class="cn" font-size="25" font-weight="700">这里不是让人工智能替你投决，</text>
+<text x="124" y="1163" fill="#E6E9E3" class="cn" font-size="25" font-weight="700">而是让它按研究纪律整理公开证据。</text>
+<rect x="78" y="1276" width="924" height="86" fill="#171B21" stroke="#3A414C"/>
+<text x="104" y="1329" fill="#F7F5EF" class="mono" font-size="27" font-weight="800">JVC ANALYST</text><text x="956" y="1329" fill="#A9B0AD" class="mono" font-size="21" font-weight="700" text-anchor="end">SKILL 01 / TRACK FIRST</text>
+</svg>
+

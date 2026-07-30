@@ -1,0 +1,76 @@
+<style>
+  .contract-grid { display:grid; grid-template-columns:.92fr 1.08fr; gap:18px; margin-top:22px; }
+  .panel { border:1px solid #d9dee7; border-radius:12px; background:#fff; overflow:hidden; }
+  .panel-head { background:#20252b; color:#fff; padding:13px 16px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+  .panel-body { padding:17px; }
+  .codebox { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; line-height:1.62; background:#f6f7f9; border-radius:8px; padding:14px; color:#394150; white-space:pre-wrap; }
+  .key { color:#8a5d24; font-weight:700; }
+  .req { color:#a33a32; font-size:9px; font-weight:700; }
+  .section-list { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:14px; }
+  .section-item { border-left:3px solid #a06b2c; background:#f8f5f0; padding:9px 10px; font-size:12px; color:#4d5766; }
+  .component-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
+  .component { min-height:86px; border:1px solid #dfe3e9; border-radius:8px; padding:11px; background:#fff; }
+  .component b { display:block; color:#242a32; font-size:12px; margin-bottom:7px; }
+  .component p { margin:0; color:#687385; font-size:10px; line-height:1.45; }
+  .fact { border-top:4px solid #2e6f62; }
+  .infer { border-top:4px solid #a06b2c; }
+  .unknown { border-top:4px solid #a33a32; }
+  .note { margin-top:14px; padding:12px 14px; background:#f6f7f9; color:#596474; font-size:12px; border-radius:8px; }
+  @media (max-width:900px){ .contract-grid{grid-template-columns:1fr;} .component-row{grid-template-columns:1fr;} }
+</style>
+
+<h2>设计 2：固定输入契约与版式组件</h2>
+<p class="subtitle">约束元数据、章节顺序和特殊标记；正文仍是普通 Markdown，不发明新的写作语言。</p>
+
+<div class="contract-grid">
+  <div class="panel">
+    <div class="panel-head">报告元数据</div>
+    <div class="panel-body">
+      <div class="codebox"><span class="key">title</span>: 先进封装散热产业深度报告 <span class="req">必填</span>
+<span class="key">subtitle</span>: 从材料性能到客户预算
+<span class="key">date</span>: 2026-07-21 <span class="req">必填</span>
+<span class="key">authors</span>: [Justin]
+<span class="key">sector</span>: 人工智能硬件
+<span class="key">region</span>: 中国及全球
+<span class="key">classification</span>: Internal
+<span class="key">cover_image</span>: assets/cover.png
+<span class="key">disclaimer</span>: Internal research only</div>
+      <div class="note">品牌参数单独复用：<b>lustinus RESEARCH</b>、标识文件、主题色、页眉页脚和免责声明默认值。</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">固定章节顺序</div>
+    <div class="panel-body">
+      <div class="section-list">
+        <div class="section-item">0 · 一页快照</div>
+        <div class="section-item">A · 定义与边界</div>
+        <div class="section-item">B · 简史与生命周期</div>
+        <div class="section-item">C · 技术路线</div>
+        <div class="section-item">D · 产业链与价值分配</div>
+        <div class="section-item">E · 趋势与周期位置</div>
+        <div class="section-item">F · 关键玩家</div>
+        <div class="section-item">G · 政策与标准</div>
+        <div class="section-item">H · 投资问题与反证</div>
+        <div class="section-item">I · 来源索引</div>
+      </div>
+      <div class="note">直接兼容现有 <b>jvc-track-research</b> 的研究骨架；不在生成器里重复一套内容逻辑。</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:18px">
+  <div class="panel-head">首版版式组件</div>
+  <div class="panel-body">
+    <div class="component-row">
+      <div class="component fact"><b>事实卡 · FACT</b><p>已检索事实、数据和来源编号。</p></div>
+      <div class="component infer"><b>推断卡 · INFERENCE</b><p>机制、投资含义与置信度。</p></div>
+      <div class="component unknown"><b>未知卡 · OPEN QUESTION</b><p>证据缺口、反证条件和下一步动作。</p></div>
+    </div>
+    <div class="component-row">
+      <div class="component"><b>关键结论条</b><p>一页快照中的 3–5 条判断。</p></div>
+      <div class="component"><b>表格与图片</b><p>自动编号、题注、来源与跨页处理。</p></div>
+      <div class="component"><b>章节首页</b><p>章节标题、摘要和阅读导航。</p></div>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@
   "package": "jvc-analyst",
   "generated_at": "2026-07-30",
   "mode": "production-governance",
-  "package_sha256": "50376a35bf258272fbe62fea5035299d99e62b6b0efc1d827377b93be7a19462",
+  "package_sha256": "c42ecae58e5da8463d101d23ed3bdd02666c6c073184a4edfe16eb18ae205ab2",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
@@ -82,6 +82,14 @@
     {
       "path": "scripts/check-skill-evals.py",
       "interface": "cli",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "scripts/check-v3-foundation.py",
+      "interface": "self-check",
       "help_surface": "none",
       "capabilities": [
         "file_read"

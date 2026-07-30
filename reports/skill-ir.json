@@ -2,7 +2,7 @@
   "schema_version": 1,
   "package": {
     "name": "jvc-analyst",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",

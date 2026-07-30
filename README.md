@@ -15,6 +15,8 @@
 
 它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放进同一个可安装的 skill 集合。
 
+3.0 新增按研究级别裁剪的规格体系：快筛不背流程负担，进入尽调后再逐步增加假设、任务、证据和决策日志。
+
 ## 适合谁
 
 - 面向中国市场、人民币基金、Pre-seed 到 Series B 项目的投资人和研究协作者。
@@ -73,6 +75,19 @@ python3 "<core>/scripts/researchctl.py" waive --run-dir "<run-dir>" --skill "<sk
 - 原始项目材料保持本地存放，默认放在 `projects/{company-slug}/00-source/`。
 - 输出必须区分事实、受访者自述、用户观察、推测和未验证假设。
 - 公开资料可以联网检索；不要把 BP、逐字稿、财务表、创始人沟通记录上传到第三方网页工具。
+
+### 研究级别
+
+L0–L3（Research Level 0–3，研究级别 0–3，用于按决策场景控制流程密度）采用逐级增加工件的方式：
+
+| 级别 | 什么时候用 | 额外工件上限 |
+| --- | --- | --- |
+| **L0 快筛** | 30 分钟看 deck | 无；只产出 `01-prescreen.md` |
+| **L1 初筛** | 决定是否见创始人 | `spec/CONTEXT.md` + `spec/research-plan.md` + `spec/hypotheses.md` |
+| **L2 尽调** | 首面后验证关键假设 | + `spec/tasks.md` + `STATE.md` + 轻量 `evidence/` + Bull/Bear Case |
+| **L3 重仓/领投** | 提交投资决策委员会前 | + 完整证据卡片 + `decision-journal.md` |
+
+级别决定流程密度，不改变来源标注、反面证据、保密和不替人决策的纪律。每个 Skill 在自己的 `SKILL.md` 中声明最低适用级别。
 
 ## 工具总览
 
@@ -222,17 +237,29 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 
 ```text
 projects/{company-slug}/
-├── 00-source/              # 只读区：deck、财务表、转写、/jvc-meeting-notes 或 /jvc-talk-notes .docx
-├── 01-prescreen.md         # ← /jvc-prescreen
-├── 02-dd-notes.md          # 用户自己的尽调笔记
-├── 03-founder-sync.md      # 用户自己的访谈笔记
-├── 04-bull-case.md         # ← /jvc-bull-case
-├── 04-bear-case.md         # ← /jvc-bear-case
-├── 05-comps-dd.xlsx        # ← /jvc-comps-dd
-├── 05-market-sizing.xlsx   # ← /jvc-market-sizing
-├── 05-roi-modeler.xlsx     # ← /jvc-roi-modeler
-├── 06-ic-memo.md           # ← /jvc-ic-memo
-└── 99-decision.md          # 用户自己的最终决策
+├── 00-source/                  # 只读区：deck、财务表、转写和原始访谈材料
+├── spec/                       # L1+ 研究规格内核
+│   ├── CONTEXT.md              # L1+；共享语言、判断标准和已关闭决策
+│   ├── research-plan.md        # L1+；范围和验收标准
+│   ├── hypotheses.md           # L1+；3–5 条可证伪核心假设
+│   └── tasks.md                # L2+；验证任务、依赖和完成标准
+├── STATE.md                    # L2+；多轨研究状态
+├── decision-journal.md         # L3 决策时；立案与结果回填
+├── evidence/                   # L2+；来源材料与 motive_check
+│   ├── customer-interviews/
+│   ├── market-reports/
+│   ├── competitive-intel/
+│   └── financial-data/
+├── 01-prescreen.md             # ← /jvc-prescreen
+├── 02-dd-notes.md              # 用户自己的尽调笔记
+├── 03-founder-sync.md          # 用户自己的访谈笔记
+├── 04-bull-case.md             # ← /jvc-bull-case
+├── 04-bear-case.md             # ← /jvc-bear-case
+├── 05-comps-dd.xlsx            # ← /jvc-comps-dd
+├── 05-market-sizing.xlsx       # ← /jvc-market-sizing
+├── 05-roi-modeler.xlsx         # ← /jvc-roi-modeler
+├── 06-ic-memo.md               # ← /jvc-ic-memo
+└── 99-decision.md              # 用户自己的最终决策
 
 tracks/{track-slug}/
 ├── landscape.md            # ← /jvc-track-research
@@ -247,6 +274,10 @@ tracks/{track-slug}/
 ├── comps-dd.xlsx           # ← /jvc-comps-dd
 └── market-sizing.xlsx      # ← /jvc-market-sizing
 ```
+
+### 旧项目迁移
+
+旧项目无需整体搬家，也不要修改 `00-source/`。继续保留已有编号文件；项目升级到 L1 时再从 `templates/project-context-template.md` 和 `templates/hypotheses-template.md` 复制两个文件到 `spec/`，并按本次研究范围编写 `spec/research-plan.md`；进入 L2/L3 时按上表增量补工件。未进入对应级别的项目不创建空目录。
 
 ## 仓库结构
 
@@ -299,4 +330,7 @@ python3 scripts/check-docx-template-customization.py
 python3 scripts/check-docx-format-consistency.py
 python3 scripts/check-docx-filename-rule.py
 bash scripts/check-excel-workbooks.sh
+python3 scripts/check-v3-foundation.py
+python3 scripts/check-skill-evals.py
+python3 scripts/check-governance.py
 ```

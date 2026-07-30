@@ -4,14 +4,29 @@ description: |
   知识树构建器：读取本地 VC 赛道/项目/Obsidian 文件夹，将其中的文件转化为递归问题树、Mermaid 知识图谱、证据索引、开放问题清单和可复用节点。用于沉淀已有研究资料，不作为首次网页调研工具。
   Use when user says '/jvc-knowledge-tree-builder', '知识树', 'knowledge tree', '构建知识图谱', '整理研究资料', or asks to read a local VC track, project, Obsidian, or source folder and convert existing files into a recursive question tree, Mermaid graph, evidence index, open-question list, and reusable nodes. Do not use for first-pass web research, one-off summaries, translation, or UI-only mind-map drawing.
 user_invocable: true
-version: "2.0.0"
+version: "3.0.0"
 ---
 
 # /jvc-knowledge-tree-builder — JVC Knowledge Tree Builder
 
 Build a source-backed knowledge tree package from local VC files.
 
-## 2.0 证据内核（必须）
+## 3.0 适用级别
+
+最低适用级别：**L1+**（Level 1 or above，一级及以上初筛，用于形成可验证研究假设）。
+
+- 若输入属于具体项目，先读取 `spec/CONTEXT.md` 与 `spec/hypotheses.md`；若属于赛道，先确认 `tracks/{track-slug}/` 的边界。
+- 当前项目仍为 L0 时，先说明知识树会增加结构化维护成本，由用户确认是否升级或只做一次性整理。
+- 本 Skill 复用已有材料，不为了填满树而新增未经验证的节点或关系。
+
+## 反合理化约束
+
+- “文件相邻，所以概念有关联” → 关系必须来自来源或明确推断；推断单独标注。
+- “已经读取主要文件，可以声称完整覆盖” → 列出读取、跳过、无法读取的文件和边界。
+- “旧项目节点可以直接复用” → 先列至少一个当前语境差异；没有差异分析就不复用结论。
+- “图更完整比证据指针更重要” → 无来源节点保留为开放问题，不补造证据。
+
+## 证据内核（必须）
 
 从本 `SKILL.md` 的实际目录解析同级 `../jvc-research-core/scripts/researchctl.py`，并使用绝对路径执行；不要依赖当前工作目录。
 

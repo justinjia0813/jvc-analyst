@@ -16,6 +16,6 @@
     {"key": "operations-loop", "label": "Operations Loop", "status": "warn", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md"], "review_action": "Add adoption and drift reporting only after real team usage data exists; do not fabricate telemetry."},
     {"key": "review-waivers", "label": "Review Waivers", "status": "pass", "evidence": ["reports/review-studio.md", "evals/research-core/runs"]},
     {"key": "registry-audit", "label": "Registry Audit", "status": "pass", "evidence": ["manifest.json", "scripts/check-research-core-install.py"]},
-    {"key": "release-notes", "label": "Release Notes", "status": "pass", "evidence": ["reports/research-core-2.0-release.md", "reports/review-studio.md"]}
+    {"key": "release-notes", "label": "Release Notes", "status": "pass", "evidence": ["reports/jvc-analyst-3.0-foundation-release.md", "reports/research-core-2.0-release.md", "reports/review-studio.md"]}
   ]
 }

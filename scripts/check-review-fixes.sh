@@ -6,6 +6,7 @@ scripts/check-excel-workbooks.sh
 python3 scripts/check-docx-template-customization.py
 python3 scripts/check-docx-format-consistency.py
 python3 scripts/check-docx-filename-rule.py
+python3 scripts/check-v3-foundation.py
 python3 scripts/check-skill-evals.py
 python3 skills/jvc-research-core/scripts/check_package.py
 python3 scripts/check-research-core-install.py
@@ -16,6 +17,7 @@ python3 -m py_compile \
   scripts/check-governance.py \
   scripts/check-research-core-install.py \
   scripts/check-skill-evals.py \
+  scripts/check-v3-foundation.py \
   scripts/generate-workbook.py \
   scripts/validate-workbook.py \
   skills/jvc-research-core/scripts/check_package.py \

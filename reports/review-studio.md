@@ -33,13 +33,14 @@ Decision: `reviewable_with_warnings`
 | Operations Loop | warn | 无真实团队使用 telemetry | 有真实使用数据后再做采用率和漂移报告 |
 | Review Waivers | pass | 5 个真实案例 waiver=0 |  |
 | Registry Audit | pass | `check-research-core-install.py` 临时目录安装/回滚模拟 |  |
-| Release Notes | pass | `reports/research-core-2.0-release.md` |  |
+| Release Notes | pass | `reports/jvc-analyst-3.0-foundation-release.md`；`reports/research-core-2.0-release.md` |  |
 
 ## Release Notes
 
+- 3.0 第一阶段新增 L0–L3 研究分级、权威项目目录、项目上下文/假设模板，以及全部 13 个用户 skill 的反合理化合同。
 - 13 个用户可调用 skill 与 1 个 hidden core 均有确定性路由/输出覆盖；其中 11 个研究业务 skill 通过固定 `jvc-research-core` 命令协议获得记录与审计能力。
 - `jvc-research-report` 保持只校验、排版、不改正文的边界；虚构样例已完成 A4 13 页文本、渲染和逐页视觉检查。
 - 确定性输出对照为 64.09% → 100.00%，delta +35.91 个百分点，0 regression。
 - 5 个真实路径案例得到 4 `ready` 和 1 个预期 `blocked`（exit 20），无 waiver。
 - Justin 的 n=2 人工盲审一胜一负：玻璃案例支持 2.0 的实用性；市场案例低置信度偏好 1.0 的格式。
-- 当前状态支持仓库内 `2.0.0` 发布，不支持 governed public release（受治理的公开发布）或跨平台质量声明。
+- 当前状态仅支持仓库内 `3.0.0` 的 `foundation_ready_with_manual_gates`；2.0 输出评测继续作为基线。真实项目迁移与模型输出抽查通过前，不声称第一阶段完整验收；本证据也不支持声称完整 V3 路线图、governed public release（受治理的公开发布）或跨平台质量已完成。

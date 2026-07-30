@@ -4,19 +4,34 @@ description: |
   投决备忘录：汇总所有前序素材，按十段式标准结构合成 IC memo 初稿。风险篇幅不少于投资逻辑篇幅。
   Use when user says '/jvc-ic-memo', 'IC memo', '投决备忘录', '写memo', '出memo', '投委会材料'.
 user_invocable: true
-version: "2.0.0"
+version: "3.0.0"
 ---
 
 # /jvc-ic-memo — 投决备忘录
 
 汇总所有素材，合成一份正式的 IC memo 初稿供用户修改。
 
+## 3.0 适用级别
+
+最低适用级别：**L3**（Level 3，三级深度尽调，用于重仓、领投或投决会前研究）。
+
+- 开始前读取 `spec/CONTEXT.md`、`spec/hypotheses.md`、`spec/tasks.md`、Bull/Bear Case、模型、证据索引和 `STATE.md`。
+- 项目低于 L3 时，先列出尚缺的 IC（Investment Committee，投资决策委员会，负责审议投资项目）前工件和关键证据，由用户确认是否只生成明确标注不完整的草稿。
+- Memo 只整理证据、分歧和待决事项；`decision-journal.md` 由人在做出决定时立案，本 Skill 不代写终局判断。
+
+## 反合理化约束
+
+- “前序材料已经很多，可以直接合成” → 数量不等于覆盖；先核对关键假设、反证、来源与未解决冲突。
+- “为了让 memo 完整可以补齐空白” → 不编造；缺口留在待决事项并标明责任人或下一步。
+- “风险会削弱投资逻辑，可以压缩” → 风险篇幅不得短于投资逻辑，反面证据不得移到附件隐藏。
+- “IC memo 需要明确推荐” → AI 不写建议投资/不建议投资，只呈现条件、证据和未决问题。
+
 ## 输入
 
 - 项目相关的所有素材（deck、prescreen、尽调笔记、bull-case、bear-case、背调、赛道研究、comps、market-sizing、roi-model 等）
 - 用户的核心投资逻辑（几句话即可，LLM 来展开和补充论据）
 
-## 2.0 证据内核（必须）
+## 证据内核（必须）
 
 从本 `SKILL.md` 的实际目录解析同级 `../jvc-research-core/scripts/researchctl.py`，并使用绝对路径执行；不要依赖当前工作目录。
 

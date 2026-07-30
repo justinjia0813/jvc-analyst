@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`50376a35bf258272fbe62fea5035299d99e62b6b0efc1d827377b93be7a19462`
+`c42ecae58e5da8463d101d23ed3bdd02666c6c073184a4edfe16eb18ae205ab2`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
@@ -66,6 +66,7 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | --- | --- | --- |
 | `scripts/check-governance.py` | argparse CLI | file read, file write |
 | `scripts/check-skill-evals.py` | CLI | file read |
+| `scripts/check-v3-foundation.py` | self-check | file read |
 | `scripts/check-research-core-install.py` | self-check | file read, file write, subprocess；仅在临时目录模拟安装与回滚 |
 | `scripts/render-output-review-kit.py` | argparse CLI | file read, file write；无网络 |
 | `scripts/generate-workbook.py` | argparse CLI | file read, file write |

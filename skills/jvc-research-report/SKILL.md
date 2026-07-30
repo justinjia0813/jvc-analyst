@@ -3,11 +3,28 @@ name: jvc-research-report
 description: Use when the user already has a local fixed-structure industry or track research Markdown file and wants it validated and rendered as a branded printable report plus browser preview without rewriting the research content. Do not use for first-pass research, content rewriting, chart generation, investment-committee memo drafting, or arbitrary Markdown conversion.
 metadata:
   author: jvc-analyst
+user_invocable: true
+version: "3.0.0"
 ---
 
 # /jvc-research-report — lustinus RESEARCH 行业研报生成
 
 把已完成的固定格式行业研究 Markdown 校验并编译为 PDF（Portable Document Format，可移植文档格式，用于固定版式）和 HTML（HyperText Markup Language，超文本标记语言，用于浏览器预览）。
+
+## 3.0 适用级别
+
+最低适用级别：**L2+**（Level 2 or above，二级及以上尽调，用于验证关键假设）。
+
+- 输入研究内容至少完成 L2 的来源、反证和覆盖缺口检查；本 Skill 只排版，不把低级别草稿自动升级为正式研报。
+- 内容未达到 L2 时，返回缺口并路由到 `/jvc-track-research`，不代建项目规格。
+- 构建成功后必须渲染检查全部页面；文件存在不等于视觉交付完成。
+
+## 反合理化约束
+
+- “排版专业可以弥补内容缺口” → 样式不改变证据强度；缺来源或结构不完整就停止构建。
+- “PDF 已生成，所以可以交付” → 逐页检查布局、裁切、间距、缺失内容和一致性。
+- “修一句正文能让版面更好看” → 不改研究内容；只能调整版式，内容问题退回上游。
+- “远程图片临时可用” → 只接受本地资源；不引入隐式网络依赖。
 
 ## 输入
 

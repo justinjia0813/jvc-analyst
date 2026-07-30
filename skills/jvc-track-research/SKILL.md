@@ -4,12 +4,27 @@ description: |
   产业知识图谱：给细分赛道名，生成第一轮投资研究地图——包含产业链图谱、技术路线梳理、关键玩家分层、周期位置判断和后续尽调方向。解决「这个赛道到底怎么运转、哪里值得继续查」，不给投资结论。
   Use when user says '/jvc-track-research', '赛道研究', '行业研究', 'track research', '产业图谱', '技术路线梳理', '陌生赛道扫盲', or needs a first-pass sector map before company diligence. Do not use for a named-company comparison, a quantified market model, or a final investment decision.
 user_invocable: true
-version: "2.0.0"
+version: "3.0.0"
 ---
 
 # /jvc-track-research — 产业知识图谱
 
 给细分赛道名，生成第一轮投资研究地图。它解决“这个赛道到底怎么运转、哪里值得继续查”，不是直接给投资结论。
+
+## 3.0 适用级别
+
+最低适用级别：**L1+**（Level 1 or above，一级及以上初筛，用于形成可验证研究假设）。
+
+- 若研究服务于具体项目，先读取 `spec/CONTEXT.md` 与 `spec/hypotheses.md`，只研究与项目假设相关的赛道边界。
+- 当前项目仍为 L0 时，先说明赛道研究会把流程升级为 L1，由用户确认范围；纯赛道研究可直接建立 L1 规格。
+- 产出进入 `tracks/{track-slug}/landscape.md`；证据覆盖与开放问题不得因级别省略。
+
+## 反合理化约束
+
+- “媒体都这样说，所以已形成趋势” → 同源转载只计一次；区分官方事实、公司口径、第三方分析和推断。
+- “没有找到反对材料，说明方向成立” → 记录反向检索和无结果原因，不把无结果当正向证据。
+- “相邻赛道的数据可以近似代替” → 先写清定义、地域、时间和物理/商业边界；不可比就不用。
+- “这个赛道值得关注” → 不下终局判断；改为列出可验证的机会假设、风险和下一步。
 
 ## 输入
 
@@ -20,7 +35,7 @@ version: "2.0.0"
 
 VC = Venture Capital，风险投资 / 创业投资；这里指围绕创业公司融资与投资判断的研究语境。
 
-## 2.0 证据内核（必须）
+## 证据内核（必须）
 
 从本 `SKILL.md` 的实际目录解析同级 `../jvc-research-core/scripts/researchctl.py`，并使用绝对路径执行；不要依赖当前工作目录。
 

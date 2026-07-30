@@ -5,7 +5,7 @@ description: |
   Use when user says '/jvc-invoice-manager', '整理发票', '处理发票', '报销归档', '发票汇总', 'invoice manager'.
 integrated_from: invoice-manager
 user_invocable: true
-version: "1.0.0"
+version: "3.0.0"
 ---
 
 # /jvc-invoice-manager — 发票管理器
@@ -14,7 +14,22 @@ version: "1.0.0"
 
 它不属于投资决策流程。本 invoice skill 永不把发票数据传入研究链；若用户另行要求研究票据，只能由相应 research skill 使用经用户确认的脱敏摘录，并排除报销人、支付标识、发票号等个人或支付标识。
 
-## 2.0 边界
+## 3.0 适用级别
+
+最低适用级别：**不适用**。
+
+- 本 Skill 是运营辅助，不属于 L0–L3 投资研究分级，不创建 `spec/`、`evidence/` 或决策日志。
+- 归档目录可以引用项目 slug，但发票、报销人和支付信息不得进入研究链。
+- 3.0 只统一安全与反合理化合同，不改变现有 OCR、人工复核和归档流程。
+
+## 反合理化约束
+
+- “OCR 置信度高，可以直接入表” → OCR（Optical Character Recognition，光学字符识别，将图片文字转成机器可读文本）结果始终需要人工确认。
+- “上个月的报销人和项目可以沿用” → 每次重新确认，不保留隐式默认值。
+- “金额看起来合理，可以修正识别错误” → 不猜金额、日期、销售方或发票号；回到原 PDF 核对。
+- “归档完成后原件可以删除” → 只复制，不删除或覆盖原件。
+
+## 运营边界
 
 本 skill 不接入 `jvc-research-core`，不创建投资证据账本，也不把发票、报销人或支付信息传入投资研究链。
 

@@ -1,6 +1,6 @@
 # Trust Report
 
-日期：2026-07-30
+日期：2026-07-31
 
 证据边界：这是 production governance（生产治理）的本地 trust report（信任报告），不是 public governed release（受治理的公开发布）的完整安全认证。
 
@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`c42ecae58e5da8463d101d23ed3bdd02666c6c073184a4edfe16eb18ae205ab2`
+`61aaf57553d75855f0341357bb2d026aba50f1031ba4f30508c2a3228ab66ed9`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
@@ -29,7 +29,7 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | --- | --- | --- |
 | Secret scan | pass | 本地治理检查未发现预设的高风险凭据模式 |
 | Network scripts | pass | `security/network_policy.json` 声明脚本网络默认拒绝，清单为空 |
-| Packaged-script network | pass | research core、review-kit renderer 和 research-report renderer 均无网络能力；report 只内嵌本地 `data:` URI |
+| Packaged-script network | pass | deal-flow controller、research core、review-kit renderer 和 research-report renderer 均无网络能力；report 只内嵌本地 `data:` URI |
 | Permission approvals | pass | 本地 file read、file write、subprocess 已按范围批准 |
 | Dependency review | warn | research core 为标准库，report Python 依赖已锁定；既有 DOCX/发票依赖仍有未固定版本项 |
 | Script help surface | warn | research core、report renderer 与其他生成器有明确接口；既有发票脚本仍使用手工 `sys.argv` |
@@ -64,6 +64,8 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 
 | Script | Interface | Capabilities |
 | --- | --- | --- |
+| `skills/jvc-deal-flow/scripts/dealflowctl.py` | argparse CLI | file read, file write；无网络 |
+| `skills/jvc-deal-flow/scripts/check_package.py` | self-check | file read, file write, subprocess；仅使用临时项目库 |
 | `scripts/check-governance.py` | argparse CLI | file read, file write |
 | `scripts/check-skill-evals.py` | CLI | file read |
 | `scripts/check-v3-foundation.py` | self-check | file read |

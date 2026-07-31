@@ -158,6 +158,8 @@ def check_script_inventory(inventory: Any) -> None:
         script_paths.add(path)
 
     required_paths = {
+        "skills/jvc-deal-flow/scripts/dealflowctl.py",
+        "skills/jvc-deal-flow/scripts/check_package.py",
         "skills/jvc-research-core/scripts/researchctl.py",
         "skills/jvc-research-core/scripts/check_package.py",
         "scripts/check-research-core-install.py",

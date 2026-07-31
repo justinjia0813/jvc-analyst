@@ -1,8 +1,8 @@
 # Route Scorecard
 
-日期：2026-07-30
+日期：2026-07-31
 
-证据类型：deterministic fixture evidence（确定性样例证据）。14 个 trigger case（触发案例）全部通过完整性与 source-contract（源码契约）检查；这不是模型实际路由准确率。
+证据类型：deterministic fixture evidence（确定性样例证据）。15 个 trigger case（触发案例）全部通过完整性与 source-contract（源码契约）检查；这不是模型实际路由准确率。
 
 ## 缩写说明
 
@@ -22,11 +22,11 @@
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Trigger cases | 14 |
-| User-routable skill cases | 13 |
-| Near-neighbor pairs | 15 |
+| Trigger cases | 15 |
+| User-routable skill cases | 14 |
+| Near-neighbor pairs | 18 |
 | No-route teaching case | 1 |
-| Hidden core route | 无；`jvc-research-core` 为 `user_invocable: false`，由 11 个研究业务 skill 固定调用；发票和 report renderer 保持排除 |
+| Hidden core route | 无；`jvc-research-core` 为 `user_invocable: false`，由 12 个研究业务/编排 skill 固定调用；发票和 report renderer 保持排除 |
 | Verification command | `python3 scripts/check-skill-evals.py` |
 | Latest local result | pass |
 
@@ -34,7 +34,8 @@
 
 | Case | Expected route | Near-neighbor boundary |
 | --- | --- | --- |
-| `prescreen-deck-quick-review` | `jvc-prescreen` | `jvc-ic-memo` |
+| `deal-flow-initialize-to-pre-dd-gate` | `jvc-deal-flow` | `jvc-prescreen`, `jvc-ic-memo` |
+| `prescreen-deck-quick-review` | `jvc-prescreen` | `jvc-ic-memo`, `jvc-deal-flow` |
 | `talk-notes-qna-transcript` | `jvc-talk-notes` | `jvc-meeting-notes` |
 | `meeting-notes-six-section-founder-call` | `jvc-meeting-notes` | `jvc-talk-notes` |
 | `bull-case-positive-arguments` | `jvc-bull-case` | `jvc-ic-memo` |
@@ -54,4 +55,4 @@
 - 没有 model-executed route run（模型实际路由运行），不能声称真实路由准确率。
 - 没有 blind holdout（盲测保留集）或 adversarial holdout（对抗性保留集）。
 - hidden core 不应新增独立 route；它的正确入口是业务 skill 内的固定命令协议。
-- 当前 14 个样例验证 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage；report 的文件渲染证据不是模型路由或盲审证据。
+- 当前 15 个样例验证 fixture integrity、prompt signals、source contract signals 和 near-neighbor coverage；report 的文件渲染证据不是模型路由或盲审证据。

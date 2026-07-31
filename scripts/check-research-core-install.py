@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
 USER_SKILLS = {
+    "jvc-deal-flow",
     "jvc-prescreen",
     "jvc-bull-case",
     "jvc-track-research",

@@ -24,6 +24,14 @@
   },
   "skills": [
     {
+      "name": "jvc-deal-flow",
+      "job": "Initialize, resume, inspect, and advance a local deal project through the minimum sufficient diligence stages while preserving human gates.",
+      "outputs": ["Append-only project event chain", "Derived state and changelog views", "Data Layer", "Invest Memo", "Insight Layer"],
+      "near_neighbors": ["jvc-prescreen", "jvc-ic-memo"],
+      "scripts": ["skills/jvc-deal-flow/scripts/dealflowctl.py", "skills/jvc-deal-flow/scripts/check_package.py"],
+      "failure_modes": ["Turns optional skills into a fixed pipeline", "Directly edits the event chain", "Crosses a human gate", "Infers the final investment decision", "Reruns unaffected artifacts"]
+    },
+    {
       "name": "jvc-prescreen",
       "job": "Turn a deck or early project material into a structured first-pass screen.",
       "outputs": ["Markdown prescreen note"],

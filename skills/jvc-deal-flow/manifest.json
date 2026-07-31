@@ -1,0 +1,17 @@
+{
+  "name": "jvc-deal-flow",
+  "version": "3.0.0",
+  "owner": "jvc-analyst",
+  "updated_at": "2026-07-31",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "context_budget_tier": "production",
+  "review_cadence": "quarterly",
+  "skill_archetype": "production",
+  "target_platforms": ["codex", "claude", "generic", "agent-skills-compatible"],
+  "factory_components": ["agents", "references", "scripts"],
+  "input_files": "file-backed fixture: local project sources, event input JSON, existing project artifacts, and jvc-research-core audit records",
+  "output_contract": ["project_events.jsonl", "STATE.md", "CHANGELOG.md", "PROJECTS.md", "DATA_LAYER.md", "INVEST_MEMO.md", "INSIGHT_LAYER.md"],
+  "rollback_boundary": "Revert the skill package; project event chains and user project materials remain outside the package and are never deleted automatically."
+}

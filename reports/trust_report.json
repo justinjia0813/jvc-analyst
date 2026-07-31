@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-07-30",
+  "generated_at": "2026-07-31",
   "mode": "production-governance",
-  "package_sha256": "c42ecae58e5da8463d101d23ed3bdd02666c6c073184a4edfe16eb18ae205ab2",
+  "package_sha256": "61aaf57553d75855f0341357bb2d026aba50f1031ba4f30508c2a3228ab66ed9",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
@@ -42,7 +42,7 @@
       "WeasyPrint==68.1"
     ],
     "notes": [
-      "The research core, install check, and review-kit renderer use the Python standard library only.",
+      "The deal-flow controller, research core, install check, and review-kit renderer use the Python standard library only.",
       "All jvc-research-report Python runtime dependencies are version-pinned.",
       "Some existing DOCX and invoice dependencies are not version-pinned.",
       "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
@@ -85,6 +85,25 @@
       "help_surface": "none",
       "capabilities": [
         "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-deal-flow/scripts/dealflowctl.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "skills/jvc-deal-flow/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
       ]
     },
     {

@@ -6,14 +6,14 @@
 
 <p align="center">
   <a href="#安装"><img alt="Install locally" src="https://img.shields.io/badge/install-local--first-253B32?style=flat-square"></a>
-  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-13%20jvc--skills-A46A50?style=flat-square"></a>
+  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-14%20jvc--skills-A46A50?style=flat-square"></a>
   <a href="#使用原则"><img alt="Evidence-first" src="https://img.shields.io/badge/method-evidence--first-161514?style=flat-square"></a>
   <a href="#维护检查"><img alt="Checks" src="https://img.shields.io/badge/checks-shell%20%2B%20workbook-5F635B?style=flat-square"></a>
 </p>
 
 `jvc-analyst` 是一个本地优先的早期 VC 尽调工具箱，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
 
-它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放进同一个可安装的 skill 集合。
+它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放进同一个可安装的 skill 集合。需要跨阶段推进时，可选择 `/jvc-deal-flow` 作为薄编排层；单项任务仍直接调用原子 Skill。
 
 3.0 新增按研究级别裁剪的规格体系：快筛不背流程负担，进入尽调后再逐步增加假设、任务、证据和决策日志。
 
@@ -43,7 +43,7 @@ cd jvc-analyst
 ./setup
 ```
 
-`setup` 会自动检测本机已有的 AI 编码平台，将 `skills/jvc-*` 注册到对应目录。安装包包含 `13 user skills + 1 hidden research core`；隐藏的 `jvc-research-core` 只为研究 skill 提供本地证据台账与审查，不提供 slash command。
+`setup` 会自动检测本机已有的 AI 编码平台，将 `skills/jvc-*` 注册到对应目录。安装包包含 `14 user skills + 1 hidden research core`；隐藏的 `jvc-research-core` 只为研究 skill 提供本地证据台账与审查，不提供 slash command。
 
 | 平台 | 目录 |
 | --- | --- |
@@ -71,7 +71,7 @@ python3 "<core>/scripts/researchctl.py" waive --run-dir "<run-dir>" --skill "<sk
 
 ## 使用原则
 
-- 每个 skill 独立调用，按需取用；建档、归档、推进节奏和最终决策由用户自己把控。
+- 每个原子 Skill 都可独立调用，按需取用；只有用户明确选择受编排项目模式时才使用 `/jvc-deal-flow`。建档、归档、推进节奏和最终决策仍由用户自己把控。
 - 原始项目材料保持本地存放，默认放在 `projects/{company-slug}/00-source/`。
 - 输出必须区分事实、受访者自述、用户观察、推测和未验证假设。
 - 公开资料可以联网检索；不要把 BP、逐字稿、财务表、创始人沟通记录上传到第三方网页工具。
@@ -93,6 +93,7 @@ L0–L3（Research Level 0–3，研究级别 0–3，用于按决策场景控�
 
 | Skill | 什么时候用 | 输出 |
 | --- | --- | --- |
+| `/jvc-deal-flow` | 新建、恢复或推进一个本地项目，跨 Data Layer、Invest Memo、选定尽调轨道、Insight Layer 和 IC Memo，并在人工闸门暂停。 | `project_events.jsonl` + `STATE.md` + `CHANGELOG.md` + `PROJECTS.md` + 阶段工件 |
 | `/jvc-prescreen` | 给项目素材，快速过核心问题，生成结构化初筛纪要。 | Markdown |
 | `/jvc-bull-case` | 从项目素材中提炼投资亮点和待验证项。 | Markdown |
 | `/jvc-bear-case` | 用挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个角色做反向论证。 | Markdown |
@@ -112,6 +113,15 @@ L0–L3（Research Level 0–3，研究级别 0–3，用于按决策场景控�
 ## 各 Skill 说明
 
 完整 prompt 和约束见 `skills/jvc-*/SKILL.md`。这里保留日常使用时需要的速查摘要。
+
+### `/jvc-deal-flow` 项目工作流编排
+
+- 输入：项目名、本地项目库、来源路径、当前阶段、目标阶段和停止点。
+- 做什么：维护不可变项目身份与追加式事件链，从事件生成状态/改动/项目库视图，并按假设缺口调用最少的现有原子 Skill。
+- 输出：`.jvc/project_events.jsonl`、`STATE.md`、`CHANGELOG.md`、`PROJECTS.md`，以及当前阶段需要的 Data Layer、Invest Memo 或 Insight Layer。
+- 边界：不把全部 Skill 捆成固定流水线；研究级别升级、进入尽调、接受尽调发现、提交投决、最终决定、关闭和归档均保留人工批准。
+
+CLI（Command-Line Interface，命令行界面，用于在终端调用状态脚本）只提供 `init`、`event`、`check`、`list` 四个命令；调用方不得直接编辑事件链。
 
 ### `/jvc-prescreen` 初筛
 
@@ -237,13 +247,19 @@ python3 skills/jvc-meeting-notes/scripts/generate_meeting_notes.py data.json \
 
 ```text
 projects/{company-slug}/
+├── .jvc/
+│   └── project_events.jsonl   # /jvc-deal-flow 受编排项目的追加式事件源
 ├── 00-source/                  # 只读区：deck、财务表、转写和原始访谈材料
 ├── spec/                       # L1+ 研究规格内核
 │   ├── CONTEXT.md              # L1+；共享语言、判断标准和已关闭决策
 │   ├── research-plan.md        # L1+；范围和验收标准
 │   ├── hypotheses.md           # L1+；3–5 条可证伪核心假设
 │   └── tasks.md                # L2+；验证任务、依赖和完成标准
-├── STATE.md                    # L2+；多轨研究状态
+├── STATE.md                    # L2+；受编排项目在 L0/L1 也可作为运行元数据
+├── CHANGELOG.md                # /jvc-deal-flow 从事件链生成的改动视图
+├── DATA_LAYER.md               # /jvc-deal-flow 的事实层
+├── INVEST_MEMO.md              # /jvc-deal-flow 的尽调前工作备忘录
+├── INSIGHT_LAYER.md            # /jvc-deal-flow 的已验证论点层
 ├── decision-journal.md         # L3 决策时；立案与结果回填
 ├── evidence/                   # L2+；来源材料与 motive_check
 │   ├── customer-interviews/
@@ -306,6 +322,7 @@ tracks/{track-slug}/
 │   ├── jvc-bear-case/
 │   ├── jvc-bull-case/
 │   ├── jvc-comps-dd/
+│   ├── jvc-deal-flow/
 │   ├── jvc-ic-memo/
 │   ├── jvc-invoice-manager/
 │   ├── jvc-knowledge-tree-builder/
@@ -332,5 +349,6 @@ python3 scripts/check-docx-filename-rule.py
 bash scripts/check-excel-workbooks.sh
 python3 scripts/check-v3-foundation.py
 python3 scripts/check-skill-evals.py
+python3 skills/jvc-deal-flow/scripts/check_package.py
 python3 scripts/check-governance.py
 ```

@@ -3,6 +3,19 @@
   "description": "Deterministic output-contract checks for the first jvc skill eval pass. These are fixture checks, not model-executed evidence.",
   "cases": [
     {
+      "id": "deal-flow-state-contract",
+      "skill": "jvc-deal-flow",
+      "artifact_family": "project_state",
+      "assertions": [
+        {"type": "file_exists", "path": "skills/jvc-deal-flow/scripts/dealflowctl.py"},
+        {"type": "file_exists", "path": "skills/jvc-deal-flow/scripts/check_package.py"},
+        {"type": "contains", "path": "skills/jvc-deal-flow/SKILL.md", "text": "project_events.jsonl"},
+        {"type": "contains", "path": "skills/jvc-deal-flow/SKILL.md", "text": "人工闸门"},
+        {"type": "contains", "path": "skills/jvc-deal-flow/references/project-event-contract.md", "text": "同一 `event_id`"},
+        {"type": "contains", "path": "skills/jvc-deal-flow/references/workflow-contract.md", "text": "不引入 LangGraph"}
+      ]
+    },
+    {
       "id": "prescreen-markdown-contract",
       "skill": "jvc-prescreen",
       "artifact_family": "markdown",

@@ -1,8 +1,8 @@
 # Output Quality Scorecard
 
-日期：2026-07-30
+日期：2026-07-31
 
-结论：14 个确定性输出契约全部通过；2 个同输入基线/候选案例中，1.0 基线通过率为 64.09%，2.0 候选为 100.00%，提升 35.91 个百分点且无回退。人工盲审只构成部分支持：玻璃基板案例选择 2.0，市场模型案例低置信度选择 1.0 的格式呈现。`jvc-research-report` 另有文件支撑的 13 页本地渲染与逐页视觉检查。
+结论：15 个确定性输出契约全部通过；`jvc-deal-flow` 另通过临时项目库的端到端状态机自检。2 个同输入基线/候选案例中，1.0 基线通过率为 64.09%，2.0 候选为 100.00%，提升 35.91 个百分点且无回退。人工盲审只构成部分支持：玻璃基板案例选择 2.0，市场模型案例低置信度选择 1.0 的格式呈现。`jvc-research-report` 另有文件支撑的 13 页本地渲染与逐页视觉检查。
 
 ## 缩写说明
 
@@ -26,8 +26,8 @@
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Deterministic output cases | 14 / 14 pass |
-| Artifact families | Markdown、Excel、DOCX、Excel + PDF archive、Research PDF + HTML、evidence ledger + audit |
+| Deterministic output cases | 15 / 15 pass |
+| Artifact families | Project state、Markdown、Excel、DOCX、Excel + PDF archive、Research PDF + HTML、evidence ledger + audit |
 | File-backed baseline/candidate cases | 2 |
 | Baseline pass rate | 64.09% |
 | 2.0 candidate pass rate | 100.00% |
@@ -37,10 +37,11 @@
 | Blind human review | 1 match + 1 disagree；agreement rate 50%，n=2 |
 | Verification command | `python3 scripts/check-skill-evals.py` |
 
-## 14 个确定性输出契约
+## 15 个确定性输出契约
 
 | Case | Skill | Artifact family |
 | --- | --- | --- |
+| `deal-flow-state-contract` | `jvc-deal-flow` | append-only events + derived project state |
 | `prescreen-markdown-contract` | `jvc-prescreen` | Markdown |
 | `track-research-markdown-contract` | `jvc-track-research` | Markdown |
 | `research-report-pdf-contract` | `jvc-research-report` | Research PDF + HTML |
@@ -75,7 +76,7 @@
 
 ## Evidence Boundary
 
-- Fixture evidence（样例证据）：14 个静态输出契约证明结构、信号与审计规则可重复检查；report fixture 还验证本地资源防护和事务式三产物。
+- Fixture evidence（样例证据）：15 个静态输出契约证明结构、信号与审计规则可重复检查；deal-flow 另有临时项目库状态机自检，report fixture 还验证本地资源防护和事务式三产物。
 - File-backed rendering evidence（文件支撑渲染证据）：`jvc-research-report` 的虚构样例实际生成 A4 13 页 PDF；文本提取、13/13 页渲染和逐页视觉检查通过。这不是模型执行或盲审证据。
 - Model/tool execution evidence（模型/工具执行证据）：5 个真实路径案例证明本地脚本、文件产物、来源记录和审计状态能端到端工作；这不是大样本模型质量或跨平台路由统计。
 - Human review（人工审阅）：仅 1 名审阅者、2 个案例；一胜一负，只能视为部分支持。

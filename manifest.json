@@ -2,7 +2,7 @@
   "name": "jvc-analyst",
   "version": "3.0.0",
   "owner": "jvc-analyst",
-  "updated_at": "2026-07-30",
+  "updated_at": "2026-07-31",
   "status": "active",
   "maturity_tier": "production",
   "lifecycle_stage": "production",
@@ -23,6 +23,7 @@
     "security"
   ],
   "output_contracts": [
+    "Append-only project event chains and derived deal-flow state views",
     "Markdown diligence notes",
     "Knowledge tree Markdown/Mermaid/JSON artifacts",
     "Branded research PDF and HTML previews",

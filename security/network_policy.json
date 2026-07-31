@@ -3,6 +3,7 @@
   "default_policy": "deny network access from packaged scripts unless explicitly listed",
   "network_capable_scripts": [],
   "notes": [
+    "skills/jvc-deal-flow/scripts/dealflowctl.py and its package check contain no network code.",
     "skills/jvc-research-core/scripts/researchctl.py contains no network code.",
     "jvc-track-research, jvc-comps-dd, and jvc-market-sizing may require agent-mediated web search at runtime, but this repository currently ships no network-capable script.",
     "jvc-research-report renders only embedded data: resources; source URLs remain citation metadata and are never fetched by the renderer.",

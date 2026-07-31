@@ -11,6 +11,7 @@ python3 scripts/check-skill-evals.py
 python3 skills/jvc-research-core/scripts/check_package.py
 python3 scripts/check-research-core-install.py
 python3 skills/jvc-research-report/scripts/check_package.py
+python3 skills/jvc-deal-flow/scripts/check_package.py
 python3 scripts/check-governance.py
 
 python3 -m py_compile \
@@ -24,6 +25,8 @@ python3 -m py_compile \
   skills/jvc-research-core/scripts/researchctl.py \
   skills/jvc-research-report/scripts/build_report.py \
   skills/jvc-research-report/scripts/check_package.py \
+  skills/jvc-deal-flow/scripts/dealflowctl.py \
+  skills/jvc-deal-flow/scripts/check_package.py \
   skills/jvc-meeting-notes/scripts/generate_meeting_notes.py \
   skills/jvc-invoice-manager/scripts/process_invoices.py \
   skills/jvc-invoice-manager/scripts/generate_summary.py

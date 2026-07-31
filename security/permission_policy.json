@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "reviewer": "jvc-analyst",
-  "reviewed_at": "2026-06-20",
+  "reviewed_at": "2026-07-31",
   "approvals": [
     {
       "capability": "file_read",
       "decision": "approved",
-      "scope": "Read local skill sources, templates, examples, JSON fixtures, scope JSON, evidence ledger JSONL, research profiles, final artifacts, DOCX templates, PDF invoices, workbook files, finished research Markdown, HTML previews, images, fonts, and research PDFs supplied by the operator.",
+      "scope": "Read local skill sources, templates, examples, JSON fixtures, project event JSONL, generated project state views, scope JSON, evidence ledger JSONL, research profiles, final artifacts, DOCX templates, PDF invoices, workbook files, finished research Markdown, HTML previews, images, fonts, and research PDFs supplied by the operator.",
       "reason": "The suite is local-first and must inspect operator-selected diligence inputs, core audit inputs, and package fixtures.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
@@ -15,8 +15,8 @@
     {
       "capability": "file_write",
       "decision": "approved",
-      "scope": "Write generated Markdown, XLSX, DOCX, JSON, self-contained HTML previews, research PDFs, copied PDF archive artifacts, evidence_registry.jsonl, audit.json, and audit.md only to explicit output paths, explicit research run directories, or package-local output/archive directories.",
-      "reason": "Artifact-producing skills, the research-report renderer, and the research core must write their local output contracts at operator-selected paths.",
+      "scope": "Write generated Markdown, XLSX, DOCX, JSON, append-only project event JSONL, derived STATE.md/CHANGELOG.md/PROJECTS.md views, self-contained HTML previews, research PDFs, copied PDF archive artifacts, evidence_registry.jsonl, audit.json, and audit.md only to explicit project libraries, output paths, research run directories, or package-local output/archive directories.",
+      "reason": "Artifact-producing skills, the deal-flow state controller, the research-report renderer, and the research core must write their local output contracts at operator-selected paths.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",
       "target_enforcement": "metadata-only; scripts require explicit paths or package-local output directories"
@@ -24,7 +24,7 @@
     {
       "capability": "subprocess",
       "decision": "approved",
-      "scope": "Run repository validation scripts, local research-core self-check/install simulation/audit commands, and local report/document/workbook generation commands.",
+      "scope": "Run repository validation scripts, local deal-flow and research-core self-check/install simulation/audit commands, and local report/document/workbook generation commands.",
       "reason": "The package validation path depends on local core checks, local CLI checks, and deterministic generation scripts.",
       "expires_at": "2026-12-31",
       "evidence": "reports/trust_report.md",

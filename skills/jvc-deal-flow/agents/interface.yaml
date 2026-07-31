@@ -1,0 +1,25 @@
+interface:
+  display_name: "JVC Deal Flow"
+  short_description: "Local, resumable orchestration for evidence-first deal projects"
+  default_prompt: "Initialize or resume the selected local JVC project, run only the minimum required diligence stages, and stop at every human gate."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "codex"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths:
+      - "skills/jvc-deal-flow/SKILL.md"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "local-event-chain; fail-closed-on-state-error"
+    claude: "local-event-chain; fail-closed-on-state-error"
+    generic: "local-event-chain; fail-closed-on-state-error"

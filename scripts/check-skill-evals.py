@@ -97,6 +97,9 @@ def check_trigger_cases() -> int:
     require_unique_ids(cases, "trigger")
 
     expected_pairs = {
+        ("jvc-deal-flow", "jvc-prescreen"),
+        ("jvc-deal-flow", "jvc-ic-memo"),
+        ("jvc-prescreen", "jvc-deal-flow"),
         ("jvc-prescreen", "jvc-ic-memo"),
         ("jvc-talk-notes", "jvc-meeting-notes"),
         ("jvc-meeting-notes", "jvc-talk-notes"),

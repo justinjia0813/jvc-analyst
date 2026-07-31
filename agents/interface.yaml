@@ -11,6 +11,7 @@ compatibility:
   activation:
     mode: "manual"
     paths:
+      - "skills/jvc-deal-flow/SKILL.md"
       - "skills/jvc-prescreen/SKILL.md"
       - "skills/jvc-bull-case/SKILL.md"
       - "skills/jvc-bear-case/SKILL.md"

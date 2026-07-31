@@ -3,6 +3,23 @@
   "description": "Route evaluation fixtures for jvc skills. These cases document expected skill activation and near-neighbor boundaries; scripts/check-skill-evals.py validates fixture integrity and source-contract coverage.",
   "cases": [
     {
+      "id": "deal-flow-initialize-to-pre-dd-gate",
+      "prompt": "按固定流程给和光智成首次建档，登记本地资料，完成 Data Layer 和 Invest Memo 后停在尽调前让我审核；后续要能恢复并查看项目状态。",
+      "expected_skill": "jvc-deal-flow",
+      "prompt_signals": ["首次建档", "Data Layer", "Invest Memo", "尽调前", "恢复"],
+      "skill_contract_signals": ["受编排项目", "project_events.jsonl", "人工闸门", "最小重跑", "dealflowctl.py", "jvc-research-core", "DATA_LAYER.md", "INVEST_MEMO.md", "INSIGHT_LAYER.md", "不替用户决定"],
+      "near_neighbors": [
+        {
+          "skill": "jvc-prescreen",
+          "why_not": "prescreen produces one standalone quick-screen artifact; this request owns project identity, resumable state, multiple stages, and a stop gate."
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "ic-memo produces the final L3 synthesis; this request starts at intake and must stop before diligence."
+        }
+      ]
+    },
+    {
       "id": "prescreen-deck-quick-review",
       "prompt": "帮我快速过一遍这个 deck，做项目初筛，按市场、痛点、方案、团队、时机、商业模式和显性风险输出关键问题。",
       "expected_skill": "jvc-prescreen",
@@ -12,6 +29,10 @@
         {
           "skill": "jvc-ic-memo",
           "why_not": "ic-memo is for full investment committee synthesis after multiple prior materials exist; this is a quick screen."
+        },
+        {
+          "skill": "jvc-deal-flow",
+          "why_not": "deal-flow is for persistent project identity and cross-stage orchestration; this request asks only for one quick-screen artifact."
         }
       ]
     },

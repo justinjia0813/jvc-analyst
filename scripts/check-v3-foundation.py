@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_LEVELS = {
+    "jvc-deal-flow": "L0+",
     "jvc-prescreen": "L0+",
     "jvc-meeting-notes": "L1+",
     "jvc-talk-notes": "L1+",

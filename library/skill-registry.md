@@ -6,6 +6,7 @@
 
 | Skill | 事实来源 | 本地入口 | 工具集角色 | 触发位置 |
 | --- | --- | --- | --- | --- |
+| `jvc-deal-flow` | 本仓库 | `skills/jvc-deal-flow/SKILL.md` | 可选的薄编排层：维护本地项目身份、事件、状态、人工闸门和最小重跑范围，按阶段调用现有原子 Skill。 | `/jvc-deal-flow` |
 | `jvc-prescreen` | 本仓库 | `skills/jvc-prescreen/SKILL.md` | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 | `/jvc-prescreen` |
 | `jvc-bull-case` | 本仓库 | `skills/jvc-bull-case/SKILL.md` | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 | `/jvc-bull-case` |
 | `jvc-bear-case` | 本仓库 | `skills/jvc-bear-case/SKILL.md` | 从挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个视角提炼反方论证和可证伪风险假设。 | `/jvc-bear-case` |

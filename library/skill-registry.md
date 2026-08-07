@@ -16,7 +16,7 @@
 | `jvc-comps-dd` | 本仓库 | `skills/jvc-comps-dd/SKILL.md` | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 | `/jvc-comps-dd` |
 | `jvc-market-sizing` | 本仓库 | `skills/jvc-market-sizing/SKILL.md` | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 | `/jvc-market-sizing` |
 | `jvc-roi-modeler` | 本仓库 | `skills/jvc-roi-modeler/SKILL.md` | 根据五年财务预测、融资稀释和退出情形计算投资回报，输出 Excel。 | `/jvc-roi-modeler` |
-| `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 将项目素材合成为 IC memo Markdown 初稿，保留风险、待决事项和来源索引。 | `/jvc-ic-memo` |
+| `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 按十七章工程化模板合成 IC memo 初稿，含五阶段生产流程、JVC skill 映射、三轮质量门控和数据一致性校验。 | `/jvc-ic-memo` |
 | `jvc-meeting-notes` | 本仓库，整合自 `meeting-notes` | `skills/jvc-meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/jvc-meeting-notes` |
 | `jvc-talk-notes` | 本仓库 | `skills/jvc-talk-notes/SKILL.md` | 把高管访谈、客户访谈和专家访谈整理成问答式 `.docx` 纪要。 | `/jvc-talk-notes` |
 | `jvc-invoice-manager` | 本仓库，整合自 `invoice-manager` | `skills/jvc-invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | `/jvc-invoice-manager` |

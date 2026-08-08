@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -79,17 +80,24 @@ def compute_source_contract_hash() -> str:
 def write_trust_hash(value: str) -> None:
     json_path = ROOT / "reports/trust_report.json"
     data = json.loads(json_path.read_text(encoding="utf-8"))
+    markdown_path = ROOT / "reports/trust_report.md"
+    markdown = markdown_path.read_text(encoding="utf-8")
+    hash_pattern = r"`[0-9a-f]{64}`"
+    date_pattern = r"^日期：\d{4}-\d{2}-\d{2}$"
+    require(len(re.findall(hash_pattern, markdown)) == 1, "trust report markdown hash was not uniquely identifiable")
+    require(len(re.findall(date_pattern, markdown, flags=re.MULTILINE)) == 1, "trust report markdown date was not uniquely identifiable")
+
+    generated_at = date.today().isoformat()
+    data["generated_at"] = generated_at
     data["package_sha256"] = value
+    updated, hash_count = re.subn(hash_pattern, f"`{value}`", markdown, count=1)
+    updated, date_count = re.subn(date_pattern, f"日期：{generated_at}", updated, count=1, flags=re.MULTILINE)
+    require(hash_count == 1, "trust report markdown hash was not uniquely identifiable")
+    require(date_count == 1, "trust report markdown date was not uniquely identifiable")
+
     json_path.write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-
-    markdown_path = ROOT / "reports/trust_report.md"
-    markdown = markdown_path.read_text(encoding="utf-8")
-    pattern = r"`[0-9a-f]{64}`"
-    require(len(re.findall(pattern, markdown)) == 1, "trust report markdown hash was not uniquely identifiable")
-    updated, count = re.subn(pattern, f"`{value}`", markdown, count=1)
-    require(count == 1, "trust report markdown hash was not uniquely identifiable")
     markdown_path.write_text(updated, encoding="utf-8")
 
 
@@ -148,36 +156,74 @@ def check_security() -> None:
 
 def check_script_inventory(inventory: Any) -> None:
     require(isinstance(inventory, list) and inventory, "trust report missing script inventory")
-    script_paths: set[str] = set()
+    entries_by_path: dict[str, dict[str, Any]] = {}
     for index, entry in enumerate(inventory):
         require(isinstance(entry, dict), f"script inventory entry {index} must be an object")
         path = entry.get("path")
         require(isinstance(path, str) and path, f"script inventory entry {index} missing path")
-        require(path not in script_paths, f"duplicate script inventory path: {path}")
+        require(path not in entries_by_path, f"duplicate script inventory path: {path}")
         require((ROOT / path).is_file(), f"script inventory path does not exist: {path}")
-        script_paths.add(path)
+        entries_by_path[path] = entry
 
     required_paths = {
         "skills/jvc-deal-flow/scripts/dealflowctl.py",
         "skills/jvc-deal-flow/scripts/check_package.py",
+        "skills/jvc-ic-memo/scripts/validate_final.py",
+        "skills/jvc-ic-memo/scripts/check_package.py",
         "skills/jvc-research-core/scripts/researchctl.py",
         "skills/jvc-research-core/scripts/check_package.py",
         "scripts/check-research-core-install.py",
     }
-    missing = required_paths - script_paths
-    require(not missing, f"script inventory missing research core scripts: {sorted(missing)}")
+    missing = required_paths - entries_by_path.keys()
+    require(not missing, f"script inventory missing required scripts: {sorted(missing)}")
+
+    expected_ic_memo_entries = {
+        "skills/jvc-ic-memo/scripts/validate_final.py": {
+            "interface": "argparse",
+            "help_surface": "--help",
+            "capabilities": ["file_read"],
+        },
+        "skills/jvc-ic-memo/scripts/check_package.py": {
+            "interface": "self-check",
+            "help_surface": "none",
+            "capabilities": ["file_read", "file_write", "subprocess"],
+        },
+    }
+    for path, expected in expected_ic_memo_entries.items():
+        actual = {field: entries_by_path[path].get(field) for field in expected}
+        require(actual == expected, f"script inventory metadata mismatch for {path}: expected {expected}, got {actual}")
 
 
 def check_trust_report() -> None:
     trust = load_json("reports/trust_report.json")
     require(trust.get("schema_version") == 1, "trust report schema_version must be 1")
     require(trust.get("package") == "jvc-analyst", "trust report package mismatch")
+    generated_at = trust.get("generated_at")
+    require(isinstance(generated_at, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", generated_at), "trust report generated_at must use YYYY-MM-DD")
     actual_hash = compute_source_contract_hash()
     expected_hash = trust.get("package_sha256")
     require(expected_hash != HASH_PLACEHOLDER, "trust report package_sha256 placeholder was not replaced")
     require(expected_hash == actual_hash, f"trust report hash mismatch: expected {actual_hash}, got {expected_hash}")
     check_script_inventory(trust.get("script_inventory"))
-    require_text("reports/trust_report.md", expected_hash)
+
+    dependency_note = "The IC memo final validator and package check use the Python standard library only."
+    dependency_notes = trust.get("dependency_review", {}).get("notes", [])
+    require(dependency_note in dependency_notes, "trust report missing IC memo dependency note")
+    network_policy = trust.get("network_policy", {})
+    require(network_policy.get("network_capable_scripts") == [], "trust report network-capable script list must be empty")
+    network_notes = network_policy.get("notes", [])
+    require(any(isinstance(note, str) and "IC memo" in note for note in network_notes), "trust report missing IC memo network note")
+
+    markdown = (ROOT / "reports/trust_report.md").read_text(encoding="utf-8")
+    for expected in [
+        expected_hash,
+        f"日期：{generated_at}",
+        "| `skills/jvc-ic-memo/scripts/validate_final.py` | argparse CLI | file read；无网络 |",
+        "| `skills/jvc-ic-memo/scripts/check_package.py` | self-check | file read, file write, subprocess；仅使用临时目录 |",
+        "IC memo validator/package check 仅使用 Python 标准库",
+        "IC memo validator 和 IC memo package check 均无网络能力",
+    ]:
+        require(expected in markdown, f"reports/trust_report.md missing {expected!r}")
 
 
 def check_review_studio() -> None:

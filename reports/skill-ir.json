@@ -101,10 +101,11 @@
     },
     {
       "name": "jvc-ic-memo",
-      "job": "Synthesize prior diligence materials into a ten-section IC memo draft.",
-      "outputs": ["Markdown IC memo"],
+      "job": "Synthesize prior diligence into an audited IC memo pre-review, stop for explicit user approval, then produce a clean Markdown final without visible evidence metadata.",
+      "outputs": ["Audited IC memo pre-review", "User-approved clean Markdown final"],
       "near_neighbors": ["jvc-prescreen", "jvc-bull-case", "jvc-bear-case"],
-      "failure_modes": ["Risk section shorter than investment logic", "Missing source labels", "Final decision language"]
+      "scripts": ["skills/jvc-ic-memo/scripts/validate_final.py", "skills/jvc-ic-memo/scripts/check_package.py"],
+      "failure_modes": ["Skips explicit user approval", "Leaks citations, evidence status, gaps, or quality reports into the final", "Adds facts or numbers during final conversion", "Overwrites the last successful final after failed validation", "Outputs an investment decision"]
     },
     {
       "name": "jvc-meeting-notes",

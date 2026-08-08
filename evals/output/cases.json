@@ -95,11 +95,15 @@
       "artifact_family": "markdown",
       "assertions": [
         {"type": "file_exists", "path": "examples/ic-memo-example.md"},
-        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 交易摘要"},
-        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 投资逻辑"},
-        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 风险与反方观点"},
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "# 投资决策委员会备忘录预审版"},
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "## 附录：质量报告"},
         {"type": "contains_any", "path": "examples/ic-memo-example.md", "texts": ["[需要用户提供]", "[未核实]"]},
-        {"type": "not_contains_any", "path": "examples/ic-memo-example.md", "texts": ["建议投资", "不建议投资"]}
+        {"type": "contains", "path": "examples/ic-memo-example.md", "text": "[S1]"},
+        {"type": "not_contains_any", "path": "examples/ic-memo-example.md", "texts": ["（来源：", "[deck p."]},
+        {"type": "file_exists", "path": "examples/ic-memo-final-example.md"},
+        {"type": "contains", "path": "examples/ic-memo-final-example.md", "text": "# 投资决策委员会备忘录 — 星尘工坊"},
+        {"type": "contains_any", "path": "examples/ic-memo-final-example.md", "texts": ["可能", "预计", "约", "区间"]},
+        {"type": "not_contains_any", "path": "examples/ic-memo-final-example.md", "texts": ["[S", "[未核实]", "[需要用户提供]", "（来源：", "资料来源：", "数据来源：", "deck p.", "质量报告", "研究状态", "证据状态", "证据缺口", "信息缺口", "待确认", "待补充", "需补充", "此部分缺少输入素材", "页码", "占位符", "内部操作说明", "http://", "https://", "www.", "建议投资", "不建议投资", "有条件投资", "建议投。", "不投。", "有条件投。"]}
       ]
     },
     {

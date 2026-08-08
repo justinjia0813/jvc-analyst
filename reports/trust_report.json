@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-07-31",
+  "generated_at": "2026-08-08",
   "mode": "production-governance",
-  "package_sha256": "61aaf57553d75855f0341357bb2d026aba50f1031ba4f30508c2a3228ab66ed9",
+  "package_sha256": "ba515d9d0a0810f6f32180980244c74f5eb2a9b96a1499204c2daaeab86af091",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
@@ -21,7 +21,7 @@
     "policy_file": "security/network_policy.json",
     "network_capable_scripts": [],
     "notes": [
-      "No research-core, review-kit, or research-report renderer script has network capability."
+      "No research-core, review-kit, research-report renderer, IC memo validator, or IC memo package-check script has network capability."
     ]
   },
   "permission_policy": {
@@ -43,6 +43,7 @@
     ],
     "notes": [
       "The deal-flow controller, research core, install check, and review-kit renderer use the Python standard library only.",
+      "The IC memo final validator and package check use the Python standard library only.",
       "All jvc-research-report Python runtime dependencies are version-pinned.",
       "Some existing DOCX and invoice dependencies are not version-pinned.",
       "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
@@ -98,6 +99,24 @@
     },
     {
       "path": "skills/jvc-deal-flow/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "skills/jvc-ic-memo/scripts/validate_final.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-ic-memo/scripts/check_package.py",
       "interface": "self-check",
       "help_surface": "none",
       "capabilities": [

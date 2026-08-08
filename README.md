@@ -13,7 +13,7 @@
 
 `jvc-analyst` 是一个本地优先的早期 VC 尽调工具箱，面向中国市场人民币基金的 Pre-seed 到 Series B 项目。
 
-它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC memo 和报销归档放进同一个可安装的 skill 集合。需要跨阶段推进时，可选择 `/jvc-deal-flow` 作为薄编排层；单项任务仍直接调用原子 Skill。
+它不是自动化流水线，也不替人做投资决策。它负责把材料结构化、暴露证据缺口、准备问题，并把访谈纪要、竞品表、市场规模、回报模型、IC（Investment Committee，投资决策委员会，负责审议投资项目）memo 和报销归档放进同一个可安装的 skill 集合。需要跨阶段推进时，可选择 `/jvc-deal-flow` 作为薄编排层；单项任务仍直接调用原子 Skill。
 
 3.0 新增按研究级别裁剪的规格体系：快筛不背流程负担，进入尽调后再逐步增加假设、任务、证据和决策日志。
 
@@ -103,7 +103,7 @@ L0–L3（Research Level 0–3，研究级别 0–3，用于按决策场景控�
 | `/jvc-comps-dd` | 调研竞争对手、可比公司、上下游和海外标杆。 | Excel |
 | `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模和正交检查。 | Excel |
 | `/jvc-roi-modeler` | 基于投资条款、融资稀释和退出假设计算 MOIC/IRR。 | Excel |
-| `/jvc-ic-memo` | 汇总所有前序素材，合成十段式 IC memo 初稿。 | Markdown |
+| `/jvc-ic-memo` | 汇总前序素材形成十七章预审版；预审通过后生成干净终版。 | `06-ic-memo-review.md` + `06-ic-memo.md` |
 | `/jvc-meeting-notes` | 把逐字稿和用户笔记整理成结构化 Word 访谈纪要。 | DOCX |
 | `/jvc-talk-notes` | 把高管访谈、客户访谈和专家访谈整理成问答式 Word 纪要。 | DOCX |
 | `/jvc-invoice-manager` | OCR 识别 PDF 发票，生成报销汇总 Excel，并归档 PDF。 | Excel + PDF archive |
@@ -194,8 +194,9 @@ python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
 ### `/jvc-ic-memo` 投决备忘录
 
 - 输入：所有前序素材和用户的核心投资逻辑。
-- 做什么：按交易摘要、公司、市场、产品、团队、财务、投资逻辑、风险、估值、待决事项十段结构合成 memo 初稿。
-- 输出：完整 Markdown 初稿，风险篇幅不短于投资逻辑篇幅。
+- 做什么：先生成含引用、证据状态、冲突和质量报告的十七章预审版；用户明确预审通过后，再生成不含审查痕迹、供 IC（Investment Committee，投资决策委员会，负责审议投资项目）阅读和 Quarto 渲染的干净 Markdown 终版。
+- 人工闸门：先生成并审查 `06-ic-memo-review.md`；只有用户明确批准预审后，才生成并校验 `06-ic-memo.md`。
+- 输出：`06-ic-memo-review.md`（含引用、证据状态、冲突和质量报告）与 `06-ic-memo.md`（用户批准后的干净终版）。
 
 ### `/jvc-meeting-notes` 访谈纪要
 
@@ -274,6 +275,7 @@ projects/{company-slug}/
 ├── 05-comps-dd.xlsx            # ← /jvc-comps-dd
 ├── 05-market-sizing.xlsx       # ← /jvc-market-sizing
 ├── 05-roi-modeler.xlsx         # ← /jvc-roi-modeler
+├── 06-ic-memo-review.md        # ← /jvc-ic-memo 预审版
 ├── 06-ic-memo.md               # ← /jvc-ic-memo
 └── 99-decision.md              # 用户自己的最终决策
 
@@ -350,5 +352,6 @@ bash scripts/check-excel-workbooks.sh
 python3 scripts/check-v3-foundation.py
 python3 scripts/check-skill-evals.py
 python3 skills/jvc-deal-flow/scripts/check_package.py
+python3 skills/jvc-ic-memo/scripts/check_package.py
 python3 scripts/check-governance.py
 ```

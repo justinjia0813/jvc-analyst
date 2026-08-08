@@ -9,14 +9,14 @@
 | `jvc-deal-flow` | 本仓库 | `skills/jvc-deal-flow/SKILL.md` | 可选的薄编排层：维护本地项目身份、事件、状态、人工闸门和最小重跑范围，按阶段调用现有原子 Skill。 | `/jvc-deal-flow` |
 | `jvc-prescreen` | 本仓库 | `skills/jvc-prescreen/SKILL.md` | 对项目素材做结构化初筛，输出事实摘要、七维判断、bear case 雏形和问题清单。 | `/jvc-prescreen` |
 | `jvc-bull-case` | 本仓库 | `skills/jvc-bull-case/SKILL.md` | 从行业趋势、技术节点、团队优势、商业化进展四个层面提炼投资亮点。 | `/jvc-bull-case` |
-| `jvc-bear-case` | 本仓库 | `skills/jvc-bear-case/SKILL.md` | 从挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个视角提炼反方论证和可证伪风险假设。 | `/jvc-bear-case` |
+| `jvc-bear-case` | 本仓库 | `skills/jvc-bear-case/SKILL.md` | 从挑剔 LP、竞品 CEO、怀疑论同行、投资决策委员会负责人四个视角提炼反方论证和可证伪风险假设。 | `/jvc-bear-case` |
 | `jvc-track-research` | 本仓库 | `skills/jvc-track-research/SKILL.md` | 快速构建产业知识图谱，梳理行业简史、技术路线、产业趋势和关键玩家。 | `/jvc-track-research` |
 | `jvc-research-report` | 本仓库 | `skills/jvc-research-report/SKILL.md` | 将已完成的行业研究 Markdown 校验并排版为 `lustinus RESEARCH` 的 `report.pdf`、`report.html` 和 `build-report.txt`；不负责研究生成或正文改写。 | `/jvc-research-report` |
 | `jvc-knowledge-tree-builder` | 本仓库 | `skills/jvc-knowledge-tree-builder/SKILL.md` | 将已有本地赛道、项目或 Obsidian 文件夹整理成递归问题树、Mermaid 图、节点 JSON、证据索引和开放问题。 | `/jvc-knowledge-tree-builder` |
 | `jvc-comps-dd` | 本仓库 | `skills/jvc-comps-dd/SKILL.md` | 调研竞争对手和可比公司，输出上市公司与初创公司对比 Excel。 | `/jvc-comps-dd` |
 | `jvc-market-sizing` | 本仓库 | `skills/jvc-market-sizing/SKILL.md` | 针对细分赛道做自上而下和自下而上市场规模建模，输出 Excel。 | `/jvc-market-sizing` |
 | `jvc-roi-modeler` | 本仓库 | `skills/jvc-roi-modeler/SKILL.md` | 根据五年财务预测、融资稀释和退出情形计算投资回报，输出 Excel。 | `/jvc-roi-modeler` |
-| `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 按十七章工程化模板合成 IC memo 初稿，含五阶段生产流程、JVC skill 映射、三轮质量门控和数据一致性校验。 | `/jvc-ic-memo` |
+| `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 先生成含引用、证据状态、冲突和质量报告的十七章预审版；用户明确预审通过后，再生成不含审查痕迹、供 IC（Investment Committee，投资决策委员会，负责审议投资项目）阅读和 Quarto 渲染的干净 Markdown 终版。 | `/jvc-ic-memo` |
 | `jvc-meeting-notes` | 本仓库，整合自 `meeting-notes` | `skills/jvc-meeting-notes/SKILL.md` | 把逐字稿和用户笔记整理成结构化 `.docx` 访谈纪要。 | `/jvc-meeting-notes` |
 | `jvc-talk-notes` | 本仓库 | `skills/jvc-talk-notes/SKILL.md` | 把高管访谈、客户访谈和专家访谈整理成问答式 `.docx` 纪要。 | `/jvc-talk-notes` |
 | `jvc-invoice-manager` | 本仓库，整合自 `invoice-manager` | `skills/jvc-invoice-manager/SKILL.md` | OCR 识别差旅发票，生成报销汇总 Excel，并按行程/项目归档 PDF。 | `/jvc-invoice-manager` |

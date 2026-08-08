@@ -27,8 +27,8 @@
 | `diligence` | L2 | 被选轨道均有真实产物、明确缺口或阻塞原因 | `post_dd_review` |
 | `post_dd_review` | L2 | 用户确认哪些发现进入论点层 | `insight_layer` 或补证据 |
 | `insight_layer` | L2 | 每条论点有支持、反驳、边界、状态和推翻条件 | `ic_memo` 或继续尽调 |
-| `ic_memo` | L3 | `06-ic-memo.md` 通过自身审查 | `ic_review` |
-| `ic_review` | L3 | 用户修改、提交投决或停止 | `decision_record` 或返回修改 |
+| `ic_memo` | L3 | `06-ic-memo-review.md` 通过自身证据审查 | `ic_review` |
+| `ic_review` | L3 | 用户修改/停止/批准预审，批准后生成 `06-ic-memo.md` | `decision_record` 或返回修改 |
 | `decision_record` | L3 | 仅记录用户明确决定 | 关闭、监控或保持 |
 
 `paused`、`closed`、`archived` 是生命周期，不是工作流阶段。暂停后恢复原阶段。

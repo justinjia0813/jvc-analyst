@@ -71,7 +71,7 @@
       "near_neighbors": [
         {
           "skill": "jvc-ic-memo",
-          "why_not": "ic-memo synthesizes all prior materials into a ten-section memo; this prompt asks only for positive arguments."
+          "why_not": "ic-memo synthesizes all prior materials into a seventeen-section memo; this prompt asks only for positive arguments."
         }
       ]
     },
@@ -89,11 +89,11 @@
       ]
     },
     {
-      "id": "ic-memo-full-synthesis",
-      "prompt": "把 prescreen、bull case、bear case、赛道研究、竞品和回报模型合成一版 IC memo 初稿，风险篇幅不能少于投资逻辑。",
+      "id": "ic-memo-review-then-final",
+      "prompt": "把 prescreen、bull case、bear case、赛道研究、竞品和回报模型合成 IC memo：先生成带证据和缺口的预审版，等我明确审批后再生成不含引用和证据状态的干净终版。",
       "expected_skill": "jvc-ic-memo",
-      "prompt_signals": ["IC memo", "风险篇幅", "投资逻辑"],
-      "skill_contract_signals": ["十段结构", "风险与反方观点", "风险与反方观点」的篇幅是否不少于第 7 章", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-ic-memo", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-ic-memo", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行原有产物格式校验"],
+      "prompt_signals": ["IC memo", "预审版", "明确审批", "干净终版"],
+      "skill_contract_signals": ["十七章", "06-ic-memo-review.md", "预审通过", "06-ic-memo.md", "不做机械标签删除", "validate_final.py", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-ic-memo", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-ic-memo", "不得退回纯 prompt 模式"],
       "near_neighbors": [
         {
           "skill": "jvc-bull-case",

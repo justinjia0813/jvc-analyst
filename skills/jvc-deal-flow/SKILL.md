@@ -60,6 +60,9 @@ python3 "<skill-root>/scripts/dealflowctl.py" event \
 ```
 
 5. 到 `pre_dd_review`、`post_dd_review` 或 `ic_review` 时追加 `gate_requested`，设为 `paused` 并停止。只有用户明确决定后才追加 `gate_decided` 并继续。
+   - `ic_memo` 只生成并审查 `06-ic-memo-review.md`，通过自身证据审查后进入 `ic_review`。
+   - `ic_review` 请求人工闸门，等待用户修改、停止或批准预审。
+   - 仅当 `gate_decided=approve` 时调用 `jvc-ic-memo` 生成并校验发布 `06-ic-memo.md`，然后进入 `decision_record`。
 6. 新资料先登记来源和指纹；只根据事件中已有的 `depends_on` / Claim 引用标记 `artifact_marked_stale`。依赖不明确时列出候选影响，不猜测、不自动重写。
 7. 每轮结束前运行 `check`，实际读取 `STATE.md`、`CHANGELOG.md`、`PROJECTS.md` 与本轮研究工件。
 

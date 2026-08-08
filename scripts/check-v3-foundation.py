@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 
@@ -74,8 +75,28 @@ def main() -> int:
 
     for skill, level in EXPECTED_LEVELS.items():
         content = read(f"skills/{skill}/SKILL.md")
-        require("version: \"3.0.0\"" in content, f"{skill}：版本必须为 3.0.0")
-        require("## 3.0 适用级别" in content, f"{skill}：缺少 3.0 适用级别合同")
+        frontmatter = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", content, re.DOTALL)
+        require(frontmatter is not None, f"{skill}：缺少有效 frontmatter")
+        version_fields = list(
+            re.finditer(r"^version\s*:\s*(.*?)\s*$", frontmatter.group(1), re.MULTILINE)
+        )
+        require(version_fields, f"{skill}：frontmatter 缺少 version 字段或字段格式错误")
+        require(len(version_fields) == 1, f"{skill}：frontmatter version 字段重复或冲突")
+        version_match = re.fullmatch(
+            r'"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"',
+            version_fields[0].group(1),
+        )
+        require(
+            version_match is not None,
+            f'{skill}：frontmatter 版本必须为无前导零的 "major.minor.patch"',
+        )
+        version = tuple(map(int, version_match.groups()))
+        version_text = ".".join(version_match.groups())
+        require(version >= (3, 0, 0), f"{skill}：版本 {version_text} 低于最低版本 3.0.0")
+        require(
+            re.search(r"^## (?:3\.0 )?适用级别\s*$", content, re.MULTILINE) is not None,
+            f"{skill}：缺少适用级别合同",
+        )
         require(f"最低适用级别：**{level}**" in content, f"{skill}：最低适用级别应为 {level}")
         require("## 反合理化约束" in content, f"{skill}：缺少反合理化约束")
 

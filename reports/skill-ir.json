@@ -6,7 +6,11 @@
     "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",
-    "target_platforms": ["codex", "claude", "generic"]
+    "target_platforms": [
+      "codex",
+      "claude",
+      "generic"
+    ]
   },
   "semantic_contract": {
     "job_to_be_done": "Help an early-stage VC operator structure local project materials into evidence-first diligence artifacts without replacing investment judgment.",
@@ -22,111 +26,347 @@
     ],
     "trust_boundary": "Local-first repository. Raw deal materials stay local; shipped scripts may read/write local files but do not include network-capable code."
   },
+  "taxonomy": {
+    "control_and_engine": [
+      "jvc-deal-flow",
+      "jvc-research-core"
+    ],
+    "track_level": [
+      "jvc-track-research",
+      "jvc-knowledge-tree-builder",
+      "jvc-market-sizing"
+    ],
+    "project_level": [
+      "jvc-prescreen",
+      "jvc-bull-case",
+      "jvc-bear-case",
+      "jvc-comps-dd",
+      "jvc-meeting-notes",
+      "jvc-talk-notes",
+      "jvc-roi-modeler"
+    ],
+    "output_level": [
+      "jvc-ic-memo",
+      "jvc-research-report"
+    ],
+    "utility": [
+      "jvc-invoice-manager"
+    ]
+  },
+  "orchestration": {
+    "project_orchestrator": "jvc-deal-flow",
+    "unique_cross_stage_orchestrator": true,
+    "atomic_skills_independently_invocable": true,
+    "evidence_engine": "jvc-research-core",
+    "evidence_engine_user_invocable": false,
+    "evidence_engine_advances_workflow_stages": false,
+    "evidence_engine_responsibilities": [
+      "evidence_ledger",
+      "claim_inheritance",
+      "artifact_audit"
+    ]
+  },
   "skills": [
     {
       "name": "jvc-deal-flow",
       "job": "Initialize, resume, inspect, and advance a local deal project through the minimum sufficient diligence stages while preserving human gates.",
-      "outputs": ["Append-only project event chain", "Derived state and changelog views", "Data Layer", "Invest Memo", "Insight Layer"],
-      "near_neighbors": ["jvc-prescreen", "jvc-ic-memo"],
-      "scripts": ["skills/jvc-deal-flow/scripts/dealflowctl.py", "skills/jvc-deal-flow/scripts/check_package.py"],
-      "failure_modes": ["Turns optional skills into a fixed pipeline", "Directly edits the event chain", "Crosses a human gate", "Infers the final investment decision", "Reruns unaffected artifacts"]
+      "outputs": [
+        "Append-only project event chain",
+        "Derived state and changelog views",
+        "Data Layer",
+        "Invest Memo",
+        "Insight Layer"
+      ],
+      "near_neighbors": [
+        "jvc-prescreen",
+        "jvc-ic-memo"
+      ],
+      "scripts": [
+        "skills/jvc-deal-flow/scripts/dealflowctl.py",
+        "skills/jvc-deal-flow/scripts/check_package.py"
+      ],
+      "failure_modes": [
+        "Turns optional skills into a fixed pipeline",
+        "Directly edits the event chain",
+        "Crosses a human gate",
+        "Infers the final investment decision",
+        "Reruns unaffected artifacts"
+      ]
     },
     {
       "name": "jvc-prescreen",
-      "job": "Turn a deck or early project material into a structured first-pass screen.",
-      "outputs": ["Markdown prescreen note"],
-      "near_neighbors": ["jvc-ic-memo", "jvc-bull-case"],
-      "failure_modes": ["Unsourced numbers", "Premature invest/pass recommendation", "Generic risk wording"]
+      "version": "4.0.0",
+      "research_level": "L0",
+      "artifact_kind": "markdown",
+      "initializes_research_core": false,
+      "job": "Create a low-precision screen of the business model, value chain, track validity, top-down market range, five-year revenue, and transaction return without making a final investment decision.",
+      "outputs": [
+        "01-prescreen.md"
+      ],
+      "near_neighbors": [
+        "jvc-ic-memo",
+        "jvc-bull-case"
+      ],
+      "scripts": [
+        "skills/jvc-prescreen/scripts/validate_output.py",
+        "skills/jvc-prescreen/scripts/check_package.py"
+      ],
+      "failure_modes": [
+        "Invents a market number without an anchor",
+        "Calculates revenue or return without an identifiable customer, payer, and product",
+        "Propagates incompatible units",
+        "Outputs a final investment decision"
+      ]
     },
     {
       "name": "jvc-bull-case",
       "job": "Extract positive investment arguments with evidence and verification gaps.",
-      "outputs": ["Markdown bull-case note"],
-      "near_neighbors": ["jvc-bear-case", "jvc-ic-memo"],
-      "failure_modes": ["Turns into investment recommendation", "Mixes unsupported intuition into verified highlights"]
+      "outputs": [
+        "Markdown bull-case note"
+      ],
+      "near_neighbors": [
+        "jvc-bear-case",
+        "jvc-ic-memo"
+      ],
+      "failure_modes": [
+        "Turns into investment recommendation",
+        "Mixes unsupported intuition into verified highlights"
+      ]
     },
     {
       "name": "jvc-bear-case",
       "job": "Run role-based adversarial review from LP, competitor CEO, skeptical peer, and IC boss perspectives.",
-      "outputs": ["Markdown bear-case note"],
-      "near_neighbors": ["jvc-bull-case", "jvc-prescreen"],
-      "failure_modes": ["Becomes balanced pros/cons", "Drops IC boss", "Omits falsification evidence"]
+      "outputs": [
+        "Markdown bear-case note"
+      ],
+      "near_neighbors": [
+        "jvc-bull-case",
+        "jvc-prescreen"
+      ],
+      "failure_modes": [
+        "Becomes balanced pros/cons",
+        "Drops IC boss",
+        "Omits falsification evidence"
+      ]
     },
     {
       "name": "jvc-track-research",
+      "version": "4.0.0",
+      "artifact_kind": "markdown",
       "job": "Build a first-pass investment research map that uses lifecycle-weighted hypotheses, causal evidence, and cycle positioning to prioritize subsequent diligence.",
-      "outputs": ["Markdown track research report"],
-      "near_neighbors": ["jvc-comps-dd", "jvc-market-sizing"],
-      "failure_modes": ["Company PR replaces technical explanation", "Milestones and commercialization claims are mixed", "Static template ignores lifecycle-specific priorities", "Recent trends are linearly extrapolated or presented as precise cycle forecasts", "Generic industry summary omits falsifiers and next-skill handoff"]
+      "outputs": [
+        "tracks/{track-slug}/landscape.md"
+      ],
+      "handoffs": [
+        "jvc-knowledge-tree-builder",
+        "jvc-market-sizing"
+      ],
+      "near_neighbors": [
+        "jvc-comps-dd",
+        "jvc-market-sizing"
+      ],
+      "failure_modes": [
+        "Company PR replaces technical explanation",
+        "Milestones and commercialization claims are mixed",
+        "Static template ignores lifecycle-specific priorities",
+        "Recent trends are linearly extrapolated or presented as precise cycle forecasts",
+        "Generic industry summary omits falsifiers and next-skill handoff"
+      ]
     },
     {
       "name": "jvc-research-report",
-      "job": "Validate completed fixed-format local industry research Markdown and render a lustinus RESEARCH PDF, HTML preview, and build report without changing content.",
-      "outputs": ["PDF research report", "HTML preview", "Build report"],
-      "near_neighbors": ["jvc-track-research", "jvc-ic-memo"],
-      "scripts": ["skills/jvc-research-report/scripts/build_report.py", "skills/jvc-research-report/scripts/check_package.py"],
-      "failure_modes": ["Rewrites or supplements research content", "Fetches remote assets", "Accepts unresolved source IDs", "Produces clipped or overflowing pages", "Overwrites a previous successful build after failure"]
+      "job": "组装（Assemble）已审计的赛道级上游（Track Research、Knowledge Tree、Market Sizing、可选 Comps/DD）为 canonical research-report.md，再校验并渲染为品牌化 PDF 与 HTML 预览；不新增事实、不联网补研究；已有完整 canonical research-report.md 时可直接发布。",
+      "outputs": [
+        "research-report.md",
+        "Rendered PDF research report",
+        "HTML preview",
+        "Build report"
+      ],
+      "near_neighbors": [
+        "jvc-track-research",
+        "jvc-ic-memo"
+      ],
+      "scripts": [
+        "skills/jvc-research-report/scripts/build_report.py",
+        "skills/jvc-research-report/scripts/check_package.py",
+        "skills/jvc-research-report/scripts/validate_assembly.py"
+      ],
+      "failure_modes": [
+        "Rewrites or supplements research content",
+        "Fetches remote assets",
+        "Accepts unresolved source IDs",
+        "Produces clipped or overflowing pages",
+        "Overwrites a previous successful build after failure"
+      ]
     },
     {
       "name": "jvc-knowledge-tree-builder",
+      "version": "4.0.0",
+      "artifact_kind": "five_file_package",
+      "primary_output": "knowledge_tree.md",
+      "visual_first": true,
       "job": "Convert existing local VC track, project, Obsidian, or source folders into recursive knowledge tree artifacts with evidence and open questions.",
-      "outputs": ["Markdown knowledge tree", "Mermaid graph", "JSON nodes", "Evidence index", "Open-question list"],
-      "near_neighbors": ["jvc-track-research", "jvc-comps-dd"],
-      "scripts": ["skills/jvc-knowledge-tree-builder/scripts/collect_sources.py", "skills/jvc-knowledge-tree-builder/scripts/check_package.py"],
-      "failure_modes": ["Used for first-pass web research", "Summarizes without source paths", "Mixes investment conclusion with knowledge structure"]
+      "outputs": [
+        "knowledge_tree.md",
+        "knowledge_graph.mmd",
+        "nodes.json",
+        "evidence_index.md",
+        "open_questions.md"
+      ],
+      "validator": "skills/jvc-knowledge-tree-builder/scripts/validate_output.py",
+      "package_check": "skills/jvc-knowledge-tree-builder/scripts/check_package.py",
+      "near_neighbors": [
+        "jvc-track-research",
+        "jvc-comps-dd"
+      ],
+      "scripts": [
+        "skills/jvc-knowledge-tree-builder/scripts/collect_sources.py",
+        "skills/jvc-knowledge-tree-builder/scripts/validate_output.py",
+        "skills/jvc-knowledge-tree-builder/scripts/check_package.py"
+      ],
+      "failure_modes": [
+        "Used for first-pass web research",
+        "Summarizes without source paths",
+        "Mixes investment conclusion with knowledge structure"
+      ]
     },
     {
       "name": "jvc-comps-dd",
-      "job": "Research competitors and comparable companies into a structured Excel workbook.",
-      "outputs": ["Excel workbook"],
-      "near_neighbors": ["jvc-track-research", "jvc-market-sizing"],
-      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
-      "failure_modes": ["Public market cap and private financing valuation mixed as one metric", "Missing source/date fields"]
+      "job": "Research competitors, comparables, upstream/downstream, and overseas benchmarks into a source-backed Markdown comparison note.",
+      "outputs": [
+        "03-comps-dd.md"
+      ],
+      "near_neighbors": [
+        "jvc-track-research",
+        "jvc-market-sizing"
+      ],
+      "scripts": [],
+      "failure_modes": [
+        "Public market cap and private financing valuation mixed as one metric",
+        "Missing source/date fields"
+      ],
+      "artifact_kind": "markdown",
+      "layout": "single_markdown"
     },
     {
       "name": "jvc-market-sizing",
-      "job": "Build top-down and bottom-up TAM/SAM/SOM models with reconciliation and orthogonality checks.",
-      "outputs": ["Excel workbook"],
-      "near_neighbors": ["jvc-track-research", "jvc-roi-modeler"],
-      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
-      "failure_modes": ["TAM/SAM/SOM mixed", "Segments overlap without deduction", "Unsupported market size"]
+      "version": "4.0.0",
+      "artifact_kind": "csv",
+      "layout": "single_table",
+      "job": "Build top-down and bottom-up TAM/SAM/SOM models with reconciliation and orthogonality checks; the single authoritative artifact is the audited market-sizing.csv.",
+      "outputs": [
+        "market-sizing.csv"
+      ],
+      "validator": "skills/jvc-market-sizing/scripts/validate_csv.py",
+      "package_check": "skills/jvc-market-sizing/scripts/check_package.py",
+      "near_neighbors": [
+        "jvc-track-research",
+        "jvc-roi-modeler"
+      ],
+      "scripts": [
+        "skills/jvc-market-sizing/scripts/validate_csv.py",
+        "skills/jvc-market-sizing/scripts/check_package.py"
+      ],
+      "failure_modes": [
+        "TAM/SAM/SOM mixed",
+        "Segments overlap without deduction",
+        "Unsupported market size"
+      ]
     },
     {
       "name": "jvc-roi-modeler",
-      "job": "Model investment terms, financing dilution, exit scenarios, MOIC/IRR, and sensitivity.",
-      "outputs": ["Excel workbook"],
-      "near_neighbors": ["jvc-market-sizing", "jvc-ic-memo"],
-      "scripts": ["scripts/generate-workbook.py", "scripts/validate-workbook.py"],
-      "failure_modes": ["Back-solves from final ownership", "Invents missing terms", "Outputs invest/pass recommendation"]
+      "version": "4.0.0",
+      "artifact_kind": "csv",
+      "layout": "single_table",
+      "formula_driven": true,
+      "job": "Replicate the user-provided return model logic for investment terms, financing dilution, three exit scenarios, MOIC, cumulative return, and IRR.",
+      "outputs": [
+        "Formula-driven single-table CSV return model"
+      ],
+      "near_neighbors": [
+        "jvc-market-sizing",
+        "jvc-ic-memo"
+      ],
+      "scripts": [
+        "skills/jvc-roi-modeler/scripts/validate_csv.py"
+      ],
+      "failure_modes": [
+        "Back-solves from final ownership",
+        "Uses net gain instead of gross proceeds in terminal IRR cash flow",
+        "Reports MOIC times 100 percent as cumulative return",
+        "Invents missing terms",
+        "Outputs invest/pass recommendation"
+      ]
     },
     {
       "name": "jvc-ic-memo",
       "job": "Synthesize prior diligence into an audited IC memo pre-review, stop for explicit user approval, then produce a clean Markdown final without visible evidence metadata.",
-      "outputs": ["Audited IC memo pre-review", "User-approved clean Markdown final"],
-      "near_neighbors": ["jvc-prescreen", "jvc-bull-case", "jvc-bear-case"],
-      "scripts": ["skills/jvc-ic-memo/scripts/validate_final.py", "skills/jvc-ic-memo/scripts/check_package.py"],
-      "failure_modes": ["Skips explicit user approval", "Leaks citations, evidence status, gaps, or quality reports into the final", "Adds facts or numbers during final conversion", "Overwrites the last successful final after failed validation", "Outputs an investment decision"]
+      "outputs": [
+        "Audited IC memo pre-review",
+        "User-approved clean Markdown final"
+      ],
+      "near_neighbors": [
+        "jvc-prescreen",
+        "jvc-bull-case",
+        "jvc-bear-case"
+      ],
+      "scripts": [
+        "skills/jvc-ic-memo/scripts/validate_final.py",
+        "skills/jvc-ic-memo/scripts/check_package.py"
+      ],
+      "failure_modes": [
+        "Skips explicit user approval",
+        "Leaks citations, evidence status, gaps, or quality reports into the final",
+        "Adds facts or numbers during final conversion",
+        "Overwrites the last successful final after failed validation",
+        "Outputs an investment decision"
+      ]
     },
     {
       "name": "jvc-meeting-notes",
       "job": "Generate a six-section factual DOCX interview note from transcript and user notes.",
-      "outputs": ["DOCX interview note"],
-      "near_neighbors": ["jvc-talk-notes"],
-      "scripts": ["skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"],
-      "failure_modes": ["Adds investment judgment", "Loses user observations", "Regresses DOCX filename or formatting"]
+      "outputs": [
+        "DOCX interview note"
+      ],
+      "near_neighbors": [
+        "jvc-talk-notes"
+      ],
+      "scripts": [
+        "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
+      ],
+      "failure_modes": [
+        "Adds investment judgment",
+        "Loses user observations",
+        "Regresses DOCX filename or formatting"
+      ]
     },
     {
       "name": "jvc-talk-notes",
       "job": "Generate Q&A-style DOCX interview notes with complete answers, fact dimensions, and validation gaps.",
-      "outputs": ["DOCX Q&A interview note"],
-      "near_neighbors": ["jvc-meeting-notes"],
-      "scripts": ["skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"],
-      "failure_modes": ["Returns old summary/original quote/tag fields", "Puts Q headings in body content", "Lowers information extraction completeness"]
+      "outputs": [
+        "DOCX Q&A interview note"
+      ],
+      "near_neighbors": [
+        "jvc-meeting-notes"
+      ],
+      "scripts": [
+        "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py"
+      ],
+      "failure_modes": [
+        "Returns old summary/original quote/tag fields",
+        "Puts Q headings in body content",
+        "Lowers information extraction completeness"
+      ]
     },
     {
       "name": "jvc-research-core",
       "job": "Maintain one append-only evidence registry and deterministically audit calling-skill artifacts.",
-      "outputs": ["JSONL evidence registry", "JSON audit", "Markdown audit", "ready/partial/blocked status"],
+      "outputs": [
+        "JSONL evidence registry",
+        "JSON audit",
+        "Markdown audit",
+        "ready/partial/blocked status"
+      ],
       "near_neighbors": [],
       "scripts": [
         "skills/jvc-research-core/scripts/researchctl.py",
@@ -144,10 +384,22 @@
     {
       "name": "jvc-invoice-manager",
       "job": "OCR PDF invoices, require human confirmation, generate reimbursement Excel, and copy PDFs into archive folders.",
-      "outputs": ["Excel reimbursement summary", "PDF archive"],
-      "near_neighbors": ["jvc-comps-dd"],
-      "scripts": ["skills/jvc-invoice-manager/scripts/process_invoices.py", "skills/jvc-invoice-manager/scripts/generate_summary.py"],
-      "failure_modes": ["Uses unreviewed OCR as final truth", "Deletes originals", "Leaks invoice data into investment judgment"]
+      "outputs": [
+        "Excel reimbursement summary",
+        "PDF archive"
+      ],
+      "near_neighbors": [
+        "jvc-comps-dd"
+      ],
+      "scripts": [
+        "skills/jvc-invoice-manager/scripts/process_invoices.py",
+        "skills/jvc-invoice-manager/scripts/generate_summary.py"
+      ],
+      "failure_modes": [
+        "Uses unreviewed OCR as final truth",
+        "Deletes originals",
+        "Leaks invoice data into investment judgment"
+      ]
     }
   ],
   "evals": {

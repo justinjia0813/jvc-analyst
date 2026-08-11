@@ -37,7 +37,7 @@ version: "5.0.0"
 
 ### Phase 1: 素材准备与清点
 
-读取项目目录下的所有可用素材，按下方「JVC Skill 产出到模板章节映射表」逐章标记：✅ 已有 / ⚠️ 部分可用 / ❌ 缺失。
+读取项目目录下的所有可用素材，按下方「JVC Skill 产出到模板章节映射表」逐章标记：✅ 已有 / ⚠️ 部分可用 / ❌ 缺失。活跃上游输入固定为：`01-prescreen.md`、Bull Case、Bear Case、`03-comps-dd.md`、`market-sizing.csv`、`05-roi-modeler.csv`、会议与访谈纪要，以及必要的赛道研究与知识树。
 
 向用户输出素材清点表，格式：
 
@@ -157,25 +157,25 @@ version: "5.0.0"
 
 | 模板章节 | 主要来源 skill | 次要来源 | 映射说明 |
 |---------|--------------|---------|---------|
-| 1. 执行摘要 | roi-modeler (`investment_terms`, `returns`) | prescreen (事实摘要), deal-flow (`DATA_LAYER.md`) | 全文最后回写；交易参数从 roi-modeler 取，业务简介从 prescreen 取 |
+| 1. 执行摘要 | roi-modeler → `05-roi-modeler.csv` (`invested_capital`, `MOIC`, `IRR`) | prescreen (快筛结论/商业模式), deal-flow (`DATA_LAYER.md`) | 全文最后回写；交易参数从 `05-roi-modeler.csv` 取，业务简介从 prescreen 取 |
 | 2. 投资亮点 | bull-case (四层结构) | track-research (行业趋势), meeting-notes (商业化数据) | bull-case 每条亮点直接对应一个投资论点；补充模板要求的6个维度覆盖检查 |
-| 3. 投资风险 | bear-case (四角色反驳) | prescreen (bear case雏形), track-research (政策风险) | bear-case 论点重组为模板的6类风险维度；每条补充量化影响和缓释措施 |
+| 3. 投资风险 | bear-case (四角色反驳) | prescreen (风险、证伪条件与下一步), track-research (政策风险) | bear-case 论点重组为模板的6类风险维度；每条补充量化影响和缓释措施 |
 | 4. 行业概况 | track-research (A 行业定义, B 简史, E 趋势) | — | 直接映射；用模板的 Where/Go/Path 三问结构重组 |
-| 5. 市场规模 | market-sizing (`top_down`, `bottom_up`, `reconciliation`) | track-research (市场数据) | Excel 各 sheet 直接对应模板的 Bottom-up/Top-down/对比/Driver 结构 |
+| 5. 市场规模 | market-sizing → `market-sizing.csv` (`top_down`, `bottom_up`, `reconciliation`, `orthogonality_check` 各 section) | track-research (市场数据) | CSV 各 section 直接对应模板的 Bottom-up/Top-down/对比/Driver 结构 |
 | 6. 产业链分析 | track-research (D 产业链图谱) | — | 直接映射；补充标的位置标记和议价能力判断 |
-| 7. 竞争格局 | comps-dd (`companies`, `segmentation`) | track-research (F 关键玩家分层) | comps-dd 数据填入竞品对比表；track-research 提供格局演变叙事 |
-| 8. 公司概况 | prescreen (事实摘要表格) | meeting-notes (六段式), deck | prescreen 的基础信息 + meeting-notes 的里程碑 |
+| 7. 竞争格局 | comps-dd → `03-comps-dd.md` (`公司分层`, `可比指标`, `目标与可比公司对照`) | track-research (F 关键玩家分层) | comps-dd 数据填入竞品对比表；track-research 提供格局演变叙事 |
+| 8. 公司概况 | prescreen (商业模式/上下游与价值分配) | meeting-notes (六段式), deck | prescreen 的业务链条 + meeting-notes 的里程碑 |
 | 9. 产品矩阵 | meeting-notes (核心产品段) | talk-notes (客户反馈), deck | meeting-notes 的产品信息 + talk-notes 的客户视角 |
-| 10. 核心团队 | meeting-notes (核心团队段) | prescreen (创始人信息), deck | meeting-notes 的团队详情 + 模板要求的4个判断点 |
+| 10. 核心团队 | meeting-notes (核心团队段) | deck | meeting-notes 与 deck 的团队事实 + 模板要求的4个判断点 |
 | 11. 核心壁垒 | bull-case (技术/商业化亮点) | track-research (技术路线), meeting-notes (技术段) | 从 bull-case 提取壁垒相关亮点，用模板的壁垒类型清单重组 |
 | 12. 主要客户 | meeting-notes (商业化段) | talk-notes (客户访谈), deck | meeting-notes 的客户数据 + talk-notes 的客户反馈 |
-| 13. Cap Table | roi-modeler (`investment_terms`, `financing_dilution`, `ownership`) | deal-flow, deck | roi-modeler 的条款和稀释数据 + 模板要求的保护性条款清单 |
-| 14. 收入预测模型 | roi-modeler (`financial_forecast`) | meeting-notes (收入数据), market-sizing (渗透率) | roi-modeler 的预测 + 模板要求的量×价拆分和敏感性分析 |
-| 15. 可比公司 | comps-dd (`companies` 中上市公司) | — | comps-dd 提取上市可比公司，按模板的估值倍数表重组 |
-| 16. 投资回报模型 | roi-modeler (`exit_scenarios`, `returns`, `sensitivity`) | comps-dd (退出 PE 参照) | roi-modeler 各 sheet 直接对应模板的三种情景 + 稀释假设 |
-| 17. 交易-收益测算总结 | roi-modeler (`returns`) | comps-dd (估值锚) | 最终浓缩页；加权回报用 roi-modeler 计算 |
+| 13. Cap Table | roi-modeler → `05-roi-modeler.csv` (`dilution_rate`, `fund_ownership`) | deal-flow, deck | roi-modeler 的条款和稀释数据 + 模板要求的保护性条款清单 |
+| 14. 收入预测模型 | roi-modeler → `05-roi-modeler.csv` (`revenue`, `net_income`, `net_margin`) | meeting-notes (收入数据), market-sizing.csv (渗透率) | roi-modeler 的预测 + 模板要求的量×价拆分和敏感性分析 |
+| 15. 可比公司 | comps-dd → `03-comps-dd.md` (`公司分层` 中上市公司) | — | comps-dd 提取上市可比公司，按模板的估值倍数表重组 |
+| 16. 投资回报模型 | roi-modeler → `05-roi-modeler.csv` (`proceeds`, `net_gain`, `MOIC`, `cumulative_return`, `IRR`) | comps-dd (退出市盈率参照) | 单表 CSV 的三种情景、稀释假设和现金流公式 |
+| 17. 交易-收益测算总结 | roi-modeler → `05-roi-modeler.csv` (`MOIC`, `IRR`) | comps-dd (估值锚) | 最终浓缩页；直接汇总 ROI Modeler 三种情景的 MOIC/IRR；如需加权，权重必须由用户另供（数值取自 `05-roi-modeler.csv`） |
 
-**读取优先级**：deal-flow 的 `DATA_LAYER.md` / `INVEST_MEMO.md` / `INSIGHT_LAYER.md` > 各 skill 原始产出 > deck 等原始素材 > 用户口头补充。
+**读取优先级**：deal-flow 的 `DATA_LAYER.md` / `INVEST_MEMO.md` / `INSIGHT_LAYER.md` > `01-prescreen.md` / Bull/Bear Case / `03-comps-dd.md` / `market-sizing.csv` / `05-roi-modeler.csv` 等各 skill 原始产出 > deck 等原始素材 > 用户口头补充。
 
 ---
 

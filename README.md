@@ -91,22 +91,47 @@ L0–L3（Research Level 0–3，研究级别 0–3，用于按决策场景控�
 
 ## 工具总览
 
+这套工具按控制与引擎、赛道级、项目级、输出级、日常工具五类组织。本轮 P1（Priority 1，优先级 1，表示第一迁移优先项）已完成赛道研究、知识树和市场模型的活跃合同迁移；P2（Priority 2，优先级 2，表示第二迁移优先项）已完成 Comps/DD 的 Markdown 迁移与 Research Report 的“组装 + 发布”两阶段。叙事研究默认使用 Markdown，公式模型默认使用 CSV（Comma-Separated Values，逗号分隔值，一种纯文本表格格式）；需要固定版式、办公协作或发布时，才使用 PDF（Portable Document Format，可移植文档格式，用于固定版式）、HTML（HyperText Markup Language，超文本标记语言，用于浏览器预览）、DOCX（Office Open XML Document，Office 开放 XML 文档，用于可编辑文字处理）或 Excel 等例外格式。
+
+### 控制与引擎
+
 | Skill | 什么时候用 | 输出 |
 | --- | --- | --- |
-| `/jvc-deal-flow` | 新建、恢复或推进一个本地项目，跨 Data Layer、Invest Memo、选定尽调轨道、Insight Layer 和 IC Memo，并在人工闸门暂停。 | `project_events.jsonl` + `STATE.md` + `CHANGELOG.md` + `PROJECTS.md` + 阶段工件 |
-| `/jvc-prescreen` | 给项目素材，快速过核心问题，生成结构化初筛纪要。 | Markdown |
+| `/jvc-deal-flow` | 唯一项目总控；仅在用户选择受编排模式后，维护项目身份、状态、依赖、最小调度、增量重跑和人工闸门。 | `project_events.jsonl` + `STATE.md` + `CHANGELOG.md` + `PROJECTS.md` + 阶段工件 |
+| `jvc-research-core` | 不可直接调用的证据引擎；只由已接入的研究 Skill 调用，维护证据台账、主张继承和产物审计，不推进业务阶段。 | `evidence_registry.jsonl` + `audit.json` + `audit.md` |
+
+### 赛道级工具
+
+| Skill | 什么时候用 | 输出 |
+| --- | --- | --- |
+| `/jvc-track-research` | 给细分赛道，构建产业知识图谱，并将活跃产物固定写入 `tracks/{track-slug}/landscape.md`。 | `tracks/{track-slug}/landscape.md` |
+| `/jvc-knowledge-tree-builder` | 读取已有本地赛道资料，生成 visual-first（视觉优先，先用图和树展示结构）的固定五文件知识包。 | `knowledge_tree.md` + `knowledge_graph.mmd` + `nodes.json` + `evidence_index.md` + `open_questions.md` |
+| `/jvc-market-sizing` | 针对细分赛道做 TAM（Total Addressable Market，总潜在市场，表示理论总需求）、SAM（Serviceable Available Market，可服务市场，表示能力与范围内可覆盖需求）和 SOM（Serviceable Obtainable Market，可获得市场，表示现实可获取份额）建模和正交检查。 | 固定单表 `market-sizing.csv` |
+
+### 项目级工具
+
+| Skill | 什么时候用 | 输出 |
+| --- | --- | --- |
+| `/jvc-prescreen` | 在 Research Level 0（L0，研究级别 0，指约 30–60 分钟的资源筛选）完成商业模式、上下游、赛道有效性、Top-down 市场、五年收入和交易回报快筛；结论是研究资源判断，非最终投决。 | 固定输出 `01-prescreen.md` |
 | `/jvc-bull-case` | 从项目素材中提炼投资亮点和待验证项。 | Markdown |
-| `/jvc-bear-case` | 用挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四个角色做反向论证。 | Markdown |
-| `/jvc-track-research` | 给细分赛道，构建产业知识图谱。 | Markdown |
-| `/jvc-research-report` | 校验已完成的固定章节行业研究并排版，不改正文。 | `report.pdf`（PDF，Portable Document Format，可移植文档格式，用于固定版式）、`report.html`（HTML，HyperText Markup Language，超文本标记语言，用于浏览器预览）和 `build-report.txt` |
-| `/jvc-knowledge-tree-builder` | 读取已有本地赛道/项目资料文件夹，生成递归知识树、Mermaid 图、节点 JSON、证据索引和开放问题。 | Markdown + Mermaid + JSON |
-| `/jvc-comps-dd` | 调研竞争对手、可比公司、上下游和海外标杆。 | Excel |
-| `/jvc-market-sizing` | 针对细分赛道做 TAM/SAM/SOM 建模和正交检查。 | Excel |
-| `/jvc-roi-modeler` | 基于投资条款、融资稀释和退出假设计算 MOIC/IRR。 | Excel |
-| `/jvc-ic-memo` | 汇总前序素材形成十七章预审版；预审通过后生成干净终版。 | `06-ic-memo-review.md` + `06-ic-memo.md` |
+| `/jvc-bear-case` | 用挑剔有限合伙人、竞品公司负责人、怀疑论同行、IC boss 四个角色做反向论证。 | Markdown |
+| `/jvc-comps-dd` | 调研竞争对手、可比公司、上下游和海外标杆，保留来源、覆盖缺口和反向检索。 | 固定输出 `03-comps-dd.md` |
 | `/jvc-meeting-notes` | 把逐字稿和用户笔记整理成结构化 Word 访谈纪要。 | DOCX |
 | `/jvc-talk-notes` | 把高管访谈、客户访谈和专家访谈整理成问答式 Word 纪要。 | DOCX |
-| `/jvc-invoice-manager` | OCR 识别 PDF 发票，生成报销汇总 Excel，并归档 PDF。 | Excel + PDF archive |
+| `/jvc-roi-modeler` | 基于投资条款、融资稀释和退出假设计算投入资本倍数与内部收益率。 | CSV |
+
+### 输出级工具
+
+| Skill | 什么时候用 | 输出 |
+| --- | --- | --- |
+| `/jvc-ic-memo` | 汇总前序素材形成十七章预审版；用户批准预审后生成干净终版。 | `06-ic-memo-review.md` + `06-ic-memo.md` |
+| `/jvc-research-report` | 把已审计的赛道级上游（Track Research、Knowledge Tree、Market Sizing、可选 Comps/DD）组装为 canonical `research-report.md`，再校验并渲染为 PDF 与 HTML；不新增事实、不联网补研究。 | `research-report.md` + 渲染结果（`report.pdf`、`report.html`、`build-report.txt`） |
+
+### 日常工具
+
+| Skill | 什么时候用 | 输出 |
+| --- | --- | --- |
+| `/jvc-invoice-manager` | Optical Character Recognition（OCR，光学字符识别，用于从发票图像提取文字）处理 PDF 发票，生成报销汇总 Excel，并归档 PDF。 | Excel + PDF archive |
 
 外部前置能力：`/asr` 仍视为本地转写能力，用于音频/视频到逐字稿。
 
@@ -125,9 +150,10 @@ CLI（Command-Line Interface，命令行界面，用于在终端调用状态脚�
 
 ### `/jvc-prescreen` 初筛
 
-- 输入：deck 或项目素材。
-- 做什么：按市场、痛点、方案、团队、时机、商业模式、显性风险 7 个维度过一遍。
-- 输出：事实摘要、各维度判断、bear case 雏形、关键问题清单。
+- 输入：deck、项目素材，以及可选的融资、估值、持股和经营预测口径。
+- 做什么：在 L0 梳理商业模式、上下游与价值分配、赛道有效性，以 Top-down（自上而下，指从有来源的上位市场逐层收窄）粗算市场区间，并形成五年收入和交易回报情景；缺关键数据时只保留公式、条件与待验证项。
+- 输出：固定的 `01-prescreen.md`，包含可见来源、公式、单位、假设和置信度。
+- 边界：不初始化 Research Core，不创建更高研究级别工件；只判断是否继续投入研究资源，非最终投决。
 
 ### `/jvc-bull-case` 投资亮点
 
@@ -138,28 +164,29 @@ CLI（Command-Line Interface，命令行界面，用于在终端调用状态脚�
 ### `/jvc-bear-case` 反向论证
 
 - 输入：项目分析材料。
-- 做什么：扮演挑剔 LP、竞品 CEO、怀疑论同行、IC boss 四种角色找茬。
+- 做什么：扮演挑剔有限合伙人、竞品公司负责人、怀疑论同行、IC boss 四种角色找茬。
 - 输出：至少 4 条反对论点，每条附可证伪条件。
 
 ### `/jvc-track-research` 产业知识图谱
 
 - 输入：细分赛道名称。
 - 做什么：联网搜索，输出行业定义、行业简史、技术路线、产业链、政策/技术/市场趋势、关键玩家、监管和投资问题。
-- 输出：结构化 Markdown，可衔接 `/jvc-comps-dd` 和 `/jvc-market-sizing`。
+- 输出：固定写入 `tracks/{track-slug}/landscape.md`，并可衔接 `/jvc-knowledge-tree-builder` 和 `/jvc-market-sizing`。
 
-### `/jvc-research-report` 固定研报排版
+### `/jvc-research-report` 研报组装与发布（两阶段）
 
-- 输入：已经完成、带固定章节和来源索引的行业研究 Markdown 和本地图片；用户可选传入自定义 `brand.yml`，否则使用 skill 内置默认品牌。
+- 输入：已审计的赛道级上游产物——`tracks/{track-slug}/landscape.md`、Knowledge Tree 五文件包或 `knowledge_tree.md`、`market-sizing.csv`、可选 `03-comps-dd.md`；或用户已完成的完整 canonical `research-report.md`（直接发布）。
+- 阶段一 组装：按 `references/output-contract.md` 的上游到章节映射重组 `research-report.md`，保留来源标识、继承上游主张、列出覆盖缺口；运行只读 `validate_assembly.py` 校验来源、数字与标签继承。禁止联网补研究、禁止新增事实数字。
+- 阶段二 发布：校验固定章节、来源、本地图片与样式后，调用 `build_report.py` 渲染 `report.pdf`、`report.html` 和 `build-report.txt`；直接发布模式信任用户对 canonical 的声明。
 - 前置：将 `SKILL_ROOT` 设为包含该 skill 的 `SKILL.md` 的绝对目录，运行 `python3 -m pip install -r "$SKILL_ROOT/requirements.txt"`，并确保 Fontconfig（字体配置系统，用于查询和验证本机字体）的 `fc-match`、`fc-query`、`fc-scan` 可用。`./setup` 只注册 skill，不安装这些依赖。
-- 做什么：校验结构、来源与本地资源，按 `lustinus RESEARCH` 版式生成可打印报告和浏览器预览。
-- 输出：`report.pdf`、`report.html` 和 `build-report.txt`。
-- 边界：只校验和排版，不补研究、不改写观点；内容未完成时先用 `/jvc-track-research`。
+- 输出：`research-report.md`（canonical）、`report.pdf`、`report.html` 和 `build-report.txt`。
+- 边界：只重组经审查的内容；上游缺失时在覆盖缺口章节显式列出，不调用网页搜索补齐。
 
-CLI（Command-Line Interface，命令行界面，用于在终端调用构建器）示例；先替换三个绝对路径占位符，未传自定义品牌时仍显式指向内置 `brand.yml`：
+CLI（Command-Line Interface，命令行界面，用于在终端调用构建器）示例（直接发布模式，canonical 已存在）；先替换三个绝对路径占位符，未传自定义品牌时仍显式指向内置 `brand.yml`：
 
 ```bash
 SKILL_ROOT="/absolute/path/to/jvc-research-report"
-REPORT="/absolute/path/to/report.md"
+REPORT="/absolute/path/to/research-report.md"
 OUTPUT="/absolute/path/to/output"
 python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
   --brand "$SKILL_ROOT/assets/brand.yml" \
@@ -169,27 +196,29 @@ python3 "$SKILL_ROOT/scripts/build_report.py" "$REPORT" \
 ### `/jvc-knowledge-tree-builder` 知识树构建
 
 - 输入：已有本地赛道、项目、Obsidian 或来源文件夹。
-- 做什么：读取文件夹资料，整理成递归问题树、关系图、结构化节点、证据索引和开放问题。
-- 输出：`knowledge_tree.md`、`knowledge_graph.mmd`、`nodes.json`、`evidence_index.md`、`open_questions.md`。
+- 做什么：读取文件夹资料，以 visual-first 方式整理成递归问题树、关系图、结构化节点、证据索引和开放问题。
+- 输出：固定五文件知识包 `knowledge_tree.md`、`knowledge_graph.mmd`、`nodes.json`、`evidence_index.md`、`open_questions.md`；其中 `knowledge_tree.md` 是主入口。
+- 校验：运行 `validate_output.py` 校验五文件包，运行 `check_package.py` 做包级自检。
 - 边界：不是第一轮联网赛道研究；新赛道开题先用 `/jvc-track-research`。
 
 ### `/jvc-comps-dd` 竞品尽调
 
 - 输入：目标项目或赛道。
 - 做什么：搜集上市公司和初创公司，按直接竞品、可比、上下游、海外标杆分类。
-- 输出：Excel，包含 `companies`、`segmentation`、`sources`、`coverage_notes`。
+- 输出：固定 Markdown 文件 `03-comps-dd.md`，包含范围与口径、公司分层、可比指标、目标与可比公司对照、上下游、海外标杆、来源索引、覆盖缺口和下一步尽调动作。
 
 ### `/jvc-market-sizing` 市场规模建模
 
 - 输入：细分赛道定义、地域、客群、场景。
 - 做什么：同时建 Top-Down 和 Bottom-Up 两套模型，做正交性检查和对账。
-- 输出：Excel，包含 `assumptions`、`top_down`、`bottom_up`、`reconciliation`、`orthogonality_check`、`sources`。
+- 输出：唯一活跃模型为固定单表 `market-sizing.csv`，包含 `assumptions`、`top_down`、`bottom_up`、`reconciliation`、`orthogonality_check`、`sources`。
+- 校验：运行 `validate_csv.py` 校验单表合同，运行 `check_package.py` 做包级自检。
 
 ### `/jvc-roi-modeler` 投资回报模型
 
 - 输入：投资条款、财务预测、后续融资假设、退出假设。
-- 做什么：逐轮计算稀释，建立三情形退出，输出 MOIC/IRR 和敏感性分析。
-- 输出：Excel，包含 `investment_terms`、`financial_forecast`、`financing_dilution`、`ownership`、`exit_scenarios`、`returns`、`sensitivity`、`sources`。
+- 做什么：按用户母版逐轮计算稀释，建立三情形退出，勾稽公司估值、持股价值、退出总回款、净收益、投入资本倍数、累计收益率和内部收益率。
+- 输出：单表 CSV，固定保留年度预测、三种退出情景、来源列和可审计公式。
 
 ### `/jvc-ic-memo` 投决备忘录
 
@@ -272,25 +301,26 @@ projects/{company-slug}/
 ├── 03-founder-sync.md          # 用户自己的访谈笔记
 ├── 04-bull-case.md             # ← /jvc-bull-case
 ├── 04-bear-case.md             # ← /jvc-bear-case
-├── 05-comps-dd.xlsx            # ← /jvc-comps-dd
-├── 05-market-sizing.xlsx       # ← /jvc-market-sizing
-├── 05-roi-modeler.xlsx         # ← /jvc-roi-modeler
+├── 03-comps-dd.md              # ← /jvc-comps-dd
+├── market-sizing.csv           # ← /jvc-market-sizing
+├── 05-roi-modeler.csv          # ← /jvc-roi-modeler
 ├── 06-ic-memo-review.md        # ← /jvc-ic-memo 预审版
 ├── 06-ic-memo.md               # ← /jvc-ic-memo
 └── 99-decision.md              # 用户自己的最终决策
 
 tracks/{track-slug}/
 ├── landscape.md            # ← /jvc-track-research
-├── report.pdf              # ← /jvc-research-report
-├── report.html             # ← /jvc-research-report
-├── build-report.txt        # ← /jvc-research-report
+├── research-report.md      # ← /jvc-research-report canonical（组装产物）
+├── report.pdf              # ← /jvc-research-report 渲染
+├── report.html             # ← /jvc-research-report 渲染
+├── build-report.txt        # ← /jvc-research-report 渲染
 ├── knowledge_tree.md       # ← /jvc-knowledge-tree-builder
 ├── knowledge_graph.mmd     # ← /jvc-knowledge-tree-builder
 ├── nodes.json              # ← /jvc-knowledge-tree-builder
 ├── evidence_index.md       # ← /jvc-knowledge-tree-builder
 ├── open_questions.md       # ← /jvc-knowledge-tree-builder
-├── comps-dd.xlsx           # ← /jvc-comps-dd
-└── market-sizing.xlsx      # ← /jvc-market-sizing
+├── 03-comps-dd.md          # ← /jvc-comps-dd
+└── market-sizing.csv       # ← /jvc-market-sizing
 ```
 
 ### 旧项目迁移

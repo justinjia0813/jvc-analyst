@@ -1,0 +1,26 @@
+section,row_id,item,year,unit,conservative,base,optimistic,source_or_formula,confidence,notes
+assumptions,A_REPORTED_MARKET,2024 中国机器视觉市场转引值,2024,Chinese Yuan Renminbi（CNY，人民币元）,18147000000,18147000000,18147000000,[S3],medium,【第三方事实】年报二次转引；原始行业定义未取得
+assumptions,A_SOFTWARE_SHARE,软件收入占比,2026,ratio,0.4,0.4,0.4,[S12],low,【模型估算】旧基线推测；不是用户提供或外部事实
+assumptions,A_SERVICEABLE_SHARE,可服务范围比例,2026,ratio,0.6,0.6,0.6,[S12],low,【模型估算】旧基线推测；不是用户提供或外部事实
+assumptions,A_OBTAINABLE_RATE,三年可获得渗透率,2026,ratio,0.08,0.08,0.08,[S11],low,【用户假设】数字化率 [S2] 不是机器视觉渗透率
+assumptions,A_LEGAL_ENTITIES,制造业企业法人单位,2023,法人单位,4048000,4048000,4048000,[S1],high,【第三方事实】法人不是工厂、产线或实际客户
+assumptions,A_SERVICEABLE_CLIENT_SHARE,可服务客户占制造法人比例,2026,ratio,0.01,0.01,0.01,[S11],low,【用户假设】不得写成外部渗透率
+assumptions,A_ANNUAL_SPEND,工业视觉质检软件年支出,2026,CNY/客户/年,120000,120000,120000,[S11],low,【用户假设】整机价格 [S4] 不是纯软件价格
+assumptions,A_CONFLICTING_QUOTES,三组行业绝对额不可合并,2025,CNY 亿元,181.47,395.4,400,[S3][S6][S7],low,181.47/395.4/>400 来自不同定义；不平均
+top_down,TD_TAM,Total Addressable Market（TAM，总潜在市场，表示理论总需求）,2026,CNY,=A_REPORTED_MARKET,=A_REPORTED_MARKET,=A_REPORTED_MARKET,模型公式,model,【模型估算】旧基线直接采用二次转引总量
+top_down,TD_SAM,Serviceable Available Market（SAM，可服务市场，表示能力与范围内可覆盖需求）,2026,CNY,=TD_TAM*A_SOFTWARE_SHARE*A_SERVICEABLE_SHARE,=TD_TAM*A_SOFTWARE_SHARE*A_SERVICEABLE_SHARE,=TD_TAM*A_SOFTWARE_SHARE*A_SERVICEABLE_SHARE,模型公式,model,【模型估算】两项比例均为旧基线推测
+top_down,TD_SOM,Serviceable Obtainable Market（SOM，可获得市场，表示现实可获取份额）,2026,CNY,=TD_SAM*A_OBTAINABLE_RATE,=TD_SAM*A_OBTAINABLE_RATE,=TD_SAM*A_OBTAINABLE_RATE,模型公式,model,[key_summary] SOM 情景；结果约 3.484224 亿元；不是市场事实
+bottom_up,BU_TAM,制造法人上界收入池,2026,CNY,=A_LEGAL_ENTITIES*A_ANNUAL_SPEND,=A_LEGAL_ENTITIES*A_ANNUAL_SPEND,=A_LEGAL_ENTITIES*A_ANNUAL_SPEND,模型公式,model,【模型估算】数学上界；法人不是客户
+bottom_up,BU_SAM,可服务客户情景,2026,CNY,=BU_TAM*A_SERVICEABLE_CLIENT_SHARE,=BU_TAM*A_SERVICEABLE_CLIENT_SHARE,=BU_TAM*A_SERVICEABLE_CLIENT_SHARE,模型公式,model,【模型估算】客户比例为用户假设
+bottom_up,BU_SOM,三年可获得客户情景,2026,CNY,=BU_SAM*A_OBTAINABLE_RATE,=BU_SAM*A_OBTAINABLE_RATE,=BU_SAM*A_OBTAINABLE_RATE,模型公式,model,[key_summary] SOM 情景；结果 3.88608 亿元；不是市场事实
+reconciliation,REC_ABS,两种方法绝对差,2026,CNY,=ABS(TD_SOM-BU_SOM),=ABS(TD_SOM-BU_SOM),=ABS(TD_SOM-BU_SOM),模型公式,model,[absolute_difference] 顶部依赖未验证的软件占比；底部依赖法人折减
+reconciliation,REC_REL,两种方法相对差,2026,ratio,=ABS(TD_SOM-BU_SOM)/TD_SOM,=ABS(TD_SOM-BU_SOM)/TD_SOM,=ABS(TD_SOM-BU_SOM)/TD_SOM,模型公式,model,[relative_difference] 以自上而下结果为分母；不平均
+orthogonality_check,ORTHO_1,关键输入共享检查,2026,flag,0,0,0,模型结构披露,model,shared_input=yes；shared_row_ids=A_OBTAINABLE_RATE；independent_validation=no；两条路径共享用户给定可获得渗透率
+sources,S1,国家统计局第五次全国经济普查工业结果,2025,,,,,https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958812.html,high,工业收入与制造法人单位
+sources,S2,国家统计局企业数字化转型,2025,,,,,https://www.stats.gov.cn/xxgk/jd/sjjd2020/202502/t20250227_1958814.html,high,数字化率只作反向边界
+sources,S3,奥普特 2025 年年度报告,2026,,,,,https://www.optmv.com/Upload/File/202604/b1017ba56d8544ec91339d3714aed6e2.pdf,medium,181.47 亿元二次转引
+sources,S4,双元科技第二轮问询回复,2023,,,,,https://static.sse.com.cn/stock/disclosure/announcement/c/202303/001185_20230331_MG77.pdf,high,整机价格与验收滞后
+sources,S6,凌云光 2025 VisionChina 活动稿,2025,,,,,https://www.lusterinc.com/,low,395.4 亿元二次转引
+sources,S7,凌云光 2026 VisionChina 活动稿,2026,,,,,https://www.lusterinc.com/,low,超过 400 亿元总产值
+sources,S11,用户给定 U1-U5 假设,2026,,,,,input/scope.json,low,用户假设记录
+sources,S12,旧基线未证实模型假设,2026,,,,,historical baseline assumption,unknown,旧基线中的 40% 与 60% 推测

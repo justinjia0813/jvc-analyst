@@ -12,6 +12,26 @@ from pathlib import Path
 
 
 SCRIPT = Path(__file__).with_name("dealflowctl.py")
+PACKAGE = Path(__file__).resolve().parents[1]
+
+
+def check_orchestration_contract() -> None:
+    skill = (PACKAGE / "SKILL.md").read_text(encoding="utf-8")
+    contract = (PACKAGE / "references" / "workflow-contract.md").read_text(
+        encoding="utf-8"
+    )
+    assert "唯一项目总控" in skill
+    assert "项目身份、状态、依赖、最小调度、增量重跑和人工闸门" in skill
+    assert "不解析或重算专业研究" in skill
+    assert "不推进业务阶段" in skill
+    assert "新增来源事件不得自动调用 Skill 或推进阶段" in contract
+    for edge in (
+        "`jvc-track-research` → `jvc-knowledge-tree-builder`",
+        "`jvc-track-research` → `jvc-market-sizing`",
+        "项目产物 → `jvc-ic-memo`",
+        "赛道产物 → `jvc-research-report`",
+    ):
+        assert edge in contract
 
 
 def run(*args: str, expect: int = 0) -> subprocess.CompletedProcess[str]:
@@ -31,6 +51,16 @@ def run(*args: str, expect: int = 0) -> subprocess.CompletedProcess[str]:
 
 def load_json_output(result: subprocess.CompletedProcess[str]) -> dict[str, object]:
     return json.loads(result.stdout)
+
+
+def read_state_axes(project_dir: Path) -> dict[str, str]:
+    lines = (project_dir / "STATE.md").read_text(encoding="utf-8").splitlines()
+    axes: dict[str, str] = {}
+    for key in ("workflow_stage", "research_level", "lifecycle_status"):
+        prefix = f"- {key}：`"
+        line = next(item for item in lines if item.startswith(prefix))
+        axes[key] = line.removeprefix(prefix).removesuffix("`")
+    return axes
 
 
 def check_init_and_deduplicate(root: Path) -> Path:
@@ -429,14 +459,114 @@ def check_artifact_staleness(root: Path, project_dir: Path) -> None:
         str(invalid_audit_input),
         expect=2,
     )
+    dedicated_old_source = root / "dedicated-old-source.pdf"
+    dedicated_old_source.write_bytes(b"dedicated old fixture")
+    dedicated_old_source_input = write_event(
+        root,
+        "dedicated-old-source-event.json",
+        {
+            "event_id": "evt_source_dedicated_old",
+            "event_type": "source_registered",
+            "actor": "codex",
+            "reason": "登记目标工件的测试专用旧来源",
+            "input_refs": [{"path": str(dedicated_old_source)}],
+            "to": {},
+        },
+    )
+    run(
+        "event",
+        "--project-dir",
+        str(project_dir),
+        "--input",
+        str(dedicated_old_source_input),
+    )
+    affected_artifact = project_dir / "AFFECTED.md"
+    affected_artifact.write_text("# Affected\n", encoding="utf-8")
+    unrelated_artifact = project_dir / "UNAFFECTED.md"
+    unrelated_artifact.write_text("# Unaffected\n", encoding="utf-8")
+    for event_id, artifact_path, dependency in (
+        ("evt_affected_created", "AFFECTED.md", "evt_source_dedicated_old"),
+        ("evt_unaffected_created", "UNAFFECTED.md", "evt_source_1"),
+    ):
+        artifact_input = write_event(
+            root,
+            f"{event_id}.json",
+            {
+                "event_id": event_id,
+                "event_type": "artifact_created",
+                "actor": "codex",
+                "reason": "建立显式依赖范围测试工件",
+                "input_refs": [{"event_id": dependency}],
+                "output_refs": [
+                    {
+                        "path": artifact_path,
+                        "producer": "fixture-skill",
+                        "depends_on": [dependency],
+                    }
+                ],
+                "to": {},
+            },
+        )
+        run(
+            "event",
+            "--project-dir",
+            str(project_dir),
+            "--input",
+            str(artifact_input),
+        )
+    state_before_replacement = (project_dir / "STATE.md").read_text(encoding="utf-8")
+    assert "| AFFECTED.md | `current` |" in state_before_replacement
+    assert "| UNAFFECTED.md | `current` |" in state_before_replacement
+    state_axes_before_incremental = read_state_axes(project_dir)
+    before_incremental = [
+        json.loads(line)
+        for line in (project_dir / ".jvc" / "project_events.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    replacement_source = root / "replacement-source.pdf"
+    replacement_source.write_bytes(b"replacement fixture")
+    replacement_input = write_event(
+        root,
+        "replacement-source-event.json",
+        {
+            "event_id": "evt_source_replacement",
+            "event_type": "source_superseded",
+            "actor": "codex",
+            "reason": "替换目标工件依赖的旧来源",
+            "input_refs": [{"path": str(replacement_source)}],
+            "supersedes": "evt_source_dedicated_old",
+            "to": {},
+        },
+    )
+    run(
+        "event",
+        "--project-dir",
+        str(project_dir),
+        "--input",
+        str(replacement_input),
+    )
+    after_source = [
+        json.loads(line)
+        for line in (project_dir / ".jvc" / "project_events.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert len(after_source) == len(before_incremental) + 1
+    assert after_source[-1]["event_type"] == "source_superseded"
+    assert after_source[-1]["to"] == {}
+    assert read_state_axes(project_dir) == state_axes_before_incremental
+    state_after_source = (project_dir / "STATE.md").read_text(encoding="utf-8")
+    assert "| AFFECTED.md | `current` |" in state_after_source
+    assert "| UNAFFECTED.md | `current` |" in state_after_source
     stale = {
         "event_id": "evt_artifact_stale",
         "event_type": "artifact_marked_stale",
         "actor": "codex",
         "reason": "新访谈反驳 H2",
-        "input_refs": [{"event_id": "evt_source_1"}],
-        "output_refs": [{"path": "INVEST_MEMO.md"}],
-        "to": {"next_action": "用户批准后重跑 Invest Memo"},
+        "input_refs": [{"event_id": "evt_source_replacement"}],
+        "output_refs": [{"path": "AFFECTED.md"}],
+        "to": {"next_action": "用户批准后重跑 AFFECTED.md"},
     }
     stale_input = write_event(root, "artifact-stale.json", stale)
     run(
@@ -447,9 +577,69 @@ def check_artifact_staleness(root: Path, project_dir: Path) -> None:
         str(stale_input),
     )
     state = (project_dir / "STATE.md").read_text(encoding="utf-8")
-    assert "INVEST_MEMO.md" in state
-    assert "`stale`" in state
-    assert "用户批准后重跑 Invest Memo" in state
+    assert "| AFFECTED.md | `stale` |" in state
+    assert "| UNAFFECTED.md | `current` |" in state
+    assert "用户批准后重跑 AFFECTED.md" in state
+    assert read_state_axes(project_dir) == state_axes_before_incremental
+    after_stale = [
+        json.loads(line)
+        for line in (project_dir / ".jvc" / "project_events.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert [event["event_type"] for event in after_stale[-2:]] == [
+        "source_superseded",
+        "artifact_marked_stale",
+    ]
+    assert all(
+        event["event_type"]
+        not in {"workflow_transitioned", "research_level_changed", "lifecycle_changed"}
+        for event in after_stale[len(before_incremental) :]
+    )
+    restored_input = write_event(
+        root,
+        "affected-restored.json",
+        {
+            "event_id": "evt_affected_restored",
+            "event_type": "artifact_updated",
+            "actor": "codex",
+            "reason": "完成用例后恢复工件 current 状态",
+            "input_refs": [{"event_id": "evt_source_replacement"}],
+            "output_refs": [
+                {
+                    "path": "AFFECTED.md",
+                    "producer": "fixture-skill",
+                    "depends_on": ["evt_source_replacement"],
+                }
+            ],
+            "to": {},
+        },
+    )
+    run(
+        "event",
+        "--project-dir",
+        str(project_dir),
+        "--input",
+        str(restored_input),
+        expect=2,
+    )
+    restored_payload = json.loads(restored_input.read_text(encoding="utf-8"))
+    restored_payload["approval_ref"] = "user:approve:rerun-affected"
+    restored_input = write_event(
+        root,
+        "affected-restored-approved.json",
+        restored_payload,
+    )
+    run(
+        "event",
+        "--project-dir",
+        str(project_dir),
+        "--input",
+        str(restored_input),
+    )
+    restored_state = (project_dir / "STATE.md").read_text(encoding="utf-8")
+    assert "| AFFECTED.md | `current` |" in restored_state
+    assert "| UNAFFECTED.md | `current` |" in restored_state
     run("check", "--project-dir", str(project_dir), expect=2)
     artifact.write_text("# Invest Memo\n", encoding="utf-8")
     run("check", "--project-dir", str(project_dir))
@@ -727,6 +917,7 @@ def check_legacy_attach_and_corruption(root: Path) -> None:
 
 
 def main() -> int:
+    check_orchestration_contract()
     with tempfile.TemporaryDirectory(prefix="jvc-deal-flow-") as temporary:
         root = Path(temporary)
         project_dir = check_init_and_deduplicate(root)

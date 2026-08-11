@@ -1,23 +1,25 @@
 {
   "optimizer_hints": {
-    "capability": "Validate and render completed fixed-format local industry research as branded PDF and HTML without rewriting content",
-    "inputs": ["fixed-format report.md", "brand.yml", "local images"],
-    "trigger_actions": ["validate completed research", "render a branded report", "rebuild local report outputs"],
-    "exclusions": ["first-pass research", "arbitrary Markdown conversion", "content rewriting", "investment-committee memo drafting"],
-    "artifacts": ["report.pdf", "report.html", "build-report.txt"]
+    "capability": "Assemble audited track-level upstreams (Track Research, Knowledge Tree, Market Sizing, optional Comps/DD) into canonical research-report.md, validate assembly inheritance, then render as branded PDF and HTML without rewriting content or researching online",
+    "inputs": ["track-research landscape.md", "knowledge-tree package", "market-sizing.csv", "optional 03-comps-dd.md", "complete canonical research-report.md", "brand.yml", "local images"],
+    "trigger_actions": ["assemble a track research report", "validate assembled research", "render a branded report", "rebuild local report outputs", "publish an existing canonical research report"],
+    "exclusions": ["first-pass research", "arbitrary Markdown conversion", "content rewriting", "new facts or numbers", "web research", "investment-committee memo drafting"],
+    "artifacts": ["research-report.md", "report.pdf", "report.html", "build-report.txt"]
   },
-  "fallback_positive_concepts": ["fixed_input", "render_report"],
+  "fallback_positive_concepts": ["upstream_input", "render_report"],
   "positive_concepts": {
-    "fixed_input": {
+    "upstream_input": {
       "weight": 0.5,
       "phrases": [
-        "fixed-structure",
-        "固定章节",
-        "来源索引",
-        "jvc-track-research",
-        "已经完成",
-        "brand.yml",
-        "本地研报"
+        "组装",
+        "assemble",
+        "上游",
+        "track-research",
+        "knowledge-tree",
+        "market-sizing.csv",
+        "03-comps-dd.md",
+        "覆盖缺口",
+        "validate_assembly.py"
       ]
     },
     "render_report": {
@@ -32,6 +34,15 @@
         "html 预览",
         "构建报告",
         "重新生成"
+      ]
+    },
+    "direct_publish": {
+      "weight": 0.4,
+      "phrases": [
+        "已有完整",
+        "直接发布",
+        "canonical research-report.md",
+        "已经完成的研报"
       ]
     },
     "preserve_content": {
@@ -61,7 +72,12 @@
     "content_rewriting": {
       "weight": 0.4,
       "exclusive": true,
-      "phrases": ["重写", "联网补充", "rewrite", "content rewriting"]
+      "phrases": ["重写", "rewrite", "content rewriting"]
+    },
+    "web_research": {
+      "weight": 0.9,
+      "exclusive": true,
+      "phrases": ["联网补充", "联网搜索", "上网补数据", "research online", "search the web"]
     },
     "ic_memo": {
       "weight": 0.9,

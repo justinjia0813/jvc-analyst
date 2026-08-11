@@ -2,7 +2,7 @@
   "name": "jvc-analyst",
   "version": "3.0.0",
   "owner": "jvc-analyst",
-  "updated_at": "2026-07-31",
+  "updated_at": "2026-08-09",
   "status": "active",
   "maturity_tier": "production",
   "lifecycle_stage": "production",
@@ -14,6 +14,78 @@
     "generic",
     "agent-skills-compatible"
   ],
+  "taxonomy": {
+    "control_and_engine": ["jvc-deal-flow", "jvc-research-core"],
+    "track_level": ["jvc-track-research", "jvc-knowledge-tree-builder", "jvc-market-sizing"],
+    "project_level": ["jvc-prescreen", "jvc-bull-case", "jvc-bear-case", "jvc-comps-dd", "jvc-meeting-notes", "jvc-talk-notes", "jvc-roi-modeler"],
+    "output_level": ["jvc-ic-memo", "jvc-research-report"],
+    "utility": ["jvc-invoice-manager"]
+  },
+  "orchestration": {
+    "project_orchestrator": "jvc-deal-flow",
+    "unique_cross_stage_orchestrator": true,
+    "atomic_skills_independently_invocable": true,
+    "evidence_engine": "jvc-research-core",
+    "evidence_engine_user_invocable": false,
+    "evidence_engine_advances_workflow_stages": false,
+    "evidence_engine_responsibilities": ["evidence_ledger", "claim_inheritance", "artifact_audit"]
+  },
+  "p0_contracts": {
+    "jvc-prescreen": {
+      "version": "4.0.0",
+      "research_level": "L0",
+      "artifact_kind": "markdown",
+      "outputs": ["01-prescreen.md"],
+      "initializes_research_core": false,
+      "validator": "skills/jvc-prescreen/scripts/validate_output.py",
+      "package_check": "skills/jvc-prescreen/scripts/check_package.py"
+    },
+    "jvc-roi-modeler": {
+      "version": "4.0.0",
+      "artifact_kind": "csv",
+      "layout": "single_table",
+      "formula_driven": true,
+      "validator": "skills/jvc-roi-modeler/scripts/validate_csv.py"
+    }
+  },
+  "p1_contracts": {
+    "jvc-track-research": {
+      "version": "4.0.0",
+      "artifact_kind": "markdown",
+      "outputs": [
+        "tracks/{track-slug}/landscape.md"
+      ],
+      "handoffs": [
+        "jvc-knowledge-tree-builder",
+        "jvc-market-sizing"
+      ]
+    },
+    "jvc-knowledge-tree-builder": {
+      "version": "4.0.0",
+      "artifact_kind": "five_file_package",
+      "primary_output": "knowledge_tree.md",
+      "visual_first": true,
+      "outputs": [
+        "knowledge_tree.md",
+        "knowledge_graph.mmd",
+        "nodes.json",
+        "evidence_index.md",
+        "open_questions.md"
+      ],
+      "validator": "skills/jvc-knowledge-tree-builder/scripts/validate_output.py",
+      "package_check": "skills/jvc-knowledge-tree-builder/scripts/check_package.py"
+    },
+    "jvc-market-sizing": {
+      "version": "4.0.0",
+      "artifact_kind": "csv",
+      "layout": "single_table",
+      "outputs": [
+        "market-sizing.csv"
+      ],
+      "validator": "skills/jvc-market-sizing/scripts/validate_csv.py",
+      "package_check": "skills/jvc-market-sizing/scripts/check_package.py"
+    }
+  },
   "factory_components": [
     "skills",
     "templates",
@@ -25,10 +97,10 @@
   "output_contracts": [
     "Append-only project event chains and derived deal-flow state views",
     "Markdown diligence notes",
-    "Knowledge tree Markdown/Mermaid/JSON artifacts",
-    "Branded research PDF and HTML previews",
+    "Visual-first five-file knowledge tree packages",
+    "Canonical Markdown research report plus rendered PDF and HTML previews",
     "Audited IC memo pre-review and user-approved clean Markdown final",
-    "Excel workbooks",
+    "Formula-driven CSV investment return and market-sizing models",
     "DOCX interview notes",
     "Excel plus PDF invoice archive",
     "evidence ledger and deterministic audit",

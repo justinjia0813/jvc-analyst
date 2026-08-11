@@ -771,6 +771,14 @@ def validate_event_payload(payload: dict[str, Any], state: dict[str, Any]) -> No
                 and artifact_path not in state.get("artifacts", {})
             ):
                 raise DealFlowError(f"unknown artifact: {artifact_path}")
+            if (
+                event_type == "artifact_updated"
+                and state["artifacts"][artifact_path].get("status") == "stale"
+                and not approval_ref
+            ):
+                raise DealFlowError(
+                    f"artifact_updated requires user approval_ref for stale artifact: {artifact_path}"
+                )
         return
     if event_type == "artifact_audited":
         reject_unexpected_target_keys(

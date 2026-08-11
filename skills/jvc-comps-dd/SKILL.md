@@ -1,30 +1,35 @@
 ---
 name: jvc-comps-dd
 description: |
-  竞品尽调：调研目标项目的竞争对手和可比公司，输出包含上市公司和初创公司对比的 Excel 工作簿。
+  Comps/DD（Comparable Companies Analysis / Due Diligence，可比公司分析/尽职调查，用于系统核验竞争与可比对象）：调研目标项目的竞争对手、可比公司、上下游和海外标杆，输出可追溯的 Markdown 对照材料。
   Use when user says '/jvc-comps-dd', '竞品分析', 'comps', '可比公司', '竞争对手调研', '帮我看看竞品'.
 user_invocable: true
-version: "3.0.0"
+version: "4.0.0"
 ---
 
 # /jvc-comps-dd — 竞品尽调
 
-系统调研目标项目面对哪些竞争者和可比公司，输出结构化 Excel。
+系统核验目标项目面对哪些竞争者、哪些对象真正可比，以及关键差异是否有来源支持。
 
-## 3.0 适用级别
+本 Skill 只承担竞品与可比公司专题，不扩展为项目全套尽调，也不输出投资结论。
+
+## 适用级别
 
 最低适用级别：**L2+**（Level 2 or above，二级及以上尽调，用于验证关键假设）。
 
-- 开始前读取 `spec/CONTEXT.md` 中的竞品分类与比较口径，以及 `spec/hypotheses.md` 中关联假设。
-- 当前项目低于 L2 时，先说明完整竞品尽调的来源覆盖与客户验证成本，由用户确认是否提前使用。
-- 工作簿进入 `05-comps-dd.xlsx`；来源、覆盖缺口和对比口径不得因级别裁剪。
+- 开始前读取 `spec/CONTEXT.md` 中的竞品分类与比较口径，以及 `spec/hypotheses.md` 中的关联假设。
+- 当前项目低于 L2 时，先说明来源覆盖与客户验证成本，由用户确认是否提前使用。
+- 来源、覆盖缺口、对比口径和反证不得因级别裁剪。
+
+唯一活跃主产物：`03-comps-dd.md`
 
 ## 反合理化约束
 
-- “公开资料足够代表产品实力” → 公开资料是发布方选择呈现的内容；与客户侧验证分列。
-- “没有搜到竞品，所以没有竞品” → 记录检索范围和无结果原因，不把搜索缺口写成市场结论。
-- “数据缺失可以留 0 方便计算” → 未披露写 `N/A` 或 `[未核实]`；零必须有来源证明。
-- “相似公司可以直接当可比” → 明确直接竞品、替代方案、上下游和参照标的，不能混算。
+- “公开资料足够代表产品实力” → 公开资料是发布方选择呈现的内容；公司自述与客户侧验证分列。
+- “没有搜到竞品，所以没有竞品” → 记录检索范围、反向检索和无结果原因，不把搜索缺口写成市场结论。
+- “数据缺失可以留 0” → 未披露写 `[未披露]` 或 `[未核实]`；零必须有来源证明。
+- “相似公司可以直接当可比” → 直接竞品、可比公司、上下游和海外标杆分层呈现，不能混用估值或经营口径。
+- “合作名单等于客户验证” → 官网名单、联合发布、样品测试、采购订单和持续收入是不同证据等级，分别标注。
 
 ## 输入
 
@@ -35,81 +40,50 @@ version: "3.0.0"
 
 从本 `SKILL.md` 的实际目录解析同级 `../jvc-research-core/scripts/researchctl.py`，并使用绝对路径执行；不要依赖当前工作目录。
 
-执行前必须读取同级 `../jvc-research-core/references/evidence-contract.md` 和当前 profile `../jvc-research-core/profiles/jvc-comps-dd.json`。
+执行前必须读取同级 `../jvc-research-core/references/evidence-contract.md` 和当前配置 `../jvc-research-core/profiles/jvc-comps-dd.json`。
 
-1. 新研究先准备完整 `scope` JSON，再运行 `init --skill jvc-comps-dd --run-dir <研究目录> --scope-file <scope.json>`；初始 `scope` 只能通过 `init --scope-file` 创建。
-2. 复用已有研究链时运行 `init --skill jvc-comps-dd --run-dir <研究目录> --resume`。后续 `scope` 更正必须通过 `record --run-dir <研究目录> --input <records.jsonl>` 登记，并用 `supersedes` 指向当前 effective scope；问题、检索、来源、主张和更正也只能通过该命令登记，不得直接编辑 `evidence_registry.jsonl`，generic `record` 不得创建 waiver。
-3. 跨 skill 消费已有主张时，在新主张的 `derived_from_claim_ids` 中登记上游主张编号；缺失或失效的上游审计会阻断下游完成。
-4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；Markdown 写在对应主张后，工作簿写入 `sources` 表，DOCX 写入来源附注，多文件产物至少在 `evidence_index.md` 建立映射。
-5. 完成现有产物生成与格式校验后，运行 `audit --run-dir <研究目录> --skill jvc-comps-dd --artifact <最终产物>`；多文件产物重复传入 `--artifact`。每次 audit 必须同时读取命令退出状态和 `audit.json`。
-6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才按产物补写 `研究状态：partial`：Markdown 写入标题与结论，XLSX 在 `sources` 表表头和列结构不变的前提下追加一条可见状态数据行，DOCX 写入首段与来源附注，多文件产物至少写入 `knowledge_tree.md` 与 `evidence_index.md`；任何类型写回标签后，必须先重新运行原有产物格式校验/validator，确认结构仍有效，再重跑 audit；存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
-7. 只有用户明确批准、且 blocker 与同 skill 最新有效 blocked audit 精确匹配时，才可运行 `waive --run-dir <研究目录> --skill jvc-comps-dd --rule <阻断规则> --reason <批准理由> --scope <批准范围> --approved-by <批准人> --residual-risk <剩余风险>`；不得自我批准，waiver 最多降级为 partial。
+1. 新研究先准备完整 scope JSON（JavaScript Object Notation，JavaScript 对象表示法，用于结构化登记研究范围），再运行 `init --skill jvc-comps-dd --run-dir <研究目录> --scope-file <scope.json>`；初始 scope 只能通过 `init --scope-file` 创建。
+2. 复用已有研究链时运行 `init --skill jvc-comps-dd --run-dir <研究目录> --resume`。后续 scope 更正必须通过 `record --run-dir <研究目录> --input <records.jsonl>` 登记，并用 `supersedes` 指向当前有效范围；问题、检索、来源、主张和更正也只能通过该命令登记，不得直接编辑 `evidence_registry.jsonl`，通用 `record` 不得创建豁免。
+3. 跨 Skill 消费已有主张时，在新主张的 `derived_from_claim_ids` 中登记上游主张编号；缺失或失效的上游审计会阻断下游完成。
+4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`，紧邻其支持或反驳的主张；来源索引必须能回到具体页面、文件位置或访问日期。
+5. 完成 `03-comps-dd.md` 后，运行 `audit --run-dir <研究目录> --skill jvc-comps-dd --artifact <研究目录>/03-comps-dd.md`；每次审计必须同时读取命令退出状态和 `audit.json`。
+6. 只有状态为 `blocked`、发现项中唯一阻断是 `partial_label_missing`，且至少一个发现项为 `partial` 时，才可在标题与结论处补写 `研究状态：partial`。补写后先重新检查九个必需章节，再重跑审计；重跑得到 `partial` / exit `10` 才可按部分完成交付，`ready` / exit `0` 才能称为完成，其他 `blocked` / exit `20` 只能交付证据缺口和下一步，exit `1` 必须修复后重跑。
+7. 只有用户明确批准、且 blocker 与同 Skill 最新有效 blocked 审计精确匹配时，才可运行 `waive`；不得自我批准，豁免最多降级为 partial。
 
-找不到内核、profile 不兼容、账本损坏或终审异常时，不得退回纯 prompt 模式。
+找不到内核、配置不兼容、账本损坏或终审异常时，不得退回纯提示词模式。
 
-本 skill 必须登记公司字段级主张、来源日期、估值或市值口径及反向证据。
+本 Skill 必须登记公司字段级主张、来源日期、估值或市值口径，以及支持关键定位的反向检索和反证结果。
 
 ## 执行步骤
 
-### 1. 联网搜索
+### 1. 固定范围与可比口径
 
-搜集公开信息，国内为主、海外龙头为辅。同时覆盖上市公司和初创公司。
+明确产品边界、地区、客户类型、观察时点、币种及收入/估值口径。上市公司市值、企业价值和初创公司融资估值分列，不直接混算。
 
-### 2. 分类
+### 2. 分层检索并找反面
 
-将找到的公司分为四类：
-- **直接竞品**：同赛道、同客群、正面竞争
-- **可比公司**：相似商业模式或技术路线，但不同细分
-- **上下游参照**：产业链上相关公司
-- **海外标杆**：海外同赛道的龙头或对标公司
+同时覆盖上市公司和初创公司，并按直接竞品、可比公司、上下游和海外标杆分层。对每个关键公司至少登记一条支持性检索；对目标项目的核心差异化主张至少登记一次反向检索或反证查询，优先查监管披露、财报、招股书、客户或合作方材料。
 
-### 3. 信息收集
+### 3. 收集字段
 
-每家公司尽量覆盖以下字段（缺失标 `[未披露]`）：
+每家公司尽量覆盖：国家/地区、分层、技术路线、核心产品、目标客户、差异化定位、成立时间、融资阶段、最近一年收入、增长、盈利或单位经济指标、最新估值/市值及对应日期。缺失项写 `[未披露]` 或 `[未核实]`，不补数字。
 
-| 字段 | 说明 |
-|------|------|
-| 公司名称 | 中文名（英文名） |
-| 国家/地区 | |
-| 分类 | 直接竞品/可比/上下游/海外标杆 |
-| 技术路线 | 核心技术方案 |
-| 核心产品 | 主要产品或服务 |
-| 目标客群 | |
-| 差异化定位 | 一句话区分 |
-| 成立时间 | |
-| 融资阶段 | 最新轮次 |
-| 最近一年收入 | 标注口径和来源 |
-| 最新估值/市值 | 标注日期和来源 |
+### 4. 形成对照
 
-### 4. 生成 Excel
+按 `templates/comps-dd-template.md` 写入以下九节：范围与口径、公司分层、可比指标、目标与可比公司对照、上下游、海外标杆、来源索引、覆盖缺口、下一步尽调动作。目标与可比对象必须在同一口径下并排；无法同口径比较时说明原因和影响。
 
-先用仓库内 workbook 模板脚本生成 `.xlsx` 文件：
+### 5. 审计并交付
 
-```bash
-python3 scripts/generate-workbook.py templates/comps-dd-template.md output/{项目或赛道}_jvc-comps-dd_{YYYYMMDD}.xlsx
-```
-
-填完调研结果后运行结构校验：
-
-```bash
-python3 scripts/validate-workbook.py output/{项目或赛道}_jvc-comps-dd_{YYYYMMDD}.xlsx templates/comps-dd-template.md
-```
-
-Workbook 包含以下 sheet：
-
-- **companies**：主表，上述所有字段
-- **segmentation**：按分类分组的简要对比
-- **sources**：所有数据来源的汇总（公司、字段、来源、日期）
-- **coverage_notes**：本次调研的覆盖范围、局限性、建议补充方向
+保存为 `03-comps-dd.md`，检查九个章节、来源映射和反证记录后运行证据内核审计。不得另建活跃公式模型、数据附件或生成器。
 
 ## 输出
 
-Excel 文件（`.xlsx`），保存到用户指定路径或当前目录。
+固定输出 `03-comps-dd.md`，保存到当前项目研究目录。
 
 ## 硬约束
 
-- 最近一年收入、最新估值、市值必须标来源和日期
-- 上市公司市值和初创公司融资估值不得混为同一口径
-- 找不到数据标 `[未披露]` 或 `[未核实]`，不补数字
-- 不编造融资金额、收入、估值
-- 中文输出
+- 最近一年收入、增长、估值和市值必须标来源、日期与口径。
+- 公司自述、第三方事实、模型估算和未知项分开标注；不得用公司样品或合作发布替代客户验证。
+- 不编造公司、融资金额、收入或估值；未找到反证不等于反证不存在。
+- 覆盖缺口必须对应受影响的比较结论；下一步动作必须指向可取得的证据或可证伪条件。
+- 中文输出，不承担项目全套尽调或最终投资判断。

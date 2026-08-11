@@ -8,7 +8,7 @@
   "artifact_policy": {
     "kind": "markdown",
     "allowed_suffixes": [".md"],
-    "required_names": [],
+    "required_names": ["01-prescreen.md"],
     "required_sheets": []
   }
 }

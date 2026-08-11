@@ -492,8 +492,8 @@ def check_output(page: str, payload: dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=Path("reports/output_review_kit.json"))
-    parser.add_argument("--output", type=Path, default=Path("reports/output_review_kit.html"))
+    parser.add_argument("--input", type=Path, default=Path("reports/legacy/output_review_kit.json"))
+    parser.add_argument("--output", type=Path, default=Path("reports/legacy/output_review_kit.html"))
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 

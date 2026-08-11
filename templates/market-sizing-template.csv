@@ -1,0 +1,13 @@
+section,row_id,item,year,unit,conservative,base,optimistic,source_or_formula,confidence,notes
+assumptions,A_PRICE,单客户年支出,2026,CNY/客户/年,0,0,0,[S2],unknown,[需要用户提供]；零值仅为模板占位
+top_down,TD_MARKET,上位市场规模,2026,CNY,0,0,0,[S1],unknown,[需要用户提供]；零值仅为模板占位
+top_down,TD_SHARE,细分赛道占比,2026,ratio,0,0,0,[S2],unknown,[需要用户提供]；零值仅为模板占位
+top_down,TD_SUMMARY,自上而下市场规模,2026,CNY,=TD_MARKET*TD_SHARE,=TD_MARKET*TD_SHARE,=TD_MARKET*TD_SHARE,模型公式,model,[key_summary] TAM 汇总
+bottom_up,BU_CUSTOMERS,目标客户数,2026,客户,0,0,0,[S1],unknown,[需要用户提供]；零值仅为模板占位
+bottom_up,BU_PENETRATION,客户渗透率,2026,ratio,0,0,0,[S2],unknown,[需要用户提供]；零值仅为模板占位
+bottom_up,BU_SUMMARY,自下而上市场规模,2026,CNY,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,模型公式,model,[key_summary] TAM 汇总
+reconciliation,REC_ABS,两种方法绝对差,2026,CNY,=ABS(TD_SUMMARY-BU_SUMMARY),=ABS(TD_SUMMARY-BU_SUMMARY),=ABS(TD_SUMMARY-BU_SUMMARY),模型公式,model,[absolute_difference] 解释两种口径的覆盖差异
+reconciliation,REC_REL,两种方法相对差,2026,ratio,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,模型公式,model,[relative_difference] 以自上而下结果为分母
+orthogonality_check,ORTHO_1,关键输入共享检查,2026,flag,0,0,0,模型结构披露,model,shared_input=no；shared_row_ids=none；independent_validation=no；模板状态尚未完成独立性验证；生成真实模型时必须改写
+sources,S1,[需要用户提供]上位市场来源,2026,,,,,[需要用户提供],unknown,替换为公开来源或本地材料定位
+sources,S2,[需要用户提供]参数来源,2026,,,,,[需要用户提供],unknown,替换为公开来源或用户假设记录

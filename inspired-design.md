@@ -244,9 +244,10 @@ projects/<项目名>/
 ├── 03-founder-sync.md          # 用户自己的访谈笔记
 ├── 04-bull-case.md             # ← /jvc-bull-case
 ├── 04-bear-case.md             # ← /jvc-bear-case
-├── 05-comps-dd.xlsx            # ← /jvc-comps-dd
-├── 05-market-sizing.xlsx       # ← /jvc-market-sizing
-├── 05-roi-modeler.xlsx         # ← /jvc-roi-modeler
+├── 03-comps-dd.md            # ← /jvc-comps-dd
+├── market-sizing.csv         # ← /jvc-market-sizing
+├── 05-roi-modeler.csv        # ← /jvc-roi-modeler
+├── 06-ic-memo-review.md        # ← /jvc-ic-memo 预审版
 ├── 06-ic-memo.md               # ← /jvc-ic-memo
 └── 99-decision.md              # 用户自己的最终决策
 ```
@@ -415,16 +416,16 @@ started_at: "2026-07-30T09:00:00Z"
 ### 5.5 与现有 `/jvc-*` 的整合
 
 ```
-/jvc-prescreen (初筛规格定义)
+/jvc-prescreen (L0 快筛，固定输出 01-prescreen.md)
     ↓
-/jvc-research-loop (自主循环执行信息收集和验证，带人审检查点)
+/jvc-research-loop (历史概念，非当前活跃 Skill)
     ↓
 /jvc-bull-case + /jvc-bear-case (基于验证后的假设生成论点)
     ↓
 /jvc-ic-memo (合成最终 memo)
 ```
 
-`/jvc-research-loop` 是 Ralph Loop 的投资研究版本——它不替代 `/jvc-prescreen` 和 `/jvc-ic-memo`，而是填补中间的**执行空白**。
+`/jvc-research-loop` 是 Ralph Loop 的历史概念设计，不是当前优先级 0 的活跃 Skill。现行合同中，`/jvc-deal-flow` 是唯一跨阶段项目总控；原子 Skill 仍可独立调用，Research Core 只维护证据台账、主张继承和产物审计，不推进业务阶段。
 
 ---
 
@@ -642,16 +643,16 @@ Addy Osmani 的 agent-skills 最锋利的创新是**反合理化表（anti-ratio
    → 不可以跳过。信息不足就写"信息不足"，并标注需要什么信息、从哪里获取。
    
 2. "基于行业惯例，这个数据大概是X"
-   → 不可以。没有来源的数据不用"大概"包装。写 `[未核实]` 或 `[需要用户提供]`。
+   → 不可以把无来源常数当事实。存在市场锚点时，可以给可见的 `【模型估算】` 区间，但必须同时写公式、单位、来源或假设和置信度；没有锚点时只列公式与证据缺口。
    
 3. "创始人在这方面很有经验，风险可控"
    → 不可以。经验不等于能力。列出创始人过往的具体成就或失败，让事实说话。
    
 4. "市场很大，天花板不用担心"
-   → 不可以。每个市场都有天花板。给出 TAM/SAM/SOM 的具体数字和来源。
+   → 不可以。用 Top-down（自上而下，指从有来源的上位市场逐层收窄）给低、中、高市场区间；没有市场锚点时不得输出数字。
 
 5. "综合来看，这个项目值得关注"
-   → 不可以。这是终局判断。你只负责摆证据、提问题，不负责下结论。
+   → 不可以替用户作最终投决。Pre-Screen 只能在“继续研究、等待关键材料、暂不继续”中给出研究资源判断，并保留证据缺口。
 ```
 
 ---
@@ -699,16 +700,16 @@ Wave 4 (最终合成):
 
 | 节点 | 完成锚点（必须可独立验证） |
 |------|--------------------------|
-| 市场空间测算 | `05-market-sizing.xlsx` 存在于项目根目录，含两种测算方法的 sheet |
+| 市场空间测算 | `market-sizing.csv` 存在于项目根目录，含 `top_down`、`bottom_up` 两个模型与 `reconciliation`、`orthogonality_check` 分区 |
 | 创始团队背调 | `evidence/team-dd/` 含至少 3 个独立来源的背调记录 |
 | 客户访谈 | 至少 5 份访谈纪要（`.docx`）存在于 `evidence/customer-interviews/` |
-| 竞品对比 | `05-comps-dd.xlsx` 含至少 20 个对比维度 |
+| 竞品对比 | `03-comps-dd.md` 含范围与口径、公司分层、可比指标、目标与可比公司对照、来源索引与覆盖缺口 |
 | Bull/Bear Case | `04-bull-case.md` 和 `04-bear-case.md`，Bear 篇幅 ≥ Bull 篇幅 |
-| IC Memo | `06-ic-memo.md` 含完整证据标注，无 `[未核实]` 残留 |
+| IC Memo | `06-ic-memo-review.md` 保留完整证据与缺口并通过审查；用户明确批准后，`06-ic-memo.md` 通过干净终版校验 |
 
 **关键设计**：每个节点的完成状态不依赖 Agent 自我报告，而是由**文件系统上的真实产物**定义。这是图工程的"guard 边"——下一个节点能否启动，看锚点是否落地，而非上一节点声称完成。
 
-**权限规则**（防止锚点被架空）：节点状态只能由**校验脚本**翻转——脚本检查锚点文件是否存在、是否通过 lint（如 xlsx 里是否真的有两个测算 sheet、访谈纪要份数是否达标）。Agent 可以**请求**状态变更，但不能自签 `complete`；`verified_by` 字段只接受人工复核记录。否则"现实锚点"会被 Agent 的自我报告重新架空。
+**权限规则**（防止锚点被架空）：节点状态只能由**校验脚本**翻转——脚本检查锚点文件是否存在、是否通过 lint（如 `market-sizing.csv` 是否真的含 `top_down`/`bottom_up` 两个模型与对账分区、访谈纪要份数是否达标）。Agent 可以**请求**状态变更，但不能自签 `complete`；`verified_by` 字段只接受人工复核记录。否则"现实锚点"会被 Agent 的自我报告重新架空。
 
 ### 9.4 状态文件设计
 
@@ -729,7 +730,7 @@ Wave 4 (最终合成):
     "market-sizing": {
       "title": "市场空间测算",
       "status": "complete",
-      "anchor": "05-market-sizing.xlsx",
+      "anchor": "market-sizing.csv",
       "anchor_verified_by_script": true,
       "verified_by": "人工复核：TAM测算假设已确认"
     },
@@ -1084,7 +1085,7 @@ Ship（交付成果）
 
 ### 14.4 决策层：memo 回链与活决策
 
-**memo 回链原则**：IC memo 的每个结论必须解析到至少一条 Claim（编号引用）；无 Claim 支撑的结论不允许出现在 memo 中——lint 脚本可自动检查（设计十 12.3 的门禁扩展）。memo 章节结构仍由 `/jvc-ic-memo` 的十段式定义，图谱只要求回链。
+**memo 回链原则**：IC memo 预审版的每个结论必须解析到至少一条 Claim（编号引用）；无 Claim 支撑的结论不允许进入预审——lint 脚本可自动检查（设计十 12.3 的门禁扩展）。十七章结构仍由 `/jvc-ic-memo` 定义；只有用户明确批准预审后才能生成不含内部证据痕迹的干净终版。
 
 **决策是活对象，不是一次性判决**。决策记录 = 行动动词 + 责任人 + 条件 + 有效期 + 下一次复盘日期：
 - 投前动词：投 / 不投 / 等
@@ -1132,9 +1133,9 @@ Ship（交付成果）
 ### 15.2 三条运行规则
 
 1. **每个 SKILL.md 声明最低适用级别**：如 `/jvc-prescreen` 适用 L0+，`/jvc-roi-modeler` 适用 L2+，决策立案适用 L3。用户在低级别项目里调用高级别 skill 时，skill 应提示"当前项目为 L1，本 skill 的完整流程是否必要？"
-2. **砍流程不砍纪律**：流程开销可以按级别裁剪（工件、卡片、门禁），但 CLAUDE.md 红线（来源标注、bear case、无终局判断、不编造数据）在**任何级别**都不裁剪。纪律是红线，流程是工具——工具可以选，红线不能松。
+2. **砍流程不砍纪律**：流程开销可以按级别裁剪（工件、卡片、门禁），但来源标注、反向证据、无终局判断和不编造数据在**任何级别**都不裁剪。L0 在 `01-prescreen.md` 保留风险与证伪条件，不另建 Bear Case；L2+ 再生成独立 Bear Case。纪律是红线，流程是工具——工具可以选，红线不能松。
 3. **升降级触发条件显式化**：
-   - L0 → L1：初筛纪要里出现"值得进一步验证"的假设
+   - L0 → L1：初筛纪要给出“研究资源判断：继续研究”，且用户批准升级
    - L1 → L2：完成创始人首面，且假设清单中仍有 ≥ 2 条未验证的关键假设
    - L2 → L3：决定提交 IC，或单笔拟投金额超过阈值
    - 任何级别 → 终止：核心假设被证伪。终止时也要留一句话记录**为什么终止**（给设计十一的回填留素材）
@@ -1290,10 +1291,10 @@ Ship（交付成果）
 | 需求盘问 | gstack `/office-hours`（六问结构） | **参考问法，新建** `/jvc-grill-me`——尽调语境的问题树不同（假设、证伪条件、竞品对标） |
 | 决策日志 | `dbs-decision`（决策立案/结果回填/状态画像） | **复用其方法论结构**，落盘到项目目录 `decision-journal.md`（设计十一） |
 | 多角色审查 | `/jvc-bear-case` 已有四角色 | **在其上扩展**虚拟投委会（私有信息注入 + 交叉质询），不新建框架 |
-| 自主研究循环 | 无现成实现（书中有 Ralph Loop 概念） | **新建** `/jvc-research-loop`，带人审检查点与预算护栏 |
-| 验证 lint | `scripts/` 已有 workbook/docx 校验脚本 | **扩展**：新增 memo 质量门禁脚本，复用现有 check-*.sh/py 的调用模式 |
+| 自主研究循环 | `/jvc-deal-flow` + 原子 Skill + Research Core | **复用现行受控循环**：Flow 作为唯一跨阶段编排者维护状态、最小调度和人工闸门；原子 Skill 仍可独立调用，Research Core 只做证据台账、主张继承和产物审计 |
+| 验证 lint | `scripts/` 已有 docx/invoice/csv 校验脚本 | **扩展**：新增 memo 质量门禁脚本，复用现有 check-*.sh/py 的调用模式 |
 | 历史回放 eval | `examples/`（golden 输出）+ `evals/trigger_cases.json` | **扩展**：从 skill 触发 eval 延伸到方法论回放 eval（设计十第五层） |
-| 证据模型 / 研究分级 | 无 | **新建**（设计十二/十三），先以模板和约定落地，脚本化后置 |
+| 证据模型 / 研究分级 | Research Core + Research Level 0–3（L0–L3，研究级别 0–3，按决策场景控制流程密度） | **增量演进**：沿用现有证据台账、继承、审计和研究分级合同，只补实际缺口 |
 | 实体图谱存储 | `/jvc-knowledge-tree-builder`（nodes.json / knowledge_graph.mmd / evidence_index.md） | **对齐复用**：Claim/实体沿用同一 JSON 约定，L3 启用跨项目 `tracks/{赛道}/entities/` 库 |
 
 ---

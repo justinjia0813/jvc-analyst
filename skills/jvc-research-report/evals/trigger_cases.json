@@ -1,6 +1,6 @@
 {
   "recommended_threshold": 0.33,
-  "negative_patterns": ["从零研究", "任意结构", "重写", "联网补充"],
+  "negative_patterns": ["从零研究", "任意结构", "重写", "联网补充", "联网搜索", "上网补数据"],
   "should_trigger": [
     {
       "text": "把这份固定章节和来源索引的行业研究 Markdown 编译成 lustinus RESEARCH 报告，不要改正文。",
@@ -13,6 +13,18 @@
     {
       "text": "按 brand.yml 重新生成本地研报，保留上一版直到新版本成功。",
       "family": "branded_rebuild"
+    },
+    {
+      "text": "把赛道研究、知识树和 market-sizing.csv 组装成 research-report.md，再用渲染器出 PDF。",
+      "family": "assembly_then_render"
+    },
+    {
+      "text": "已有完整的 canonical research-report.md，直接发布 PDF 和 HTML 预览。",
+      "family": "direct_publish"
+    },
+    {
+      "text": "用 validate_assembly.py 检查组装后的研报有没有引入上游没有的来源或数字。",
+      "family": "assembly_validation"
     },
     {
       "text": "不要重写这份固定章节的研报，只输出 PDF 和 HTML 预览。",
@@ -35,6 +47,10 @@
     {
       "text": "重写这份研报并联网补充更多事实。",
       "family": "content_rewriting"
+    },
+    {
+      "text": "组装研报时发现缺数据，联网搜一下补上。",
+      "family": "web_research"
     },
     {
       "text": "重写这份固定章节的研报，并输出 PDF 和 HTML 预览。",

@@ -1,94 +1,24 @@
-# /jvc-market-sizing 市场规模建模 Excel 模板
+# /jvc-market-sizing 市场规模单表模板合同
 
-最终输出文件：`{细分赛道}_jvc-market-sizing_{YYYYMMDD}.xlsx`
+CSV（Comma-Separated Values，逗号分隔值，一种纯文本表格格式）最终输出文件固定为 `market-sizing.csv`。唯一活跃数据母版是同目录的 `market-sizing-template.csv`；本文只解释如何填写，不是第二份数据模板。
 
-## Workbook Rules
+## 填写规则
 
-- 所有金额注明币种，所有年份注明口径。
-- 每个模型行都必须有 `source_id` 或 `[未核实]`。
-- 所有分项必须通过 `orthogonality_check`，避免复算、多算。
-- 所有公式列应保留公式，不只贴结果值。
+- 保留固定表头和六个分区，不添加工作表或并行数据文件。
+- 把模板中的零值、`[需要用户提供]` 和正交性占位说明全部替换为真实输入或明确缺口。
+- 金额使用清楚的币种和量纲，例如 `CNY（Chinese Yuan，人民币元，用于人民币金额单位）`；比例统一使用 `ratio`，不要把 `10` 与 `10%` 混用。
+- 输入行只要任一情景是数值，就只能在 `source_or_formula` 写有效 `[S编号]`，并在 `sources` 分区提供公开链接或本地材料定位；混合数值/公式行也不例外，写在 `notes` 的编号不能代替来源列。
+- Top-down（自上而下：从上位市场逐层收窄）和 Bottom-up（自下而上：从底层客户、用量与价格汇总）各保留 `[key_summary]` 公式行。
+- 每个 `[key_summary]` 沿公式依赖至少到达一个同侧或 `assumptions` 的带来源数值叶；不得形成直接或间接循环。
+- `reconciliation` 的绝对差、相对差公式直接引用两侧 `[key_summary]`；`orthogonality_check` 按 `shared_input`、`shared_row_ids`、`independent_validation` 各一次披露共享输入和独立性，多行披露不得冲突。
+- 来源行不使用 `model` 置信度；纯公式行和结构披露行必须使用 `model`；数值输入行不得使用 `model`。
 
-## Sheet: assumptions
+完整字段、公式与失败规则见 `skills/jvc-market-sizing/references/model-contract.md`。
 
-| 字段 | 说明 |
-| --- | --- |
-| assumption_id | 假设编号 |
-| variable | 变量名 |
-| value | 数值 |
-| unit | 单位 |
-| year | 年份 |
-| geography | 地域 |
-| source_id | 来源编号 |
-| confidence | 高 / 中 / 低 |
-| notes | 备注 |
+## 校验
 
-## Sheet: top_down
+```bash
+python3 skills/jvc-market-sizing/scripts/validate_csv.py templates/market-sizing-template.csv
+```
 
-| 字段 | 说明 |
-| --- | --- |
-| line_id | 行编号 |
-| level | TAM / SAM / SOM |
-| parent_line_id | 上一级口径 |
-| market_item | 市场条目 |
-| base_value | 基础市场规模 |
-| filter_or_share | 筛选比例或占比 |
-| calculated_value | 计算后规模 |
-| formula | 公式 |
-| currency | 币种 |
-| year | 年份 |
-| source_id | 来源编号 |
-| notes | 备注 |
-
-## Sheet: bottom_up
-
-| 字段 | 说明 |
-| --- | --- |
-| line_id | 行编号 |
-| segment | 正交客户/场景分组 |
-| customer_count | 客户数 |
-| units_per_customer | 单客户点位/设备/账号数 |
-| annual_price_or_spend | 年单价或年支出 |
-| penetration_rate | 渗透率 |
-| calculated_value | 计算后规模 |
-| formula | 公式 |
-| currency | 币种 |
-| year | 年份 |
-| source_id | 来源编号 |
-| notes | 备注 |
-
-## Sheet: reconciliation
-
-| 字段 | 说明 |
-| --- | --- |
-| metric | TAM / SAM / SOM |
-| top_down_value | 自上而下结果 |
-| bottom_up_value | 自下而上结果 |
-| difference | 差异 |
-| difference_pct | 差异比例 |
-| explanation | 差异解释 |
-| preferred_value | 建议采用值 |
-| reason | 采用原因 |
-
-## Sheet: orthogonality_check
-
-| 字段 | 说明 |
-| --- | --- |
-| item_a | 条目 A |
-| item_b | 条目 B |
-| overlap_risk | 是否可能重叠 |
-| overlap_description | 重叠原因 |
-| resolution | 唯一归属或扣除方式 |
-| status | clear / needs_review |
-
-## Sheet: sources
-
-| 字段 | 说明 |
-| --- | --- |
-| source_id | 来源编号 |
-| source_name | 来源名称 |
-| source_type | 年报 / 报告 / 访谈 / 数据库 / 推测 |
-| url_or_location | 链接或本地位置 |
-| date | 来源日期 |
-| fields_supported | 支撑字段 |
-| reliability | 高 / 中 / 低 |
+validator 只审计结构、公式语法和引用关系，不替代公式求值与人工口径复核。

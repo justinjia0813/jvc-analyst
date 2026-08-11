@@ -6,9 +6,9 @@
   "requires_counter_query": true,
   "minimum_independent_sources": 2,
   "artifact_policy": {
-    "kind": "xlsx",
-    "allowed_suffixes": [".xlsx"],
+    "kind": "csv",
+    "allowed_suffixes": [".csv"],
     "required_names": [],
-    "required_sheets": ["assumptions", "top_down", "bottom_up", "reconciliation", "orthogonality_check", "sources"]
+    "required_sheets": []
   }
 }

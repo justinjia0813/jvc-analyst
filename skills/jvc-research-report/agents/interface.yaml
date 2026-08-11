@@ -1,7 +1,7 @@
 interface:
   display_name: "JVC Research Report"
-  short_description: "Render fixed-format industry research as lustinus RESEARCH PDF and HTML."
-  default_prompt: "Use /jvc-research-report to validate this fixed-format local industry-research Markdown and generate report.pdf, report.html, and build-report.txt without rewriting content."
+  short_description: "Assemble audited track-level upstreams into canonical research-report.md and render it as lustinus RESEARCH PDF and HTML."
+  default_prompt: "Use /jvc-research-report to assemble the audited Track Research, Knowledge Tree, Market Sizing (and optional Comps/DD) into research-report.md, run validate_assembly.py, then render report.pdf, report.html, and build-report.txt without rewriting content or researching online. If a complete canonical research-report.md already exists, publish it directly."
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets: ["codex", "claude", "generic"]

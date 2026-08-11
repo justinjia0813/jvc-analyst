@@ -1,44 +1,21 @@
-# /jvc-market-sizing 市场规模建模 Excel 示例
+# /jvc-market-sizing 单表示例说明
 
-> 示例只展示 workbook 内容结构。真实运行时应输出 `.xlsx`。
+CSV（Comma-Separated Values，逗号分隔值，一种纯文本表格格式）示例位于 `examples/market-sizing-example.csv`。其中数值与来源均为虚构演示，不得用于投资判断。
 
-## assumptions
+## 计算路径
 
-| assumption_id | variable | value | unit | year | geography | source_id | confidence | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A1 | 目标中小制造企业数量 | 50000 | 家 | 2026 | 中国 | S1 | 低 | 示例数值，[未核实] |
-| A2 | 单客户年质检软件支出 | 100000 | CNY/年 | 2026 | 中国 | S2 | 低 | 来自虚构客户访谈 |
+- Top-down（自上而下：从上位市场逐层收窄）把上位市场规模乘以细分占比，TAM（Total Addressable Market，总潜在市场，表示理论总需求）的保守/基准/乐观演示结果分别是 64 / 100 / 144 亿元。
+- Bottom-up（自下而上：从客户数、单客支出和渗透率汇总）对应演示结果为 1.28 / 2.50 / 4.32 亿元。
+- 金额输入使用 CNY（Chinese Yuan，人民币元，用于人民币金额单位）；比例输入使用 `ratio`。
+- `REC_ABS` 与 `REC_REL` 直接引用两条 `[key_summary]` 汇总路径，显示绝对差和相对差；示例差异主要来自 Bottom-up 只覆盖目标客户口径。
+- `ORTHO_1` 写明 `shared_input=no；shared_row_ids=none；independent_validation=yes`，与两侧公式依赖一致。真实模型若共享输入，必须列出共享 `row_id` 并改为 `independent_validation=no`。
 
-## top_down
+validator 不计算公式。`check_package.py` 对上述数字输入另做明确算术断言，证明示例期望值；validator 本身只检查公式语法和 `row_id` 引用。
 
-| line_id | level | parent_line_id | market_item | base_value | filter_or_share | calculated_value | formula | currency | year | source_id | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| TD1 | TAM |  | 中国制造业质检自动化总支出 | 100000000000 | 100% | 100000000000 | =base_value*filter_or_share | CNY | 2026 | S1 | [未核实] |
-| TD2 | SAM | TD1 | 中小制造企业可服务质检软件市场 | 100000000000 | 10% | 10000000000 | =base_value*filter_or_share | CNY | 2026 | S1 | 示例口径 |
-| TD3 | SOM | TD2 | 五年内可获取市场 | 10000000000 | 3% | 300000000 | =base_value*filter_or_share | CNY | 2026 | S2 | [未核实] |
+## 校验
 
-## bottom_up
+```bash
+python3 skills/jvc-market-sizing/scripts/validate_csv.py examples/market-sizing-example.csv
+```
 
-| line_id | segment | customer_count | units_per_customer | annual_price_or_spend | penetration_rate | calculated_value | formula | currency | year | source_id | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BU1 | 3C 零部件中小工厂 | 10000 | 1 | 100000 | 5% | 50000000 | =customer_count*units_per_customer*annual_price_or_spend*penetration_rate | CNY | 2026 | S2 | 示例数值 |
-| BU2 | 注塑件中小工厂 | 8000 | 1 | 80000 | 4% | 25600000 | =customer_count*units_per_customer*annual_price_or_spend*penetration_rate | CNY | 2026 | S2 | 示例数值 |
-
-## reconciliation
-
-| metric | top_down_value | bottom_up_value | difference | difference_pct | explanation | preferred_value | reason |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| SAM | 10000000000 | 75600000 | 9924400000 | 99.2% | 自上而下口径过宽，自下而上只覆盖两个细分场景 | 75600000 | 当前更贴近目标客户，但覆盖不足 |
-
-## orthogonality_check
-
-| item_a | item_b | overlap_risk | overlap_description | resolution | status |
-| --- | --- | --- | --- | --- | --- |
-| 3C 零部件中小工厂 | 注塑件中小工厂 | yes | 部分 3C 塑胶件工厂可能同时属于两类 | 按主要产品收入归属，只计入一个 segment | needs_review |
-
-## sources
-
-| source_id | source_name | source_type | url_or_location | date | fields_supported | reliability |
-| --- | --- | --- | --- | --- | --- | --- |
-| S1 | 示例行业报告 | 报告 | N/A | 2026-06-11 | TAM/SAM 假设 | 低 |
-| S2 | 示例客户访谈 | 访谈 | 本地素材 | 2026-06-11 | 单价、渗透率 | 低 |
+同目录旧 `market-sizing-example.xlsx` 仅为历史、非权威 fixture，不参与当前合同、校验或交付。

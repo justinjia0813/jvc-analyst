@@ -9,7 +9,9 @@ version: "3.0.0"
 
 # /jvc-deal-flow — 投前工作流编排
 
-把现有 `/jvc-*` 原子 Skill 组织成可暂停、可恢复、可审计的本地项目流程。它只拥有项目身份、状态、事件、`DATA_LAYER.md`、`INVEST_MEMO.md` 和 `INSIGHT_LAYER.md`；专业研究仍由对应 Skill 完成。
+本 Skill 是唯一项目总控，把现有 `/jvc-*` 原子 Skill 组织成可暂停、可恢复、可审计的本地项目流程。它拥有项目身份、状态、依赖、最小调度、增量重跑和人工闸门，以及 `DATA_LAYER.md`、`INVEST_MEMO.md` 和 `INSIGHT_LAYER.md`；不解析或重算专业研究，专业方法与结果仍由对应原子 Skill 负责。
+
+所有原子 Skill 仍可独立调用。只有用户选择受编排项目模式时，本 Skill 才按当前阶段和已确认缺口调用最少的原子 Skill；`jvc-research-core` 只审查证据与产物，不推进业务阶段。
 
 ## 3.0 适用级别
 
@@ -24,6 +26,7 @@ version: "3.0.0"
 - “工作流完整，所以全部 Skill 都应运行” → 只选择当前假设缺口所需的轨道。
 - “状态写在回复里就够了” → 状态只能从 `project_events.jsonl` 派生。
 - “新资料来了，全部重跑更保险” → 先按显式依赖标记受影响工件，再请求最小重跑批准。
+- “新增来源已登记，可以自动调用 Skill 或推进阶段” → 来源事件只登记来源；受影响工件另行标记 `stale`，重跑和阶段推进仍等待明确动作或人工批准。
 - “IC Memo 的语气等于用户决定” → `decision_status` 只能记录用户原话或确认。
 - “事件脚本失败，可以手改 JSONL” → 失败关闭并报告；绝不直接编辑或重排事件链。
 
@@ -63,13 +66,13 @@ python3 "<skill-root>/scripts/dealflowctl.py" event \
    - `ic_memo` 只生成并审查 `06-ic-memo-review.md`，通过自身证据审查后进入 `ic_review`。
    - `ic_review` 请求人工闸门，等待用户修改、停止或批准预审。
    - 仅当 `gate_decided=approve` 时调用 `jvc-ic-memo` 生成并校验发布 `06-ic-memo.md`，然后进入 `decision_record`。
-6. 新资料先登记来源和指纹；只根据事件中已有的 `depends_on` / Claim 引用标记 `artifact_marked_stale`。依赖不明确时列出候选影响，不猜测、不自动重写。
+6. 新资料先登记来源和指纹；只根据事件中已有的 `depends_on` / Claim 引用，用独立的 `artifact_marked_stale` 事件标记受影响工件。新增来源事件不得自动调用 Skill、自动重写工件或自动推进阶段；依赖不明确时只列出候选影响，不猜测。
 7. 每轮结束前运行 `check`，实际读取 `STATE.md`、`CHANGELOG.md`、`PROJECTS.md` 与本轮研究工件。
 
 ## 完成与停止
 
 - `ready` 才能称研究完成；`partial` 必须显式标注缺口；`blocked` 只交付缺口与下一步。
-- 身份冲突、阶段冲突、未获级别升级、事件链损坏、核心审查异常、外部法律/财务结果缺失或到达用户 `stop_at` 时，保存现有有效状态并暂停。
+- 身份冲突、阶段冲突、未获级别升级、事件链损坏、核心审查异常、外部法律/财务结果缺失或到达用户 `stop_at` 时，保存现有有效状态并暂停。研究级别升级、进入尽调、提交 IC 和生成干净终版均需用户明确批准。
 - 阶段交付只报告工件、研究状态、当前状态、新增事件和一个待用户决定的问题。
 
 ## Reference Map

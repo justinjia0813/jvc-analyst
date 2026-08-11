@@ -4,19 +4,23 @@ description: |
   产业知识图谱：给细分赛道名，生成第一轮投资研究地图——包含产业链图谱、技术路线梳理、关键玩家分层、周期位置判断和后续尽调方向。解决「这个赛道到底怎么运转、哪里值得继续查」，不给投资结论。
   Use when user says '/jvc-track-research', '赛道研究', '行业研究', 'track research', '产业图谱', '技术路线梳理', '陌生赛道扫盲', or needs a first-pass sector map before company diligence. Do not use for a named-company comparison, a quantified market model, or a final investment decision.
 user_invocable: true
-version: "3.0.0"
+version: "4.0.0"
 ---
 
-# /jvc-track-research — 产业知识图谱
+# /jvc-track-research — 赛道研究
 
 给细分赛道名，生成第一轮投资研究地图。它解决“这个赛道到底怎么运转、哪里值得继续查”，不是直接给投资结论。
+
+在赛道研究链中，本 Skill 是**首次完整联网赛道研究的唯一负责人**，`tracks/{track-slug}/landscape.md` 是权威叙事底稿。Knowledge Tree Builder（知识树构建器：把既有研究转成可追溯问题树与关系图）只消费该底稿、Research Core（Research Core，研究证据内核：维护共享证据台账和审计状态）与用户指定本地材料，不重新执行首次完整联网研究。
+
+这项所有权不禁止 Pre-Screen（Pre-Screen，投资前快筛：为资源分配做快速判断）、Market Sizing（Market Sizing，市场规模测算：为特定模型变量补任务专项公开证据）或 Comparable Companies Analysis / Due Diligence（Comps/DD，可比公司分析/尽职调查：核验特定公司、可比对象与项目事实）按各自任务开展任务专项公开研究。
 
 ## 3.0 适用级别
 
 最低适用级别：**L1+**（Level 1 or above，一级及以上初筛，用于形成可验证研究假设）。
 
 - 若研究服务于具体项目，先读取 `spec/CONTEXT.md` 与 `spec/hypotheses.md`，只研究与项目假设相关的赛道边界。
-- 当前项目仍为 L0 时，先说明赛道研究会把流程升级为 L1，由用户确认范围；纯赛道研究可直接建立 L1 规格。
+- 当前项目仍为 Research Level 0（L0，研究级别 0：约 30-60 分钟的资源筛选）时，先说明赛道研究会把流程升级为 L1，由用户确认范围；纯赛道研究可直接建立 L1 规格。
 - 产出进入 `tracks/{track-slug}/landscape.md`；证据覆盖与开放问题不得因级别省略。
 
 ## 反合理化约束
@@ -31,7 +35,7 @@ version: "3.0.0"
 - 细分赛道名称 / 关键词
 - 可选：地域范围、阶段偏好、已知玩家、技术路线、关注环节、时间范围
 
-如果用户没给地域和阶段，默认按“全球及中国市场、早期 VC、未来 3-5 年”处理，并在开头写明假设。
+如果用户没给地域和阶段，默认按“全球及中国市场、早期创业投资、未来 3-5 年”处理，并在开头写明假设。
 
 VC = Venture Capital，风险投资 / 创业投资；这里指围绕创业公司融资与投资判断的研究语境。
 
@@ -41,12 +45,12 @@ VC = Venture Capital，风险投资 / 创业投资；这里指围绕创业公司
 
 执行前必须读取同级 `../jvc-research-core/references/evidence-contract.md` 和当前 profile `../jvc-research-core/profiles/jvc-track-research.json`。
 
-1. 新研究先准备完整 `scope` JSON，再运行 `init --skill jvc-track-research --run-dir <研究目录> --scope-file <scope.json>`；初始 `scope` 只能通过 `init --scope-file` 创建。
+1. 新研究先准备完整 `scope` 结构化文件，再运行 `init --skill jvc-track-research --run-dir <研究目录> --scope-file <scope.json>`；初始 `scope` 只能通过 `init --scope-file` 创建。
 2. 复用已有研究链时运行 `init --skill jvc-track-research --run-dir <研究目录> --resume`。后续 `scope` 更正必须通过 `record --run-dir <研究目录> --input <records.jsonl>` 登记，并用 `supersedes` 指向当前 effective scope；问题、检索、来源、主张和更正也只能通过该命令登记，不得直接编辑 `evidence_registry.jsonl`，generic `record` 不得创建 waiver。
 3. 跨 skill 消费已有主张时，在新主张的 `derived_from_claim_ids` 中登记上游主张编号；缺失或失效的上游审计会阻断下游完成。
-4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；Markdown 写在对应主张后，工作簿写入 `sources` 表，DOCX 写入来源附注，多文件产物至少在 `evidence_index.md` 建立映射。
+4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；Markdown 写在对应主张后，工作簿写入 `sources` 表，Office Open XML Document（DOCX，Office 开放 XML 文档：保存可编辑文字报告）写入来源附注，多文件产物至少在 `evidence_index.md` 建立映射。
 5. 完成现有产物生成与格式校验后，运行 `audit --run-dir <研究目录> --skill jvc-track-research --artifact <最终产物>`；多文件产物重复传入 `--artifact`。每次 audit 必须同时读取命令退出状态和 `audit.json`。
-6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才按产物补写 `研究状态：partial`：Markdown 写入标题与结论，XLSX 在 `sources` 表表头和列结构不变的前提下追加一条可见状态数据行，DOCX 写入首段与来源附注，多文件产物至少写入 `knowledge_tree.md` 与 `evidence_index.md`；任何类型写回标签后，必须先重新运行原有产物格式校验/validator，确认结构仍有效，再重跑 audit；存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
+6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才按产物补写 `研究状态：partial`：Markdown 写入标题与结论，Microsoft Excel Open XML Spreadsheet（XLSX，微软 Excel 开放 XML 电子表格：保存公式模型和来源表）在 `sources` 表表头和列结构不变的前提下追加一条可见状态数据行，DOCX 写入首段与来源附注，多文件产物至少写入 `knowledge_tree.md` 与 `evidence_index.md`；任何类型写回标签后，必须先重新运行原有产物格式校验/validator，确认结构仍有效，再重跑 audit；存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
 7. 只有用户明确批准、且 blocker 与同 skill 最新有效 blocked audit 精确匹配时，才可运行 `waive --run-dir <研究目录> --skill jvc-track-research --rule <阻断规则> --reason <批准理由> --scope <批准范围> --approved-by <批准人> --residual-risk <剩余风险>`；不得自我批准，waiver 最多降级为 partial。
 
 找不到内核、profile 不兼容、账本损坏或终审异常时，不得退回纯 prompt 模式。
@@ -91,7 +95,7 @@ VC = Venture Capital，风险投资 / 创业投资；这里指围绕创业公司
 - 主流媒体 / 融资新闻
 - 客户、渠道、开发者或采购侧材料
 
-先做术语和缩写消歧，再检索中英文同义词。按可信度分层使用来源：论文/监管/公告 > 公司官网/招股书/年报 > 行业报告 > 主流媒体 > 券商/二级市场材料 > 公司 PR/融资新闻 > 自媒体。
+先做术语和缩写消歧，再检索中英文同义词。按可信度分层使用来源：论文/监管/公告 > 公司官网/招股书/年报 > 行业报告 > 主流媒体 > 券商/二级市场材料 > 公司公关稿/融资新闻 > 自媒体。
 
 PR = Public Relations，公共关系 / 公关稿；只能作为公司自述线索，不能当作技术或收入事实。
 
@@ -188,18 +192,25 @@ PR = Public Relations，公共关系 / 公关稿；只能作为公司自述线�
 - 用“假设 / 证据 / 机制 / 反证条件 / 下一步动作”维护问题账本
 - 分成：客户付费、技术壁垒、交付复制、单位经济、竞争格局、监管风险
 
-**I. 后续工作交接包**
+**I. 知识树与市场模型交接**
+- 根问题：交给知识树的唯一顶层问题
+- 主要分支：建议展开的 5-9 个一级问题
+- 实体与关系：已确认实体、关系类型、关系方向，以及事实 / 推断 / 未知状态
+- 来源编号：共享证据台账中的有效 `[S编号]`
+- 有效主张编号：共享证据台账中未被 supersede 的主张编号；下游新主张用 `derived_from_claim_ids` 继承
+- Market Sizing（Market Sizing，市场规模测算：把变量、单位和公式组织成可审计模型）变量：逐项列变量、单位、口径、来源或假设和数据缺口
+- 开放问题：仍会改变知识结构、市场模型或下一步研究优先级的问题与反证条件
+
+**J. 其他后续工作交接**
 - 给 `/jvc-research-report`：仅在研究内容已经完成后交付固定结构 Markdown；它只负责校验和排版，不改写研究内容
-- 给 `/jvc-knowledge-tree-builder`：建议沉淀的资料文件夹结构
 - 给 `/jvc-comps-dd`：候选竞品 / 可比公司清单和比较维度
-- 给 `/jvc-market-sizing`：可建模变量、口径、需要补的数据
 - 给 `/jvc-bull-case`：最强 3 条正向假设
 - 给 `/jvc-bear-case`：最危险 3 条反向假设
 - 给 `/jvc-meeting-notes` / `/jvc-talk-notes`：建议访谈对象和问题清单
 
 ## 输出格式
 
-单一 Markdown 文档，按上述 0 和 A-I 结构。优先使用表格承载事实、来源、判断和待验证项；短解释可以用段落。
+单一 Markdown 文档，文件名固定为 `tracks/{track-slug}/landscape.md`，按上述 0 和 A-J 结构。优先使用表格承载事实、来源、判断和待验证项；短解释可以用段落。
 
 ## 硬约束
 

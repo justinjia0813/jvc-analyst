@@ -1,5 +1,11 @@
 # Evidence Contract
 
+## Engine boundary
+
+Research Core only maintains the evidence ledger, resolves effective records through claim inheritance, and audits artifacts for the calling Skill. It does not select or run research Skills, interpret professional research, or advance a project. 它不得创建工作流阶段事件；研究级别升级、进入尽调、提交 IC（Investment Committee，投资决策委员会，负责审议投资项目）和生成干净终版仍由 `jvc-deal-flow` 的人工闸门控制。
+
+`ready` means the configured evidence and artifact checks passed. `partial` means a narrowed artifact may be delivered only with explicit incompleteness. `blocked` means the affected judgment must stop at evidence gaps and next actions. None of the three states is a business-stage approval.
+
 ## Canonical files
 
 - `evidence_registry.jsonl` is the only evidence source of truth.
@@ -34,6 +40,7 @@ Command, input, validation, or tool errors exit `1` and are not replaced by a pr
 Every input record has `schema_version`, `record_id`, `record_type`, `created_at`, `actor`, `created_by_skill`, and optional `supersedes`.
 The core adds `sequence`, `previous_fingerprint`, and `record_fingerprint`.
 Corrections append a same-type record whose `supersedes` points to the effective prior record.
+主张继承通过 `derived_from_claim_ids` 指向上游有效 Claim；上游更正或审查失效会沿绑定关系使相关下游审查失效，不复制或静默改写上游主张。
 `init`, `record`, and audit-index writes hold the same exclusive single-writer lock; a present lock fails closed and must not be removed until the recorded process is confirmed absent.
 
 ## Evidence rules

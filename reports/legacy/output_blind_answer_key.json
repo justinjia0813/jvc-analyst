@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "seed": "yao-output-eval-blind-v1",
+  "summary": {
+    "pair_count": 2,
+    "with_skill_expected_count": 2,
+    "baseline_expected_count": 0
+  },
+  "answers": [
+    {
+      "case_id": "glass-substrate-public-research-output",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 31.82
+    },
+    {
+      "case_id": "industrial-vision-market-model-output",
+      "variant_a_role": "with_skill",
+      "variant_b_role": "baseline",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "A",
+      "score_winner_role": "with_skill",
+      "delta": 40.0
+    }
+  ],
+  "historical_legacy_workbook": {
+    "status": "archived",
+    "classification": "historical-legacy-workbook",
+    "archived_at": "2026-08-09",
+    "reason": "Produced by the pre-CSV output-eval and blind-review pipeline (2026-07-29/30) from old workbook-era model outputs and human judgments. It cannot be deterministically regenerated from the current active CSV/Markdown cases without inventing a human judgment, so it is preserved as a record and removed from active governance evidence.",
+    "not_active_governance_evidence": true,
+    "not_proof_of_new_csv_contract": true
+  }
+}

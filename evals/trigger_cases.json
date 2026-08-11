@@ -21,10 +21,10 @@
     },
     {
       "id": "prescreen-deck-quick-review",
-      "prompt": "帮我快速过一遍这个 deck，做项目初筛，按市场、痛点、方案、团队、时机、商业模式和显性风险输出关键问题。",
+      "prompt": "帮我快速过一遍这个 deck，做 L0 项目初筛，覆盖商业模式、上下游、赛道有效性、市场粗算、五年收入和交易回报。",
       "expected_skill": "jvc-prescreen",
-      "prompt_signals": ["deck", "项目初筛", "市场", "显性风险"],
-      "skill_contract_signals": ["项目初筛", "七维度过筛", "Bear case 雏形", "关键问题清单", "证据内核（L1+ 必须）", "L0 不初始化证据内核", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-prescreen", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-prescreen", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行原有产物格式校验"],
+      "prompt_signals": ["deck", "L0", "项目初筛", "五年收入", "交易回报"],
+      "skill_contract_signals": ["Research Level 0", "01-prescreen.md", "不初始化 Research Core", "商业模式", "上下游与价值分配", "赛道有效性", "市场规模粗算", "五年收入情景", "交易与回报粗算", "唯一驱动路径", "市场锚点：缺失", "条件式敏感性框架", "下游传播：停止", "不替用户作最终投资决定"],
       "near_neighbors": [
         {
           "skill": "jvc-ic-memo",
@@ -110,7 +110,7 @@
       "near_neighbors": [
         {
           "skill": "jvc-comps-dd",
-          "why_not": "comps-dd should trigger when the user asks for competitors/comparable companies and an Excel workbook."
+          "why_not": "comps-dd should trigger when the user asks for competitors/comparable companies and the fixed 03-comps-dd.md artifact."
         },
         {
           "skill": "jvc-research-report",
@@ -149,11 +149,11 @@
       ]
     },
     {
-      "id": "comps-dd-competitor-workbook",
-      "prompt": "围绕这个项目做竞品分析，找直接竞品、可比公司、上下游参照和海外标杆，最后输出 Excel 工作簿。",
+      "id": "comps-dd-competitor-markdown",
+      "prompt": "围绕这个项目做竞品分析，找直接竞品、可比公司、上下游参照和海外标杆，最后输出固定的 03-comps-dd.md。",
       "expected_skill": "jvc-comps-dd",
-      "prompt_signals": ["竞品分析", "可比公司", "Excel 工作簿"],
-      "skill_contract_signals": ["竞品尽调", "上市公司和初创公司", "generate-workbook.py", "validate-workbook.py", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-comps-dd", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-comps-dd", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行原有产物格式校验", "表头和列结构不变"],
+      "prompt_signals": ["竞品分析", "可比公司", "03-comps-dd.md"],
+      "skill_contract_signals": ["竞品尽调", "上市公司和初创公司", "唯一活跃主产物：`03-comps-dd.md`", "反向检索", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-comps-dd", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-comps-dd", "partial_label_missing", "只有用户明确批准", "不得退回纯提示词模式"],
       "near_neighbors": [
         {
           "skill": "jvc-track-research",
@@ -162,28 +162,28 @@
       ]
     },
     {
-      "id": "market-sizing-workbook",
-      "prompt": "测算这个细分赛道市场规模，要同时做 TAM/SAM/SOM 的自上而下和自下而上模型，并输出 Excel。",
+      "id": "market-sizing-csv",
+      "prompt": "测算这个细分赛道市场规模，要同时拆解 TAM、SAM、SOM 的自上而下和自下而上模型，并输出单一可审计 CSV。",
       "expected_skill": "jvc-market-sizing",
-      "prompt_signals": ["市场规模", "TAM/SAM/SOM", "自上而下", "自下而上"],
-      "skill_contract_signals": ["TAM/SAM/SOM", "Top-Down", "Bottom-Up", "正交性检查", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-market-sizing", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-market-sizing", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行原有产物格式校验", "表头和列结构不变"],
+      "prompt_signals": ["市场规模", "TAM、SAM、SOM", "自上而下", "自下而上", "单一可审计 CSV"],
+      "skill_contract_signals": ["拆解 TAM（Total Addressable Market", "Top-down（自上而下", "Bottom-up（自下而上", "正交检查", "唯一活跃模型进入 `market-sizing.csv`", "CSV validator", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-market-sizing", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-market-sizing", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重跑 CSV validator"],
       "near_neighbors": [
         {
           "skill": "jvc-track-research",
-          "why_not": "track-research can discuss market trends, but it does not own the Excel market-sizing model."
+          "why_not": "track-research can establish the sector boundary and handoff variables, but it does not own the single-table CSV market model."
         }
       ]
     },
     {
-      "id": "roi-modeler-return-workbook",
-      "prompt": "根据本轮条款、后续融资稀释、三种退出情形和财务预测，做 MOIC/IRR 回报测算 Excel。",
+      "id": "roi-modeler-return-csv",
+      "prompt": "根据本轮条款、后续融资稀释、三种退出情形和财务预测，按母版做 MOIC/IRR 回报测算 CSV。",
       "expected_skill": "jvc-roi-modeler",
-      "prompt_signals": ["本轮条款", "融资稀释", "MOIC/IRR", "Excel"],
-      "skill_contract_signals": ["逐轮稀释计算", "MOIC", "IRR", "敏感性分析", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-roi-modeler", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-roi-modeler", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行原有产物格式校验", "表头和列结构不变"],
+      "prompt_signals": ["本轮条款", "融资稀释", "MOIC/IRR", "CSV"],
+      "skill_contract_signals": ["逐轮稀释计算", "MOIC", "IRR", "CSV", "证据内核（必须）", "researchctl.py", "ready", "partial", "blocked", "init --skill jvc-roi-modeler", "record --run-dir <研究目录> --input <records.jsonl>", "audit --run-dir <研究目录> --skill jvc-roi-modeler", "partial_label_missing", "只有用户明确批准", "不得退回纯 prompt 模式", "重新运行 CSV validator", "不得改变表头和行项目"],
       "near_neighbors": [
         {
           "skill": "jvc-market-sizing",
-          "why_not": "market-sizing estimates market size; this prompt asks for investment return modeling."
+          "why_not": "market-sizing estimates market size; this prompt asks for a formula-linked investment return CSV."
         }
       ]
     },
@@ -193,7 +193,7 @@
       "expected_skill": null,
       "prompt_signals": ["解释", "TAM", "SAM", "SOM"],
       "should_not_trigger": ["jvc-market-sizing"],
-      "no_route_reason": "This is a teaching request, not a reusable market-sizing workbook task."
+      "no_route_reason": "This is a teaching request, not a reusable market-sizing CSV model task."
     },
     {
       "id": "invoice-operational-boundary",

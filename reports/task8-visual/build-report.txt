@@ -1,0 +1,11 @@
+input: /Users/justinjia/orca/workspaces/jvc-analyst/overall-promo/examples/research-report-example/research-report.md
+generated_at: 2026-08-09T21:02:44.933944+08:00
+builder_version: 0.1.0
+page_count: 14
+warnings:
+- optional metadata missing: cover_image
+- table has 7 columns; more than 6 may overflow
+structure: pass
+source: pass
+render: pass
+bookmark: pass

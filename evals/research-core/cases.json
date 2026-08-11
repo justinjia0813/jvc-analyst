@@ -19,6 +19,12 @@
       "id": "market-model-fact-vs-assumption",
       "skill_chain": ["jvc-market-sizing"],
       "input": "工业视觉质检软件中国市场，给定用户渗透率假设",
+      "artifact_type": "csv",
+      "baseline": "evals/research-core/baselines/industrial_vision_software_market_20260729.csv",
+      "candidate": "evals/research-core/candidates/industrial_vision_software_market_20260729.csv",
+      "run_artifact": "evals/research-core/runs/market-model-fact-vs-assumption/industrial_vision_software_market_20260729.csv",
+      "evidence_registry": "evals/research-core/runs/market-model-fact-vs-assumption/evidence_registry.jsonl",
+      "audit_json": "evals/research-core/runs/market-model-fact-vs-assumption/audit.json",
       "expected_status": "ready",
       "must_prove": ["外部事实与用户假设分离", "模型估算可追溯"]
     },

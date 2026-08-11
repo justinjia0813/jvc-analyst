@@ -24,6 +24,22 @@ from researchctl import (
 )
 
 
+PACKAGE = Path(__file__).resolve().parents[1]
+
+
+def check_engine_contract() -> None:
+    skill = (PACKAGE / "SKILL.md").read_text(encoding="utf-8")
+    contract = (PACKAGE / "references" / "evidence-contract.md").read_text(
+        encoding="utf-8"
+    )
+    assert "不可直接调用的证据引擎" in skill
+    assert "证据台账、主张继承、产物审计" in skill
+    assert "不推进业务阶段" in skill
+    assert "ready、partial、blocked" in skill
+    assert "主张继承" in contract
+    assert "不得创建工作流阶段事件" in contract
+
+
 def run_cli(*arguments: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(Path(__file__).with_name("researchctl.py")), *arguments],
@@ -819,22 +835,39 @@ def write_minimal_docx(
 
 
 def check_office_artifacts(root: Path) -> None:
-    workbook = root / "comps.xlsx"
-    workbook_profile = load_profile("jvc-comps-dd")
-    write_minimal_xlsx(
-        workbook,
-        workbook_profile["artifact_policy"]["required_sheets"],
-        "[S1] [S2]",
-        metadata_text="[S999]",
-    )
+    comps = root / "03-comps-dd.md"
+    comps.write_text("# 竞品尽调\n\n[S1] [S2]\n", encoding="utf-8")
     findings, fingerprints = validate_artifacts(
-        workbook_profile,
-        [workbook],
+        load_profile("jvc-comps-dd"),
+        [comps],
         {"S1", "S2"},
         {"S1", "S2"},
     )
     assert findings == []
-    assert fingerprints[0]["path"] == str(workbook.resolve())
+    assert fingerprints[0]["path"] == str(comps.resolve())
+
+    wrong_name = root / "wrong-name.md"
+    wrong_name.write_text("# 竞品尽调\n\n[S1] [S2]\n", encoding="utf-8")
+    findings, _ = validate_artifacts(
+        load_profile("jvc-comps-dd"),
+        [wrong_name],
+        {"S1", "S2"},
+        {"S1", "S2"},
+    )
+    assert any(
+        finding["rule"] == "artifact_names" for finding in findings
+    ), findings
+
+    csv_model = root / "roi-model.csv"
+    csv_model.write_text("metric,value,source_id\nrevenue,100,[S1]\n", encoding="utf-8")
+    findings, fingerprints = validate_artifacts(
+        load_profile("jvc-roi-modeler"),
+        [csv_model],
+        {"S1"},
+        {"S1"},
+    )
+    assert findings == []
+    assert fingerprints[0]["path"] == str(csv_model.resolve())
 
     document = root / "notes.docx"
     write_minimal_docx(document, "[S1]", metadata_text="[S999]")
@@ -846,6 +879,13 @@ def check_office_artifacts(root: Path) -> None:
     )
     assert findings == []
 
+    workbook_profile = {
+        "artifact_policy": {
+            "allowed_suffixes": [".xlsx"],
+            "required_names": [],
+            "required_sheets": ["sources"],
+        }
+    }
     metadata_only_workbook = root / "metadata-only.xlsx"
     write_minimal_xlsx(
         metadata_only_workbook,
@@ -1421,6 +1461,7 @@ def check_audit() -> None:
 
 
 if __name__ == "__main__":
+    check_engine_contract()
     check_cli()
     check_ledger()
     check_audit()

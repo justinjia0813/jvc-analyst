@@ -6,9 +6,9 @@
   "requires_counter_query": false,
   "minimum_independent_sources": 1,
   "artifact_policy": {
-    "kind": "xlsx",
-    "allowed_suffixes": [".xlsx"],
+    "kind": "csv",
+    "allowed_suffixes": [".csv"],
     "required_names": [],
-    "required_sheets": ["investment_terms", "financial_forecast", "financing_dilution", "ownership", "exit_scenarios", "returns", "sensitivity", "sources"]
+    "required_sheets": []
   }
 }

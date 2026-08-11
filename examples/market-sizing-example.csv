@@ -1,0 +1,13 @@
+section,row_id,item,year,unit,conservative,base,optimistic,source_or_formula,confidence,notes
+assumptions,A_PRICE,单客户年支出,2026,CNY/客户/年,80000,100000,120000,[S2],low,虚构演示输入；不得用于投资判断
+top_down,TD_MARKET,上位市场规模,2026,CNY,80000000000,100000000000,120000000000,[S1],low,虚构演示输入；不得用于投资判断
+top_down,TD_SHARE,细分赛道占比,2026,ratio,0.08,0.10,0.12,[S2],low,虚构演示输入；不得用于投资判断
+top_down,TD_SUMMARY,自上而下市场规模,2026,CNY,=TD_MARKET*TD_SHARE,=TD_MARKET*TD_SHARE,=TD_MARKET*TD_SHARE,模型公式,model,[key_summary] TAM 汇总
+bottom_up,BU_CUSTOMERS,目标客户数,2026,客户,40000,50000,60000,[S1],low,虚构演示输入；不得用于投资判断
+bottom_up,BU_PENETRATION,客户渗透率,2026,ratio,0.04,0.05,0.06,[S2],low,虚构演示输入；不得用于投资判断
+bottom_up,BU_SUMMARY,自下而上市场规模,2026,CNY,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,=BU_CUSTOMERS*A_PRICE*BU_PENETRATION,模型公式,model,[key_summary] TAM 汇总
+reconciliation,REC_ABS,两种方法绝对差,2026,CNY,=ABS(TD_SUMMARY-BU_SUMMARY),=ABS(TD_SUMMARY-BU_SUMMARY),=ABS(TD_SUMMARY-BU_SUMMARY),模型公式,model,[absolute_difference] 自下而上仅覆盖示例目标客户；口径明显更窄
+reconciliation,REC_REL,两种方法相对差,2026,ratio,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,=ABS(TD_SUMMARY-BU_SUMMARY)/TD_SUMMARY,模型公式,model,[relative_difference] 以自上而下结果为分母
+orthogonality_check,ORTHO_1,关键输入共享检查,2026,flag,0,0,0,模型结构披露,model,shared_input=no；shared_row_ids=none；independent_validation=yes；自上而下使用行业支出和细分占比；自下而上使用客户数和单客支出
+sources,S1,示例行业报告,2026,,,,,https://example.invalid/report,low,虚构演示来源；不得用于投资判断
+sources,S2,示例用户假设记录,2026,,,,,本地研究台账,low,虚构演示来源；不得用于投资判断

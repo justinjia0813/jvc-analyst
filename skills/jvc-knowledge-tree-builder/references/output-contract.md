@@ -1,133 +1,129 @@
-# Output Contract
+# Knowledge Tree Output Contract
 
-This skill produces a tree-first, graph-aware knowledge package from local source files.
+本 Skill 从 `tracks/{track-slug}/landscape.md`、Research Core（Research Core，研究证据内核：维护共享证据台账与审计状态）和用户指定本地材料生成 visual-first（visual-first，可视化优先：先展示主图和关键关系）的知识包，不承担首次完整联网赛道研究。
 
-## Required Files
+## 固定五文件
 
-### `knowledge_tree.md`
+输出目录必须恰好五个文件且均非空，不得改名或加入第六个交付文件：
 
-Human-readable recursive question tree:
+1. `knowledge_tree.md`
+2. `knowledge_graph.mmd`
+3. `nodes.json`
+4. `evidence_index.md`
+5. `open_questions.md`
 
-```markdown
-# <Topic> Knowledge Tree
+`source_manifest.json` 只能作为输出目录之外的可选中间清单。
 
-## Source Coverage
-- Read: <count> files
-- Partial or unreadable: <count> files
-- Main source roots: <paths>
+## `knowledge_tree.md`
 
-## 0. Root Question
-Question: ...
-Current answer: ...
-Evidence: [S1], [S2]
-Open question: ...
+这是主用户制品。完整且闭合的 Mermaid fence（Mermaid 代码围栏）必须在前 40 行内，图体首个非空行必须是受支持的图声明；frontmatter（文档头部元数据）中的伪 fence 不计。frontmatter 只在首行为列首精确 `---` 时成立，并且只由后续列首精确 `---` 或 `...` 结束；缩进标记仍属于 frontmatter 内容。随后给出图例、关键关系、递归问题树和开放问题概览。主图只保留影响投资理解的核心关系，细节进入问题树或子图。
 
-## 1. <First-level branch>
-Question: ...
-Summary: ...
-Evidence: ...
-Children:
-- 1.1 ...
-Related:
-- See also: ...
+````markdown
+# <主题>知识树
+
+## 核心关系图
+
+```{mermaid}
+flowchart LR
+  root["根问题"] --> branch["主要分支"]
 ```
 
-### `knowledge_graph.mmd`
+## 图例
 
-Mermaid graph:
+- 实线：父子问题
+- 虚线：有证据或明确缺口的跨分支关系
+````
 
-```mermaid
-graph TD
-  root["Root question"]
-  n1["Branch question"]
-  root --> n1
-  n1 -. "depends on" .-> n2
-```
+## `knowledge_graph.mmd`
 
-Use solid arrows for parent-child tree structure and dotted arrows for cross-links.
+首个非空行整行必须是受支持的 Mermaid 图声明：`graph TD`、`graph LR`、`flowchart TD`、`flowchart TB`、`flowchart BT`、`flowchart RL` 或 `flowchart LR`；声明后追加其他文本无效。该文件只保存图源，不加 Markdown fence（Markdown 代码围栏）。
 
-### `nodes.json`
+## `nodes.json`
 
-Structured data for future UI use:
+JavaScript Object Notation（JSON，JavaScript 对象表示法：保存机器可读节点与关系）文件至少包含 `nodes` 和 `relations`：
 
 ```json
 {
   "topic": "string",
-  "generated_at": "ISO-8601",
-  "source_manifest": "source_manifest.json",
+  "generated_at": "2026-08-09T00:00:00Z",
   "nodes": [
     {
-      "id": "stable-kebab-id",
+      "id": "stable-id",
       "title": "string",
       "question": "string",
       "summary": "string",
       "parent_id": "root-or-null",
-      "children_ids": ["id"],
-      "related_ids": ["id"],
       "evidence_refs": ["S1"],
-      "open_questions": ["string"],
-      "confidence": "high|medium|low|unknown",
-      "status": "source-backed|inferred|needs-evidence"
+      "evidence_gap": "optional explicit gap",
+      "status": "source-backed|inferred|needs-evidence|open-question"
     }
   ],
-  "edges": [
+  "relations": [
     {
-      "from": "id",
-      "to": "id",
-      "type": "parent|related|depends_on|contrasts_with",
-      "label": "string",
-      "evidence_refs": ["S1"]
+      "id": "stable-relation-id",
+      "from": "node-id",
+      "to": "node-id",
+      "type": "related|depends_on|contrasts_with|affects|parent",
+      "claim": "claimed relation text",
+      "evidence_refs": ["S1"],
+      "evidence_gap": "optional explicit gap"
     }
   ],
   "access_issues": []
 }
 ```
 
-### `evidence_index.md`
+结构规则：
 
-Map evidence IDs to exact source paths:
+- 每个节点的 `id`、`title`、`question`、`summary` 和 `status` 都是非空字符串；`status` 只允许合同枚举，`parent_id` 只能是 `null` 或非空字符串。
+- 节点 `id` 唯一。
+- 恰好一个非 `open-question` 根节点使用 `parent_id: null`。
+- 非根、非明确 `open-question` 节点必须有有效 parent；缺 parent 或孤立节点均失败。
+- 每个非 `open-question` 节点的 parent 链最终必须到达唯一根节点；挂在 parentless `open-question` 下不算连通。
+- parent cycle（父节点循环：沿 parent 指针回到已访问节点）必须失败。
+- `relations` 必须明确存在、类型为数组且非空。
+- 每个 relation 的 `id`、`from`、`to`、`type` 和 `claim` 都是非空字符串；`id` 唯一，`type` 只允许合同枚举。
+- relation 两端必须引用现有节点。
+- `parent` 只表达结构；其他 relation 或含 `claim` 的 relation 都是 claimed relation（主张关系：表达可证伪的依赖、影响或对比）。
+- claimed relation 必须有 `evidence_refs` 或非空 `evidence_gap`。
+
+## `evidence_index.md`
+
+每个 `[S编号]` 使用二级标题，并在该段用反引号显式列出所有使用它的节点和关系编号：
 
 ```markdown
-# Evidence Index
-
 ## S1
-- Path: `/absolute/or/workspace/path/file.md`
-- Used by nodes: `root`, `node-id`
-- Evidence type: source quote | source summary | metadata | inferred gap
-- Note: concise source-backed point
+
+- 来源：`tracks/example/landscape.md`
+- 映射节点：`root`、`branch`
+- 映射关系：`relation-id`
+- 有效主张：`C1`
 ```
 
-Keep excerpts short. Prefer summaries unless a short quote is necessary.
+带证据的 node 或 relation 必须分别出现在对应来源段的 `映射节点：` 或 `映射关系：` 字段中；只有剥离 frontmatter 后，这些字段内的反引号编号计为映射，frontmatter 或普通摘要提及不计。无来源时必须填写非空 `evidence_gap`。下游主张在共享台账中继续用 `derived_from_claim_ids` 保留上游有效主张编号，不复制无继承关系的 Track Research 事实。
 
-### `open_questions.md`
+## `open_questions.md`
 
-Group unresolved questions by branch:
+按分支列出问题、重要性和可解决它的证据：
 
 ```markdown
-# Open Questions
+# 开放问题
 
-## <Branch>
-- [ ] Question
-  - Why it matters:
-  - What evidence would resolve it:
+## <分支>
+
+- [ ] 问题
+  - 重要性：
+  - 所需证据：
 ```
 
-## Modeling Rules
+## 校验与更新
 
-- Start with one root question that captures what the user wants to understand.
-- Use 5-9 first-level branches unless the source base clearly demands fewer.
-- Tree edges answer “is a subproblem of.”
-- Related edges answer “depends on,” “contrasts with,” “uses evidence from,” or “causally affects.”
-- Every node must include at least one `evidence_ref` or mark `status: needs-evidence`.
-- Do not bury source gaps; promote them into `open_questions.md`.
-- English abbreviations must be expanded on first use with English full name, Chinese full name, and a brief explanation.
+先运行：
 
-## Validation Checklist
+```bash
+python3 skills/jvc-knowledge-tree-builder/scripts/validate_output.py <知识包目录>
+```
 
-- All required files exist.
-- `nodes.json` parses as JSON.
-- Every node except root has `parent_id`.
-- Every edge endpoint references an existing node.
-- Every `evidence_ref` appears in `evidence_index.md`.
-- The Markdown tree and JSON node count are consistent.
-- Source coverage and access issues are visible.
+validator 只使用 Python 标准库检查恰好五文件、非空、完整主图、图声明、节点与关系 schema（schema，结构约束：定义字段、类型和允许值）、祖先连通性、parent cycle、关系端点和显式证据映射。`knowledge_tree.md` 与独立 `knowledge_graph.mmd` 的 Mermaid 完整语法由本地 Quarto 真渲染验证；缺 renderer 或 malformed Mermaid（语法错误的 Mermaid 图）都是 gate failure（闸门失败：不得进入后续审计）。
+
+validator 通过后才能运行 Research Core audit。上游变化只把受影响 nodes、relations 和 open questions 标为 stale；执行最小更新仍需用户批准。

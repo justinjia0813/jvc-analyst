@@ -1,118 +1,24 @@
-# /jvc-roi-modeler 投资回报 Excel 模板
+# /jvc-roi-modeler 投资回报 CSV 模板合同
 
-最终输出文件：`{项目名}_jvc-roi-modeler_{YYYYMMDD}.xlsx`
+最终输出文件：`{项目名}_jvc-roi-modeler_{YYYYMMDD}.csv`
 
-## Workbook Rules
+实际母版位于 `templates/roi-modeler-template.csv`，其结构来自用户提供的 `roi-modeler-template.xlsx`，但已修正以下勾稽：
 
-- 所有金额注明币种。
-- 五年预测保留逐年数据，不只保留退出年。
-- 所有公式列保留公式。
-- 缺失假设使用 `[需要用户提供]` 或 `[未核实]`。
+- IRR（Internal Rate of Return，内部收益率，用于按现金流时间衡量年化回报）的终期现金流使用退出总回款，不使用扣除本金后的净收益。
+- 累计收益率使用净收益除以累计投入；不再把 MOIC（Multiple on Invested Capital，投入资本倍数，用于衡量总回款是投入资本的多少倍）乘以 100% 充当收益率。
+- 投资本金通过单元格引用进入净收益与现金流公式，不在计算区硬编码示例金额。
 
-## Sheet: investment_terms
+## 固定结构
 
-| 字段 | 说明 |
-| --- | --- |
-| investment_amount | 本轮投资金额 |
-| pre_money_valuation | 投前估值 |
-| post_money_valuation | 投后估值 |
-| initial_ownership | 本轮后持股比例 |
-| security_type | 股权 / 可转债 / SAFE / 其他 |
-| option_pool | 期权池比例 |
-| currency | 币种 |
-| source_id | 来源编号 |
-| notes | 备注 |
+- 单个 CSV 文件，不拆分工作表。
+- 固定列：`section`、`metric`、`unit`、年度/退出情景、`source_id`、`assumption_status`、`notes`。
+- 年度标题可以整体平移，但保留一个实际期、五个年度现金流期和同一退出年的保守/中性/乐观三列。
+- 固定行：研究状态、稀释率、收入、净利润、净利率、估值方法、估值倍数、公司估值、基金持股、基金股权价值、投入资本、退出总回款、净收益、MOIC、累计收益率、IRR 和三条情景现金流。
+- 输入与计算保持分行；计算单元格保留以 `=` 开头的公式。
+- 当前母版只覆盖基金不跟投；出现后续跟投时必须扩展持股公式和校验器。
 
-## Sheet: financial_forecast
+## 校验
 
-| 字段 | 说明 |
-| --- | --- |
-| year | 年份 |
-| revenue | 收入 |
-| gross_margin | 毛利率 |
-| gross_profit | 毛利 |
-| EBITDA | EBITDA |
-| net_income | 净利润 |
-| cash_burn | 现金消耗 |
-| ending_cash | 年末现金 |
-| source_id | 来源编号 |
-| notes | 备注 |
-
-## Sheet: financing_dilution
-
-| 字段 | 说明 |
-| --- | --- |
-| round | 后续轮次 |
-| year | 年份 |
-| new_money | 新融资金额 |
-| pre_money_valuation | 该轮投前估值 |
-| post_money_valuation | 该轮投后估值 |
-| investor_participates | 是否跟投 |
-| pro_rata_amount | 跟投金额 |
-| dilution_pct | 本轮稀释比例 |
-| ownership_after_round | 该轮后持股比例 |
-| source_id | 来源编号 |
-| notes | 备注 |
-
-## Sheet: exit_scenarios
-
-| 字段 | 说明 |
-| --- | --- |
-| scenario | 保守 / 中性 / 乐观 |
-| exit_year | 退出年份 |
-| exit_metric | 收入 / EBITDA / 净利润 |
-| exit_metric_value | 退出年指标值 |
-| exit_multiple | 退出倍数 |
-| enterprise_value | 企业价值 |
-| net_debt_or_cash | 净债务或净现金 |
-| equity_value | 股权价值 |
-| source_id | 来源编号 |
-| notes | 备注 |
-
-## Sheet: ownership
-
-| 字段 | 说明 |
-| --- | --- |
-| year_or_round | 年份或轮次 |
-| ownership_start | 期初持股 |
-| dilution_pct | 稀释比例 |
-| pro_rata_investment | 跟投金额 |
-| ownership_end | 期末持股 |
-| notes | 备注 |
-
-## Sheet: returns
-
-| 字段 | 说明 |
-| --- | --- |
-| scenario | 保守 / 中性 / 乐观 |
-| invested_capital | 累计投入资本 |
-| exit_year | 退出年份 |
-| final_ownership | 退出时持股比例 |
-| exit_equity_value | 退出股权价值 |
-| proceeds | 投资人回款金额 |
-| MOIC | 投资回报倍数 |
-| IRR | 内部收益率 |
-| key_driver | 回报最大驱动因素 |
-
-## Sheet: sensitivity
-
-| 字段 | 说明 |
-| --- | --- |
-| variable | 敏感变量 |
-| low_case | 低值 |
-| base_case | 基准值 |
-| high_case | 高值 |
-| impact_on_MOIC | 对 MOIC 的影响 |
-| impact_on_IRR | 对 IRR 的影响 |
-
-## Sheet: sources
-
-| 字段 | 说明 |
-| --- | --- |
-| source_id | 来源编号 |
-| source_name | 来源名称 |
-| source_type | deck / 财务模型 / comps / 用户假设 / 推测 |
-| url_or_location | 链接或本地位置 |
-| date | 来源日期 |
-| fields_supported | 支撑字段 |
-| reliability | 高 / 中 / 低 |
+```bash
+python3 skills/jvc-roi-modeler/scripts/validate_csv.py templates/roi-modeler-template.csv
+```

@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-07-31",
+  "generated_at": "2026-08-10",
   "decision": "reviewable_with_warnings",
   "gates": [
-    {"key": "intent-canvas", "label": "Intent Canvas", "status": "pass", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md", "reports/skill-ir.json"]},
-    {"key": "trigger-lab", "label": "Trigger Lab", "status": "warn", "evidence": ["evals/trigger_cases.json", "reports/route_scorecard.md"], "review_action": "Run model-executed routing on blind and adversarial holdouts before claiming real routing accuracy."},
-    {"key": "output-lab", "label": "Output Lab", "status": "pass", "evidence": ["evals/output/cases.json", "evals/research-core/cases.json", "reports/research-core-output-eval.json", "reports/output_review_adjudication.json", "reports/output_quality_scorecard.md", "skills/jvc-deal-flow/scripts/check_package.py", "examples/research-report-example/report.md", "skills/jvc-research-report/scripts/check_package.py"]},
-    {"key": "context-budget", "label": "Context Budget", "status": "pass", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md"]},
+    {"key": "intent-canvas", "label": "Intent Canvas", "status": "pass", "evidence": ["reports/skill-ir.json", "manifest.json"]},
+    {"key": "trigger-lab", "label": "Trigger Lab", "status": "warn", "evidence": ["evals/trigger_cases.json", "scripts/check-skill-evals.py"], "review_action": "Run model-executed routing on blind and adversarial holdouts before claiming real routing accuracy."},
+    {"key": "output-lab", "label": "Output Lab", "status": "pass", "evidence": ["evals/output/cases.json", "evals/research-core/cases.json", "evals/research-core/output_cases.jsonl", "reports/output_quality_scorecard.md", "skills/jvc-deal-flow/scripts/check_package.py", "examples/research-report-example/research-report.md", "skills/jvc-research-report/scripts/check_package.py"]},
+    {"key": "context-budget", "label": "Context Budget", "status": "pass", "evidence": ["reports/skill-ir.json", "agents/interface.yaml"]},
     {"key": "runtime-matrix", "label": "Runtime Matrix", "status": "warn", "evidence": ["agents/interface.yaml"], "review_action": "Generate and run packaged adapters on each target platform before external distribution."},
     {"key": "trust-report", "label": "Trust Report", "status": "warn", "evidence": ["reports/trust_report.md", "reports/trust_report.json"], "review_action": "Keep report dependencies pinned, pin remaining suite dependencies, and retain the documented invoice command-line warnings before broader distribution."},
     {"key": "permission-gates", "label": "Permission Gates", "status": "pass", "evidence": ["security/permission_policy.json", "security/network_policy.json"]},
     {"key": "permission-runtime", "label": "Runtime Permission Probes", "status": "warn", "evidence": ["agents/interface.yaml"], "review_action": "Run packaged adapter permission probes after a distribution package exists."},
     {"key": "skill-atlas", "label": "Skill Atlas", "status": "warn", "evidence": ["reports/skill-ir.json", "evals/trigger_cases.json"], "review_action": "Add model-executed collision and stale-skill evidence before claiming a complete route atlas."},
-    {"key": "operations-loop", "label": "Operations Loop", "status": "warn", "evidence": ["reports/yao-meta-skill-audit-2026-06-20.md"], "review_action": "Add adoption and drift reporting only after real team usage data exists; do not fabricate telemetry."},
+    {"key": "operations-loop", "label": "Operations Loop", "status": "warn", "evidence": ["skills/jvc-deal-flow/references/workflow-contract.md", "skills/jvc-research-core/references/evidence-contract.md"], "review_action": "Add adoption and drift reporting only after real team usage data exists; do not fabricate telemetry."},
     {"key": "review-waivers", "label": "Review Waivers", "status": "pass", "evidence": ["reports/review-studio.md", "evals/research-core/runs"]},
     {"key": "registry-audit", "label": "Registry Audit", "status": "pass", "evidence": ["manifest.json", "scripts/check-research-core-install.py"]},
-    {"key": "release-notes", "label": "Release Notes", "status": "pass", "evidence": ["reports/jvc-analyst-3.0-foundation-release.md", "reports/research-core-2.0-release.md", "reports/review-studio.md"]}
+    {"key": "release-notes", "label": "Release Notes", "status": "pass", "evidence": ["reports/output_quality_scorecard.md", "README.md", "manifest.json", "reports/review-studio.md"]}
   ]
 }

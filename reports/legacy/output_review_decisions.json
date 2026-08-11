@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "reviewer": "Justin",
+  "reviewed_at": "2026-07-30",
+  "review_integrity": {
+    "blind_pack_sha256": "fc25dc1970a3dc4f81bf98120f437f8db23d9e5efb767d04067a27c5cd135a2d",
+    "case_count": 2,
+    "case_ids": [
+      "glass-substrate-public-research-output",
+      "industrial-vision-market-model-output"
+    ],
+    "prompt_sha256_by_case": {
+      "glass-substrate-public-research-output": "c6569860881f26bcad7496ef21a050b2c1224578e0fda22fb8639a674756205c",
+      "industrial-vision-market-model-output": "32fbef7e7ba9f48cf78d526084258b7424a2e5e9378d7f8e42681f82b34b89a9"
+    }
+  },
+  "reviewer_attestation": {
+    "blind_review_completed_before_answer_key": true,
+    "answer_key_not_opened_before_decisions": true,
+    "raw_content_excluded": true,
+    "reviewer_reason_required": true
+  },
+  "decision_contract": {
+    "winner_variant": "Use A or B after reading the blind review pack. Leave blank when pending.",
+    "confidence": "Optional number from 0 to 1.",
+    "reason": "Required reviewer rationale. Do not reveal baseline or with-skill labels before adjudication.",
+    "reviewer_attestation": "Set blind_review_completed_before_answer_key and answer_key_not_opened_before_decisions to true only after a real blind review."
+  },
+  "decisions": [
+    {
+      "case_id": "glass-substrate-public-research-output",
+      "winner_variant": "B",
+      "confidence": 0.7,
+      "reason": "实用性更好"
+    },
+    {
+      "case_id": "industrial-vision-market-model-output",
+      "winner_variant": "B",
+      "confidence": 0.3,
+      "reason": "格式处理更胜一筹"
+    }
+  ],
+  "historical_legacy_workbook": {
+    "status": "archived",
+    "classification": "historical-legacy-workbook",
+    "archived_at": "2026-08-09",
+    "reason": "Produced by the pre-CSV output-eval and blind-review pipeline (2026-07-29/30) from old workbook-era model outputs and human judgments. It cannot be deterministically regenerated from the current active CSV/Markdown cases without inventing a human judgment, so it is preserved as a record and removed from active governance evidence.",
+    "not_active_governance_evidence": true,
+    "not_proof_of_new_csv_contract": true
+  }
+}

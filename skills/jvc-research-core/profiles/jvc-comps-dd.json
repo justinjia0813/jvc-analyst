@@ -6,9 +6,9 @@
   "requires_counter_query": true,
   "minimum_independent_sources": 2,
   "artifact_policy": {
-    "kind": "xlsx",
-    "allowed_suffixes": [".xlsx"],
-    "required_names": [],
-    "required_sheets": ["companies", "segmentation", "sources", "coverage_notes"]
+    "kind": "markdown",
+    "allowed_suffixes": [".md"],
+    "required_names": ["03-comps-dd.md"],
+    "required_sheets": []
   }
 }

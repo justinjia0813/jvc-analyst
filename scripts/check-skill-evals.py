@@ -10,13 +10,25 @@ evidence.
 from __future__ import annotations
 
 import json
+import runpy
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+MARKET_VALIDATOR = ROOT / "skills" / "jvc-market-sizing" / "scripts" / "validate_csv.py"
+RESEARCHCTL = ROOT / "skills" / "jvc-research-core" / "scripts" / "researchctl.py"
+MARKET_EVAL_PATHS = {
+    "baseline": "evals/research-core/baselines/industrial_vision_software_market_20260729.csv",
+    "candidate": "evals/research-core/candidates/industrial_vision_software_market_20260729.csv",
+    "run_artifact": "evals/research-core/runs/market-model-fact-vs-assumption/industrial_vision_software_market_20260729.csv",
+    "evidence_registry": "evals/research-core/runs/market-model-fact-vs-assumption/evidence_registry.jsonl",
+    "audit_json": "evals/research-core/runs/market-model-fact-vs-assumption/audit.json",
+}
 
 
 def load_json(relative_path: str) -> dict[str, Any]:
@@ -58,6 +70,270 @@ def require_unique_ids(cases: list[dict[str, Any]], source: str) -> None:
         require(isinstance(case_id, str) and case_id, f"{source} case missing id")
         require(case_id not in seen, f"duplicate {source} case id: {case_id}")
         seen.add(case_id)
+
+
+def canonical_assertion_paths(case: dict[str, Any]) -> set[str]:
+    case_id = case["id"]
+    assertions = case.get("assertions")
+    require(isinstance(assertions, list) and assertions, f"{case_id}: missing assertions")
+
+    paths: set[str] = set()
+    root = ROOT.resolve()
+    for index, assertion in enumerate(assertions):
+        require(isinstance(assertion, dict), f"{case_id}: assertion {index} must be an object")
+        relative_path = assertion.get("path")
+        require(
+            isinstance(relative_path, str) and relative_path,
+            f"{case_id}: assertion {index} missing path",
+        )
+        require(not Path(relative_path).is_absolute(), f"{case_id}: assertion path must be relative: {relative_path}")
+        resolved = (ROOT / relative_path).resolve()
+        try:
+            canonical = resolved.relative_to(root).as_posix()
+        except ValueError as exc:
+            raise AssertionError(f"{case_id}: assertion path escapes repository: {relative_path}") from exc
+        require(
+            relative_path == canonical,
+            f"{case_id}: assertion path must be canonical: {relative_path!r} != {canonical!r}",
+        )
+        paths.add(canonical)
+    return paths
+
+
+def check_prescreen_case_independence(
+    cases: list[dict[str, Any]], paths_by_case: dict[str, set[str]]
+) -> None:
+    expected_artifacts = {
+        "prescreen-supported-markdown-contract": "examples/prescreen-example.md",
+        "prescreen-missing-data-markdown-contract": "examples/prescreen-missing-data-example.md",
+    }
+    prescreen_cases = {case["id"]: case for case in cases if case.get("skill") == "jvc-prescreen"}
+    required_case_ids = set(expected_artifacts)
+    require(
+        required_case_ids <= set(prescreen_cases),
+        f"missing required Pre-Screen output cases: {sorted(required_case_ids - set(prescreen_cases))}",
+    )
+
+    for case_id, artifact_path in expected_artifacts.items():
+        paths = paths_by_case[case_id]
+        require(artifact_path in paths, f"{case_id}: missing artifact {artifact_path}")
+        other_artifacts = {
+            path for other_id, path in expected_artifacts.items() if other_id != case_id
+        }
+        require(
+            paths.isdisjoint(other_artifacts),
+            f"{case_id}: must not include other Pre-Screen artifacts {sorted(paths & other_artifacts)}",
+        )
+
+
+def load_jsonl(relative_path: str) -> list[dict[str, Any]]:
+    path = ROOT / relative_path
+    require(path.is_file(), f"missing eval file: {relative_path}")
+    records: list[dict[str, Any]] = []
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise AssertionError(f"{relative_path}:{line_number}: invalid JSON") from exc
+        require(isinstance(record, dict), f"{relative_path}:{line_number}: expected object")
+        records.append(record)
+    return records
+
+
+def run_market_validator(path: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        (sys.executable, str(MARKET_VALIDATOR), str(path)),
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+
+
+def path_ends_with(path_value: object, relative_path: str) -> bool:
+    if not isinstance(path_value, str):
+        return False
+    actual = Path(path_value).parts
+    expected = Path(relative_path).parts
+    return len(actual) >= len(expected) and actual[-len(expected) :] == expected
+
+
+def audit_binding_matches(
+    entry: dict[str, Any],
+    recomputed: dict[str, Any],
+    records: list[dict[str, Any]],
+    research_core: dict[str, Any],
+) -> bool:
+    if not research_core["_audit_shape_is_valid"](entry):
+        return False
+    if entry["audit_key"] != research_core["audit_key"](entry):
+        return False
+    exact_fields = (
+        "schema_version",
+        "skill",
+        "ledger_sequence",
+        "ledger_prefix_fingerprint",
+        "dependency_audits",
+        "profile_fingerprint",
+        "core_runtime_fingerprint",
+        "status",
+        "findings",
+    )
+    if any(entry[field] != recomputed[field] for field in exact_fields):
+        return False
+    if len(entry["artifacts"]) != 1 or len(recomputed["artifacts"]) != 1:
+        return False
+    if entry["artifacts"][0]["fingerprint"] != recomputed["artifacts"][0]["fingerprint"]:
+        return False
+    if not path_ends_with(entry["artifacts"][0]["path"], MARKET_EVAL_PATHS["run_artifact"]):
+        return False
+    if not path_ends_with(entry["audit_path"], MARKET_EVAL_PATHS["audit_json"]):
+        return False
+
+    portable = json.loads(json.dumps(entry, ensure_ascii=False))
+    portable["audit_path"] = str((ROOT / MARKET_EVAL_PATHS["audit_json"]).resolve())
+    portable["artifacts"][0]["path"] = str(
+        (ROOT / MARKET_EVAL_PATHS["run_artifact"]).resolve()
+    )
+    portable["audit_key"] = research_core["audit_key"](portable)
+    return research_core["saved_audit_is_valid"](portable, records)
+
+
+def recompute_market_audit(research_core: dict[str, Any]) -> dict[str, Any]:
+    run_dir = ROOT / "evals" / "research-core" / "runs" / "market-model-fact-vs-assumption"
+    run_artifact = ROOT / MARKET_EVAL_PATHS["run_artifact"]
+    with tempfile.TemporaryDirectory(prefix="jvc-market-audit-") as directory:
+        temporary_run = Path(directory)
+        shutil.copy2(run_dir / "evidence_registry.jsonl", temporary_run / "evidence_registry.jsonl")
+        temporary_artifact = temporary_run / run_artifact.name
+        shutil.copy2(run_artifact, temporary_artifact)
+        return research_core["audit_run"](
+            temporary_run,
+            "jvc-market-sizing",
+            [temporary_artifact],
+        )
+
+
+def check_invalid_market_csv_regression(run_artifact: str) -> None:
+    with tempfile.TemporaryDirectory(prefix="jvc-invalid-market-csv-") as directory:
+        invalid = Path(directory) / "market-sizing.csv"
+        rows = [
+            line
+            for line in run_artifact.splitlines()
+            if not line.startswith("orthogonality_check,ORTHO_1,")
+        ]
+        require(len(rows) + 1 == len(run_artifact.splitlines()), "invalid CSV regression fixture did not remove ORTHO_1")
+        invalid.write_text("\n".join(rows) + "\n", encoding="utf-8")
+        result = run_market_validator(invalid)
+        require(
+            result.returncode != 0,
+            "Market Sizing validator accepted CSV without orthogonality_check",
+        )
+
+
+def check_p1_eval_integration(
+    cases: list[dict[str, Any]], paths_by_case: dict[str, set[str]]
+) -> None:
+    by_id = {case["id"]: case for case in cases}
+    for legacy_id in (
+        "market-sizing-workbook-contract",
+        "comps-dd-workbook-contract",
+        "roi-modeler-workbook-contract",
+    ):
+        require(legacy_id not in by_id, f"obsolete {legacy_id} output case is active")
+    market_case = by_id.get("market-sizing-csv-contract")
+    require(isinstance(market_case, dict), "missing Market Sizing CSV output case")
+    require(market_case.get("artifact_family") == "csv", "Market Sizing output case must use CSV")
+    require(
+        {
+            "templates/market-sizing-template.csv",
+            "examples/market-sizing-example.csv",
+            "skills/jvc-market-sizing/scripts/validate_csv.py",
+            "skills/jvc-market-sizing/scripts/check_package.py",
+        }
+        <= paths_by_case["market-sizing-csv-contract"],
+        "Market Sizing output case missing active CSV assets",
+    )
+
+    knowledge_paths = paths_by_case.get("knowledge-tree-builder-artifact-contract", set())
+    require(
+        {
+            "skills/jvc-knowledge-tree-builder/scripts/validate_output.py",
+            "skills/jvc-knowledge-tree-builder/scripts/check_package.py",
+            "examples/knowledge-tree-example/knowledge_tree.md",
+            "examples/knowledge-tree-example/knowledge_graph.mmd",
+            "examples/knowledge-tree-example/nodes.json",
+            "examples/knowledge-tree-example/evidence_index.md",
+            "examples/knowledge-tree-example/open_questions.md",
+        }
+        <= knowledge_paths,
+        "Knowledge Tree output case missing validator or fixed five-file example",
+    )
+
+    research_cases = load_json("evals/research-core/cases.json").get("cases", [])
+    indexed = {case.get("id"): case for case in research_cases if isinstance(case, dict)}
+    market_index = indexed.get("market-model-fact-vs-assumption")
+    require(isinstance(market_index, dict), "missing Research Core market model case")
+    for key, relative_path in MARKET_EVAL_PATHS.items():
+        require(market_index.get(key) == relative_path, f"Research Core market case {key} mismatch")
+        require((ROOT / relative_path).is_file(), f"missing active Research Core CSV asset: {relative_path}")
+
+    for key in ("baseline", "candidate", "run_artifact"):
+        relative_path = MARKET_EVAL_PATHS[key]
+        result = run_market_validator(ROOT / relative_path)
+        require(
+            result.returncode == 0,
+            f"invalid active Market Sizing CSV {relative_path}: {result.stdout}{result.stderr}",
+        )
+
+    output_cases = load_jsonl("evals/research-core/output_cases.jsonl")
+    market_outputs = [case for case in output_cases if case.get("id") == "industrial-vision-market-model-output"]
+    require(len(market_outputs) == 1, "Research Core market output case must be unique")
+    output_case = market_outputs[0]
+    metadata = output_case.get("metadata", {})
+    require(metadata.get("artifact_type") == "csv", "Research Core market output metadata must use CSV")
+    for key, relative_path in MARKET_EVAL_PATHS.items():
+        require(metadata.get(key) == relative_path, f"Research Core market output {key} mismatch")
+    baseline = (ROOT / MARKET_EVAL_PATHS["baseline"]).read_text(encoding="utf-8")
+    candidate = (ROOT / MARKET_EVAL_PATHS["candidate"]).read_text(encoding="utf-8")
+    run_artifact = (ROOT / MARKET_EVAL_PATHS["run_artifact"]).read_text(encoding="utf-8")
+    require(output_case.get("baseline_output") == baseline, "Research Core baseline output does not match CSV fixture")
+    require(output_case.get("with_skill_output") == candidate, "Research Core candidate output does not match CSV fixture")
+    require(candidate == run_artifact, "Research Core candidate and audited run artifact differ")
+    check_invalid_market_csv_regression(run_artifact)
+    active_case_text = json.dumps(market_index, ensure_ascii=False) + json.dumps(output_case, ensure_ascii=False)
+    require(".xlsx" not in active_case_text and "cell-dump" not in active_case_text, "active Research Core case references a historical workbook fixture")
+
+    research_core = runpy.run_path(str(RESEARCHCTL))
+    run_dir = ROOT / "evals" / "research-core" / "runs" / "market-model-fact-vs-assumption"
+    records = research_core["load_registry"](run_dir)
+    recomputed = recompute_market_audit(research_core)
+    audit = load_json(MARKET_EVAL_PATHS["audit_json"])
+    audits = audit.get("audits", [])
+    require(len(audits) == 1, "Research Core market audit must be unique")
+    entry = audits[0]
+    require(
+        audit_binding_matches(entry, recomputed, records, research_core),
+        "Research Core market audit binding mismatch",
+    )
+    tampered = json.loads(json.dumps(entry, ensure_ascii=False))
+    tampered["ledger_prefix_fingerprint"] = "0" * 64
+    tampered["audit_key"] = research_core["audit_key"](tampered)
+    require(
+        not audit_binding_matches(tampered, recomputed, records, research_core),
+        "Research Core audit-binding tamper regression was accepted",
+    )
+    require(
+        any(
+            record.get("record_type") == "source"
+            and record.get("source_class") == "user-document"
+            and record.get("location") == "input/scope.json"
+            for record in records
+        ),
+        "Research Core market ledger missing the user-assumption evidence pointer",
+    )
 
 
 def require_signal_list(case: dict[str, Any], key: str, *, required: bool = False) -> list[str]:
@@ -227,18 +503,21 @@ def check_output_cases() -> int:
     require(isinstance(cases, list) and cases, "output cases must be a non-empty list")
     require_unique_ids(cases, "output")
 
-    required_families = {"markdown", "excel", "docx", "excel_pdf_archive", "research_pdf"}
+    paths_by_case = {case["id"]: canonical_assertion_paths(case) for case in cases}
+    check_prescreen_case_independence(cases, paths_by_case)
+    check_p1_eval_integration(cases, paths_by_case)
+
+    required_families = {"markdown", "csv", "docx", "excel_pdf_archive", "research_pdf"}
     families: set[str] = set()
     for case in cases:
         case_id = case["id"]
         skill = case.get("skill")
         artifact_family = case.get("artifact_family")
-        assertions = case.get("assertions")
+        assertions = case["assertions"]
         require(isinstance(skill, str) and skill, f"{case_id}: missing skill")
         require_skill(skill)
         require(isinstance(artifact_family, str) and artifact_family, f"{case_id}: missing artifact_family")
         families.add(artifact_family)
-        require(isinstance(assertions, list) and assertions, f"{case_id}: missing assertions")
         for assertion in assertions:
             check_assertion(case_id, assertion)
 

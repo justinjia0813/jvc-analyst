@@ -16,16 +16,54 @@
       ]
     },
     {
-      "id": "prescreen-markdown-contract",
+      "id": "prescreen-supported-markdown-contract",
       "skill": "jvc-prescreen",
       "artifact_family": "markdown",
       "assertions": [
         {"type": "file_exists", "path": "examples/prescreen-example.md"},
-        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 一页事实摘要"},
-        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 七维初筛判断"},
-        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## Bear Case 雏形"},
-        {"type": "contains_any", "path": "examples/prescreen-example.md", "texts": ["[未核实]", "[需要用户提供]"]},
-        {"type": "not_contains_any", "path": "examples/prescreen-example.md", "texts": ["建议投资", "不建议投资"]}
+        {"type": "file_exists", "path": "skills/jvc-prescreen/scripts/validate_output.py"},
+        {"type": "file_exists", "path": "skills/jvc-prescreen/scripts/check_package.py"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 快筛结论"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 商业模式"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 上下游与价值分配"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 赛道有效性"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 市场规模粗算"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 五年收入情景"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 交易与回报粗算"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 风险、证伪条件与下一步"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "## 来源、假设与未知项"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "【第三方事实】"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "【公司自述】"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "【用户观察】"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "【模型估算】"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "【未知/待验证】"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "情景：低"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "情景：中"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "情景：高"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "唯一驱动路径："},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "商业模式要素：完整"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "市场锚点：存在"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "交易条款：完整"},
+        {"type": "contains", "path": "examples/prescreen-example.md", "text": "不替用户作投资决定"},
+        {"type": "not_contains_any", "path": "examples/prescreen-example.md", "texts": ["建议投资", "不建议投资", "有条件投资", "应该投资", "推荐投资", "值得投资"]}
+      ]
+    },
+    {
+      "id": "prescreen-missing-data-markdown-contract",
+      "skill": "jvc-prescreen",
+      "artifact_family": "markdown",
+      "assertions": [
+        {"type": "file_exists", "path": "examples/prescreen-missing-data-example.md"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "商业模式要素：缺失"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "收入测算：阻断"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "回报测算：阻断"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "市场锚点：缺失"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "条件式敏感性框架"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "不给任何数值回报或结果（单点或区间）"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "下游传播：停止"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "影响章节：五年收入情景、交易与回报粗算"},
+        {"type": "contains", "path": "examples/prescreen-missing-data-example.md", "text": "不替用户作投资决定"},
+        {"type": "not_contains_any", "path": "examples/prescreen-missing-data-example.md", "texts": ["建议投资", "不建议投资", "有条件投资", "应该投资", "推荐投资", "值得投资"]}
       ]
     },
     {
@@ -45,7 +83,12 @@
         {"type": "contains", "path": "examples/track-research-example.md", "text": "关键反证"},
         {"type": "contains", "path": "skills/jvc-track-research/SKILL.md", "text": "连续两轮搜索"},
         {"type": "contains", "path": "skills/jvc-track-research/SKILL.md", "text": "不预测精确拐点或时间"},
-        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 后续工作交接包"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "## 知识树与市场模型交接"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "### 根问题与主要分支"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "有效主张编号"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "数据缺口"},
+        {"type": "contains", "path": "examples/track-research-example.md", "text": "### 开放问题"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "visual-first"},
         {"type": "contains", "path": "examples/track-research-example.md", "text": "## 来源索引"},
         {"type": "contains_any", "path": "examples/track-research-example.md", "texts": ["[S1]", "[S4]", "[未核实]"]},
         {"type": "not_contains_any", "path": "examples/track-research-example.md", "texts": ["万亿级市场", "建议投资", "不建议投资"]}
@@ -58,6 +101,14 @@
       "assertions": [
         {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/references/output-contract.md"},
         {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/scripts/collect_sources.py"},
+        {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/scripts/validate_output.py"},
+        {"type": "file_exists", "path": "skills/jvc-knowledge-tree-builder/scripts/check_package.py"},
+        {"type": "file_exists", "path": "examples/knowledge-tree-example/knowledge_tree.md"},
+        {"type": "file_exists", "path": "examples/knowledge-tree-example/knowledge_graph.mmd"},
+        {"type": "file_exists", "path": "examples/knowledge-tree-example/nodes.json"},
+        {"type": "file_exists", "path": "examples/knowledge-tree-example/evidence_index.md"},
+        {"type": "file_exists", "path": "examples/knowledge-tree-example/open_questions.md"},
+        {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "visual-first"},
         {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "knowledge_tree.md"},
         {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "knowledge_graph.mmd"},
         {"type": "contains", "path": "skills/jvc-knowledge-tree-builder/SKILL.md", "text": "nodes.json"},
@@ -107,33 +158,59 @@
       ]
     },
     {
-      "id": "comps-dd-workbook-contract",
+      "id": "comps-dd-markdown-contract",
       "skill": "jvc-comps-dd",
-      "artifact_family": "excel",
+      "artifact_family": "markdown",
       "assertions": [
         {"type": "file_exists", "path": "templates/comps-dd-template.md"},
-        {"type": "contains", "path": "templates/comps-dd-template.md", "text": "{赛道或项目名}_jvc-comps-dd_{YYYYMMDD}.xlsx"},
-        {"type": "workbook_sheets", "path": "examples/comps-dd-example.xlsx", "sheets": ["companies", "segmentation", "sources", "coverage_notes"]}
+        {"type": "file_exists", "path": "examples/comps-dd-example.md"},
+        {"type": "contains", "path": "skills/jvc-comps-dd/SKILL.md", "text": "唯一活跃主产物：`03-comps-dd.md`"},
+        {"type": "contains", "path": "templates/comps-dd-template.md", "text": "最终输出文件：`03-comps-dd.md`"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 范围与口径"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 公司分层"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 可比指标"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 目标与可比公司对照"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 上下游"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 海外标杆"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 来源索引"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 覆盖缺口"},
+        {"type": "contains", "path": "examples/comps-dd-example.md", "text": "## 下一步尽调动作"},
+        {"type": "contains", "path": "skills/jvc-research-core/profiles/jvc-comps-dd.json", "text": "\"kind\": \"markdown\""},
+        {"type": "contains", "path": "skills/jvc-research-core/profiles/jvc-comps-dd.json", "text": "\"allowed_suffixes\": [\".md\"]"},
+        {"type": "contains", "path": "skills/jvc-research-core/profiles/jvc-comps-dd.json", "text": "\"required_names\": [\"03-comps-dd.md\"]"},
+        {"type": "not_contains_any", "path": "templates/comps-dd-template.md", "texts": [".xlsx", "generate-workbook.py", "validate-workbook.py"]},
+        {"type": "not_contains_any", "path": "examples/comps-dd-example.md", "texts": [".xlsx", "generate-workbook.py", "validate-workbook.py"]},
+        {"type": "not_contains_any", "path": "skills/jvc-comps-dd/SKILL.md", "texts": [".xlsx", "generate-workbook.py", "validate-workbook.py"]},
+        {"type": "not_contains_any", "path": "skills/jvc-research-core/profiles/jvc-comps-dd.json", "texts": ["\"kind\": \"xlsx\"", "\".xlsx\"", "\"companies\"", "\"segmentation\"", "\"coverage_notes\""]}
       ]
     },
     {
-      "id": "market-sizing-workbook-contract",
+      "id": "market-sizing-csv-contract",
       "skill": "jvc-market-sizing",
-      "artifact_family": "excel",
+      "artifact_family": "csv",
       "assertions": [
         {"type": "file_exists", "path": "templates/market-sizing-template.md"},
-        {"type": "contains", "path": "templates/market-sizing-template.md", "text": "{细分赛道}_jvc-market-sizing_{YYYYMMDD}.xlsx"},
-        {"type": "workbook_sheets", "path": "examples/market-sizing-example.xlsx", "sheets": ["assumptions", "top_down", "bottom_up", "reconciliation", "orthogonality_check", "sources"]}
+        {"type": "file_exists", "path": "templates/market-sizing-template.csv"},
+        {"type": "file_exists", "path": "examples/market-sizing-example.csv"},
+        {"type": "file_exists", "path": "skills/jvc-market-sizing/scripts/validate_csv.py"},
+        {"type": "file_exists", "path": "skills/jvc-market-sizing/scripts/check_package.py"},
+        {"type": "contains", "path": "templates/market-sizing-template.md", "text": "`market-sizing.csv`"},
+        {"type": "contains", "path": "templates/market-sizing-template.csv", "text": "section,row_id,item,year,unit,conservative,base,optimistic,source_or_formula,confidence,notes"},
+        {"type": "contains", "path": "examples/market-sizing-example.csv", "text": "orthogonality_check,ORTHO_1"},
+        {"type": "contains", "path": "skills/jvc-market-sizing/SKILL.md", "text": "唯一活跃模型进入 `market-sizing.csv`"},
+        {"type": "not_contains_any", "path": "skills/jvc-market-sizing/SKILL.md", "texts": [".xlsx", "generate-workbook.py", "validate-workbook.py"]}
       ]
     },
     {
-      "id": "roi-modeler-workbook-contract",
+      "id": "roi-modeler-csv-contract",
       "skill": "jvc-roi-modeler",
-      "artifact_family": "excel",
+      "artifact_family": "csv",
       "assertions": [
         {"type": "file_exists", "path": "templates/roi-modeler-template.md"},
-        {"type": "contains", "path": "templates/roi-modeler-template.md", "text": "{项目名}_jvc-roi-modeler_{YYYYMMDD}.xlsx"},
-        {"type": "workbook_sheets", "path": "examples/roi-modeler-example.xlsx", "sheets": ["investment_terms", "financial_forecast", "financing_dilution", "ownership", "exit_scenarios", "returns", "sensitivity", "sources"]}
+        {"type": "file_exists", "path": "templates/roi-modeler-template.csv"},
+        {"type": "contains", "path": "templates/roi-modeler-template.md", "text": "{项目名}_jvc-roi-modeler_{YYYYMMDD}.csv"},
+        {"type": "contains", "path": "templates/roi-modeler-template.csv", "text": "cash_flow_conservative"},
+        {"type": "contains", "path": "templates/roi-modeler-template.csv", "text": "=J14-J13"}
       ]
     },
     {
@@ -205,14 +282,18 @@
       "skill": "jvc-research-report",
       "artifact_family": "research_pdf",
       "assertions": [
-        {"type": "file_tracked", "path": "examples/research-report-example/report.md"},
+        {"type": "file_exists", "path": "examples/research-report-example/research-report.md"},
         {"type": "file_tracked", "path": "examples/research-report-example/assets/technology-routes.svg"},
         {"type": "file_exists", "path": "skills/jvc-research-report/scripts/build_report.py"},
+        {"type": "file_exists", "path": "skills/jvc-research-report/scripts/validate_assembly.py"},
         {"type": "file_exists", "path": "skills/jvc-research-report/assets/report.css"},
         {"type": "file_exists", "path": "skills/jvc-research-report/templates/industry-report.md"},
-        {"type": "contains", "path": "skills/jvc-research-report/manifest.json", "text": "\"output_contract\": [\"report.pdf\", \"report.html\", \"build-report.txt\"]"},
-        {"type": "contains", "path": "skills/jvc-research-report/assets/brand.yml", "text": "name: lustinus RESEARCH"},
-        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "只读取本地 Markdown、YAML、图片和字体"},
+        {"type": "contains", "path": "skills/jvc-research-report/manifest.json", "text": "\"output_contract\": [\"research-report.md\", \"report.pdf\", \"report.html\", \"build-report.txt\"]"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "组装"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "validate_assembly.py"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "直接发布"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "只读取本地 Markdown"},
+        {"type": "contains", "path": "skills/jvc-research-report/SKILL.md", "text": "不访问网络"},
         {"type": "contains", "path": "skills/jvc-research-report/scripts/build_report.py", "text": "return f\"data:{media_type};base64,{encoded}\""},
         {"type": "contains", "path": "skills/jvc-research-report/scripts/build_report.py", "text": "def publish_staged("},
         {"type": "contains", "path": "skills/jvc-research-report/references/output-contract.md", "text": "失败不得覆盖上一版成功的三个产物"}

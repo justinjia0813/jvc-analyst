@@ -1,0 +1,63 @@
+{
+  "topic": "工业视觉质检",
+  "generated_at": "2026-08-09T00:00:00Z",
+  "nodes": [
+    {
+      "id": "root",
+      "title": "投资机会",
+      "question": "工业视觉质检能否形成可复制的投资机会？",
+      "summary": "取决于技术成熟度、客户付费和交付复制。",
+      "parent_id": null,
+      "evidence_refs": ["S1"],
+      "status": "source-backed"
+    },
+    {
+      "id": "technology",
+      "title": "技术路线",
+      "question": "技术路线是否成熟？",
+      "summary": "规则视觉成熟，复杂缺陷仍依赖数据与调参。",
+      "parent_id": "root",
+      "evidence_refs": ["S1"],
+      "status": "source-backed"
+    },
+    {
+      "id": "buyer",
+      "title": "客户与付费",
+      "question": "客户是否持续付费？",
+      "summary": "需以复购而非试点数量验证。",
+      "parent_id": "root",
+      "evidence_refs": ["S2"],
+      "status": "source-backed"
+    },
+    {
+      "id": "delivery",
+      "title": "交付复制",
+      "question": "交付能否跨场景复制？",
+      "summary": "现场服务工时是当前瓶颈。",
+      "parent_id": "technology",
+      "evidence_refs": ["S2"],
+      "status": "source-backed"
+    },
+    {
+      "id": "open-repurchase",
+      "title": "复购开放问题",
+      "question": "复购是否足以覆盖现场服务成本？",
+      "summary": "公开材料没有可核验复购数据。",
+      "parent_id": null,
+      "evidence_refs": [],
+      "evidence_gap": "缺少客户级复购与服务工时数据",
+      "status": "open-question"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-technology-delivery",
+      "from": "technology",
+      "to": "delivery",
+      "type": "affects",
+      "claim": "技术标准化程度影响交付复制。",
+      "evidence_refs": ["S2"]
+    }
+  ],
+  "access_issues": []
+}

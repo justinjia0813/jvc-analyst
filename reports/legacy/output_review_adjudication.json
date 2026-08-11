@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "summary": {
+    "pair_count": 2,
+    "judgment_count": 2,
+    "pending_count": 0,
+    "agreement_count": 1,
+    "disagreement_count": 1,
+    "invalid_decision_count": 0,
+    "answer_revealed_count": 2,
+    "pending_answer_hidden_count": 0,
+    "agreement_rate": 50.0,
+    "needs_review": false,
+    "reviewer_metadata_present": true,
+    "reason_required": true,
+    "blind_review_attested": true,
+    "blind_review_completed_before_answer_key": true,
+    "answer_key_not_opened_before_decisions": true,
+    "raw_content_excluded_attested": true,
+    "reviewer_reason_required_attested": true,
+    "ready_for_human_evidence": true,
+    "failure_count": 0,
+    "reviewer_checklist_count": 2,
+    "reviewer_checklist_pending_count": 0,
+    "reviewer_checklist_invalid_count": 0,
+    "reviewer_checklist_ready_count": 2
+  },
+  "reviewer": "Justin",
+  "reviewed_at": "2026-07-30",
+  "review_integrity": {
+    "blind_pack_sha256": "fc25dc1970a3dc4f81bf98120f437f8db23d9e5efb767d04067a27c5cd135a2d",
+    "case_count": 2,
+    "case_ids": [
+      "glass-substrate-public-research-output",
+      "industrial-vision-market-model-output"
+    ],
+    "prompt_sha256_by_case": {
+      "glass-substrate-public-research-output": "c6569860881f26bcad7496ef21a050b2c1224578e0fda22fb8639a674756205c",
+      "industrial-vision-market-model-output": "32fbef7e7ba9f48cf78d526084258b7424a2e5e9378d7f8e42681f82b34b89a9"
+    }
+  },
+  "reviewer_attestation": {
+    "blind_review_completed_before_answer_key": true,
+    "answer_key_not_opened_before_decisions": true,
+    "raw_content_excluded": true,
+    "reviewer_reason_required": true
+  },
+  "artifacts": {
+    "blind_pack": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.json",
+    "answer_key": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_answer_key.json",
+    "decisions": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_review_decisions.json",
+    "json": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_review_adjudication.json",
+    "markdown": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_review_adjudication.md"
+  },
+  "template_written": false,
+  "pairs": [
+    {
+      "case_id": "glass-substrate-public-research-output",
+      "status": "match",
+      "expected_winner_variant": "B",
+      "expected_revealed": true,
+      "reviewer_winner_variant": "B",
+      "confidence": 0.7,
+      "reason": "实用性更好",
+      "prompt_sha256": "c6569860881f26bcad7496ef21a050b2c1224578e0fda22fb8639a674756205c"
+    },
+    {
+      "case_id": "industrial-vision-market-model-output",
+      "status": "disagree",
+      "expected_winner_variant": "A",
+      "expected_revealed": true,
+      "reviewer_winner_variant": "B",
+      "confidence": 0.3,
+      "reason": "格式处理更胜一筹",
+      "prompt_sha256": "32fbef7e7ba9f48cf78d526084258b7424a2e5e9378d7f8e42681f82b34b89a9"
+    }
+  ],
+  "reviewer_checklist": [
+    {
+      "case_id": "glass-substrate-public-research-output",
+      "readiness": "adjudicated",
+      "blocking_reason": "Reviewer decision is valid; answer key is revealed for this case.",
+      "status": "match",
+      "reviewer_winner_variant": "B",
+      "answer_key_visible": true,
+      "prompt_sha256": "c6569860881f26bcad7496ef21a050b2c1224578e0fda22fb8639a674756205c",
+      "blind_pack_path": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.json",
+      "decisions_path": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_review_decisions.json",
+      "commands": {
+        "prepare_review_kit": "python3 scripts/yao.py output-review-kit",
+        "write_template": "python3 scripts/adjudicate_output_review.py --write-template",
+        "import_decisions": "python3 scripts/yao.py output-review-import --input <reviewer-decisions.json> --blind-review-attested --run-adjudication",
+        "adjudicate": "python3 scripts/yao.py output-review",
+        "refresh_review_studio": "python3 scripts/yao.py review-studio ."
+      },
+      "required_fields": {
+        "winner_variant": "A or B after reading only the blind review pack.",
+        "confidence": "Optional number from 0 to 1.",
+        "reason": "Required rationale; do not reveal baseline or with-skill labels before adjudication.",
+        "reviewer": "Human reviewer name or review group at the decision-file top level.",
+        "reviewed_at": "Review date or timestamp at the decision-file top level.",
+        "reviewer_attestation.blind_review_completed_before_answer_key": "True only after the reviewer has completed choices before opening the answer key.",
+        "reviewer_attestation.answer_key_not_opened_before_decisions": "True only when the answer key was not opened before decisions were recorded."
+      },
+      "privacy_contract": [
+        "Do not paste raw private user data into the decision reason.",
+        "Do not open the answer key before reviewer choices are recorded.",
+        "Leave winner_variant blank when the reviewer is not ready to decide."
+      ]
+    },
+    {
+      "case_id": "industrial-vision-market-model-output",
+      "readiness": "adjudicated",
+      "blocking_reason": "Reviewer decision is valid; answer key is revealed for this case.",
+      "status": "disagree",
+      "reviewer_winner_variant": "B",
+      "answer_key_visible": true,
+      "prompt_sha256": "32fbef7e7ba9f48cf78d526084258b7424a2e5e9378d7f8e42681f82b34b89a9",
+      "blind_pack_path": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_blind_review_pack.json",
+      "decisions_path": "/Users/justinjia/Desktop/personal project/vc-analyst/reports/output_review_decisions.json",
+      "commands": {
+        "prepare_review_kit": "python3 scripts/yao.py output-review-kit",
+        "write_template": "python3 scripts/adjudicate_output_review.py --write-template",
+        "import_decisions": "python3 scripts/yao.py output-review-import --input <reviewer-decisions.json> --blind-review-attested --run-adjudication",
+        "adjudicate": "python3 scripts/yao.py output-review",
+        "refresh_review_studio": "python3 scripts/yao.py review-studio ."
+      },
+      "required_fields": {
+        "winner_variant": "A or B after reading only the blind review pack.",
+        "confidence": "Optional number from 0 to 1.",
+        "reason": "Required rationale; do not reveal baseline or with-skill labels before adjudication.",
+        "reviewer": "Human reviewer name or review group at the decision-file top level.",
+        "reviewed_at": "Review date or timestamp at the decision-file top level.",
+        "reviewer_attestation.blind_review_completed_before_answer_key": "True only after the reviewer has completed choices before opening the answer key.",
+        "reviewer_attestation.answer_key_not_opened_before_decisions": "True only when the answer key was not opened before decisions were recorded."
+      },
+      "privacy_contract": [
+        "Do not paste raw private user data into the decision reason.",
+        "Do not open the answer key before reviewer choices are recorded.",
+        "Leave winner_variant blank when the reviewer is not ready to decide."
+      ]
+    }
+  ],
+  "failures": [],
+  "historical_legacy_workbook": {
+    "status": "archived",
+    "classification": "historical-legacy-workbook",
+    "archived_at": "2026-08-09",
+    "reason": "Produced by the pre-CSV output-eval and blind-review pipeline (2026-07-29/30) from old workbook-era model outputs and human judgments. It cannot be deterministically regenerated from the current active CSV/Markdown cases without inventing a human judgment, so it is preserved as a record and removed from active governance evidence.",
+    "not_active_governance_evidence": true,
+    "not_proof_of_new_csv_contract": true
+  }
+}

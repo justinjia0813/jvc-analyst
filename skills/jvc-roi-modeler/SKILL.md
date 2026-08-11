@@ -1,15 +1,15 @@
 ---
 name: jvc-roi-modeler
 description: |
-  投资回报模型：根据投资条款、财务预测、后续融资假设和退出情形，逐轮计算稀释并输出 MOIC/IRR 区间的 Excel 工作簿。
+  投资回报模型：按用户提供的母版，根据投资条款、财务预测、后续融资假设和退出情形，逐轮计算稀释并输出公式可审计的 CSV 回报表。
   Use when user says '/jvc-roi-modeler', '回报模型', 'ROI', 'IRR', '回报测算', '稀释计算', '退出测算'.
 user_invocable: true
-version: "3.0.0"
+version: "4.0.0"
 ---
 
-# /jvc-roi-modeler — 投资回报模型
+# /jvc-roi-modeler — ROI（Return on Investment，投资回报，用于衡量投入资本收益）模型
 
-根据本轮投资条款、财务预测、后续融资稀释和退出假设，测算单笔投资的回报区间。
+根据本轮投资条款、财务预测、后续融资稀释和退出假设，复用用户母版的行式结构，测算单笔投资的回报区间。
 
 ## 3.0 适用级别
 
@@ -17,7 +17,7 @@ version: "3.0.0"
 
 - 开始前读取 `spec/CONTEXT.md` 的估值口径、`spec/hypotheses.md` 的财务假设和已有条款来源。
 - 当前项目低于 L2 时，先说明条款、稀释与退出假设的补充成本，由用户确认是否提前建模。
-- 工作簿进入 `05-roi-modeler.xlsx`；公式、输入来源、敏感性和稀释检查不得省略。
+- 输出进入 `05-roi-modeler.csv`；公式、输入来源、三种退出情景和稀释检查不得省略。
 
 ## 反合理化约束
 
@@ -32,10 +32,10 @@ version: "3.0.0"
 
 | 类别 | 需要的数据 |
 |------|-----------|
-| 本轮条款 | 投资金额、投前/投后估值、初始持股比例、优先权条款 |
-| 财务预测 | 未来 3-5 年收入、毛利、EBITDA（净利润）、现金消耗 |
-| 后续融资 | 预期的后续轮次数量、每轮融资金额和估值、是否跟投 |
-| 退出假设 | 保守/中性/乐观三种退出情形的估值倍数或绝对估值、退出年份 |
+| 本轮条款 | 投资金额、投前/投后估值或初始持股比例、优先权条款 |
+| 财务预测 | 未来 5 年收入、净利润；可补充市场预测及其与收入预测的换算关系 |
+| 后续融资 | 每轮稀释率或足以计算稀释率的融资金额与投后估值；母版默认基金不跟投 |
+| 退出假设 | 保守/中性/乐观三种退出情形的市盈率、市销率或绝对估值、退出年份 |
 
 ## 证据内核（必须）
 
@@ -46,9 +46,9 @@ version: "3.0.0"
 1. 新研究先准备完整 `scope` JSON，再运行 `init --skill jvc-roi-modeler --run-dir <研究目录> --scope-file <scope.json>`；初始 `scope` 只能通过 `init --scope-file` 创建。
 2. 复用已有研究链时运行 `init --skill jvc-roi-modeler --run-dir <研究目录> --resume`。后续 `scope` 更正必须通过 `record --run-dir <研究目录> --input <records.jsonl>` 登记，并用 `supersedes` 指向当前 effective scope；问题、检索、来源、主张和更正也只能通过该命令登记，不得直接编辑 `evidence_registry.jsonl`，generic `record` 不得创建 waiver。
 3. 跨 skill 消费已有主张时，在新主张的 `derived_from_claim_ids` 中登记上游主张编号；缺失或失效的上游审计会阻断下游完成。
-4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；Markdown 写在对应主张后，工作簿写入 `sources` 表，DOCX 写入来源附注，多文件产物至少在 `evidence_index.md` 建立映射。
+4. 最终产物中的本阶段支持与反证来源统一写为 `[S编号]`；本 CSV 写入 `source_id`、`assumption_status` 和 `notes` 列，计算行与输入行不得混淆。
 5. 完成现有产物生成与格式校验后，运行 `audit --run-dir <研究目录> --skill jvc-roi-modeler --artifact <最终产物>`；多文件产物重复传入 `--artifact`。每次 audit 必须同时读取命令退出状态和 `audit.json`。
-6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才按产物补写 `研究状态：partial`：Markdown 写入标题与结论，XLSX 在 `sources` 表表头和列结构不变的前提下追加一条可见状态数据行，DOCX 写入首段与来源附注，多文件产物至少写入 `knowledge_tree.md` 与 `evidence_index.md`；任何类型写回标签后，必须先重新运行原有产物格式校验/validator，确认结构仍有效，再重跑 audit；存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
+6. 只有 status 为 `blocked`、findings 中唯一 block 是 `partial_label_missing`，且至少一个 finding 为 `partial` 时，才把 `model_status` 行的 `notes` 改为 `研究状态：partial`，不得改变表头和行项目；写回后必须先重新运行 CSV validator，再重跑 audit。存在其他 block 时不得用标签绕过。重跑得到 `partial` / exit `10` 才可 partial 交付；`ready` / exit `0` 才能称为完成；其他 `blocked` / exit `20` 只能交付证据缺口和下一步，不能形成受影响的判断；exit `1` 必须修复后重跑。
 7. 只有用户明确批准、且 blocker 与同 skill 最新有效 blocked audit 精确匹配时，才可运行 `waive --run-dir <研究目录> --skill jvc-roi-modeler --rule <阻断规则> --reason <批准理由> --scope <批准范围> --approved-by <批准人> --residual-risk <剩余风险>`；不得自我批准，waiver 最多降级为 partial。
 
 找不到内核、profile 不兼容、账本损坏或终审异常时，不得退回纯 prompt 模式。
@@ -57,64 +57,57 @@ version: "3.0.0"
 
 ## 执行步骤
 
-### 1. 确认输入完整性
+### 1. 读取模型合同并确认输入
 
-检查用户提供的数据，缺失关键项时明确列出需要补充的内容，不自行假设。
+先读取 `references/model-contract.md` 和仓库 `templates/roi-modeler-template.csv`。检查用户数据；缺失关键项时明确列出，不把母版示例值当作真实输入。年度标题可以随项目平移，但列数、三种退出情景和行项目保持不变。
 
 ### 2. 逐轮稀释计算
 
-从本轮开始，逐轮计算：
-- 每轮新增股份
-- 每轮后的持股比例
-- 累计稀释率
-- 跟投情形下的追加投资和持股
+从本轮开始，按时间顺序计算每轮稀释率和轮后持股比例。母版只覆盖基金不跟投的情形；用户明确要求跟投时，先说明需要扩展持股公式和 validator，不得把新增投入只写入现金流而不调整持股。
 
 ### 3. 三情形退出计算
 
 对保守/中性/乐观三种情形，分别计算：
 - 退出时公司估值
 - 投资人持有的股权价值
-- 退出回款（考虑优先权）
-- MOIC（投资倍数）
-- IRR（内部收益率，按退出年份计算）
+- 退出总回款和净收益（考虑优先权）
+- MOIC（Multiple on Invested Capital，投入资本倍数，用于衡量总回款是投入资本的多少倍）
+- 累计收益率
+- IRR（Internal Rate of Return，内部收益率，用于按现金流时间衡量年化回报）
 
-### 4. 敏感性分析
+IRR 的终期现金流使用退出总回款；累计收益率使用净收益除以累计投入。两者不得混用。
 
-识别关键敏感变量（退出估值、稀释轮次数、跟投比例等），对核心变量做 ±20% 的敏感性矩阵。
+### 4. 估值与情景检查
 
-### 5. 生成 Excel
+每列只指定一种主估值方法，另一种倍数只作交叉检查。三种退出情景构成默认敏感性；用户明确要求时才增加额外敏感性表。
 
-先用仓库内 workbook 模板脚本生成 `.xlsx`：
+### 5. 生成并校验 CSV
 
-```bash
-python3 scripts/generate-workbook.py templates/roi-modeler-template.md output/{项目}_jvc-roi-modeler_{YYYYMMDD}.xlsx
+保持模板的固定列和固定行项目，替换所有示例输入并保留公式。最终文件命名：
+
+```text
+{项目}_jvc-roi-modeler_{YYYYMMDD}.csv
 ```
 
-填完条款、预测、稀释、退出情形和敏感性分析后运行结构校验：
+把 `SKILL_ROOT` 设为包含本 `SKILL.md` 的绝对目录，再运行：
 
 ```bash
-python3 scripts/validate-workbook.py output/{项目}_jvc-roi-modeler_{YYYYMMDD}.xlsx templates/roi-modeler-template.md
+python3 "$SKILL_ROOT/scripts/validate_csv.py" output/{项目}_jvc-roi-modeler_{YYYYMMDD}.csv
 ```
 
-Workbook 包含以下 sheet：
-
-- **investment_terms**：本轮投资条款汇总
-- **financial_forecast**：财务预测表
-- **financing_dilution**：逐轮融资稀释计算（过程表）
-- **ownership**：各轮次后的持股比例变化
-- **exit_scenarios**：三种退出情形及回款计算
-- **returns**：MOIC 和 IRR 汇总
-- **sensitivity**：关键变量敏感性矩阵
-- **sources**：所有假设的来源标注
+校验通过后再运行证据内核 audit。
 
 ## 输出
 
-Excel 文件（`.xlsx`），保存到用户指定路径或当前目录。
+CSV（Comma-Separated Values，逗号分隔值，一种可由表格软件打开的纯文本表格格式）文件，保存到用户指定路径或当前目录。
 
 ## 硬约束
 
 - 不用最终持股倒推，必须逐轮计算稀释
 - 退出倍数、财务预测、后续融资假设必须有来源或标 `[用户假设]` / `[未核实]`
+- 退出总回款、净收益、MOIC、累计收益率和 IRR 必须按模型合同相互勾稽
+- 本版不处理基金后续跟投；出现跟投条款时停止套用母版并明确扩展需求
+- 不输出未经要求的 Excel、多工作表模型或额外敏感性矩阵
 - 不输出"值得投/不值得投"，只输出回报区间、驱动因素和敏感项
 - 缺失关键输入时提示用户补充，不自行填充
 - 中文输出

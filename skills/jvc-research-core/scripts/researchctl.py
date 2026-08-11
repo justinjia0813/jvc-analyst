@@ -636,7 +636,7 @@ def load_profile(skill: str) -> dict[str, Any]:
     if not isinstance(policy, dict) or set(policy) != policy_keys:
         raise LedgerError(f"invalid profile {skill}: artifact_policy")
     kind = policy["kind"]
-    if kind not in {"markdown", "xlsx", "docx", "multi"}:
+    if kind not in {"markdown", "csv", "xlsx", "docx", "multi"}:
         raise LedgerError(f"invalid profile {skill}: artifact_policy.kind")
     for field in ("allowed_suffixes", "required_names", "required_sheets"):
         values = policy[field]
@@ -653,13 +653,18 @@ def load_profile(skill: str) -> dict[str, Any]:
         raise LedgerError(f"invalid profile {skill}: artifact_policy.allowed_suffixes")
     if any(Path(value).name != value for value in names):
         raise LedgerError(f"invalid profile {skill}: artifact_policy.required_names")
-    expected_suffix = {"markdown": [".md"], "xlsx": [".xlsx"], "docx": [".docx"]}
+    expected_suffix = {
+        "markdown": [".md"],
+        "csv": [".csv"],
+        "xlsx": [".xlsx"],
+        "docx": [".docx"],
+    }
     if kind == "multi":
         valid_policy = not allowed and bool(names) and not sheets
     else:
         valid_policy = (
             allowed == expected_suffix[kind]
-            and not names
+            and (not names or kind in {"markdown", "csv"})
             and (bool(sheets) if kind == "xlsx" else not sheets)
         )
     if not valid_policy:
@@ -836,7 +841,7 @@ def _docx_text(path: Path) -> str:
 
 def artifact_text(path: Path, *, references_only: bool = False) -> str:
     suffix = path.suffix.lower()
-    if suffix in {".md", ".mmd"}:
+    if suffix in {".md", ".mmd", ".csv"}:
         return path.read_text(encoding="utf-8")
     if suffix == ".json":
         text = path.read_text(encoding="utf-8")

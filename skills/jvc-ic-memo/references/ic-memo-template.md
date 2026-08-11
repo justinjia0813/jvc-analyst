@@ -51,6 +51,10 @@ Phase 6: 批准后生成终版
   └─ validate_final.py 通过后发布 06-ic-memo.md
 ```
 
+### 活跃上游输入清单
+
+本模板只消费已存在且完成相应审查的上游产物。活跃输入固定为：`01-prescreen.md`、Bull Case、Bear Case、`03-comps-dd.md`、`market-sizing.csv`、`05-roi-modeler.csv`、会议与访谈纪要，以及必要的赛道研究与知识树。输入格式迁移不放松预审 → 用户明确批准 → 干净终版的闸门；`validate_final.py`、`ready` 语义和人工批准边界保持不变。
+
 ### 质量红线（任何章节均适用）
 
 | 红线 | 说明 |

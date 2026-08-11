@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>工业视觉质检（虚构示例）</title><style>
+
+@page {
+  size: A4;
+  margin: 20mm 16mm 18mm;
+  font-family: "PingFang SC", sans-serif;
+  @top-left { content: "lustinus RESEARCH"; color: #A06B2C; font-size: 8pt; }
+  @top-right { content: string(report-title); color: #667085; font-size: 8pt; }
+  @bottom-left { content: string(classification); color: #667085; font-size: 8pt; }
+  @bottom-right { content: counter(page) " / " counter(pages); color: #667085; font-size: 8pt; }
+}
+
+@page cover {
+  size: A4;
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+:root {
+  --ink: #20252B;
+  --copper: #A06B2C;
+  --fact: #2E6F62;
+  --risk: #A33A32;
+}
+
+html {
+  color: var(--ink);
+  font-family: "Songti SC", serif;
+  font-size: 10pt;
+  line-height: 1.55;
+}
+
+body { counter-reset: figure table; margin: 0; }
+code { font-family: inherit; }
+pre { font-family: "Songti SC", serif; }
+
+.cover {
+  page: cover;
+  height: 297mm;
+  padding: 28mm 24mm;
+  box-sizing: border-box;
+  border-top: 9mm solid var(--ink);
+  font-family: "PingFang SC", sans-serif;
+  position: relative;
+}
+
+.brand-name { color: var(--copper); font-size: 11pt; font-weight: 700; letter-spacing: 0.08em; }
+.cover-logo { display: block; max-height: 16mm; max-width: 55mm; margin-top: 10mm; }
+.cover-image { position: absolute; inset: 0 0 auto auto; width: 82mm; height: 95mm; object-fit: cover; opacity: 0.16; }
+.cover h1 { string-set: report-title content(); font-size: 28pt; line-height: 1.2; margin: 42mm 0 5mm; max-width: 150mm; }
+.subtitle { color: #475467; font-size: 14pt; margin: 0 0 6mm; max-width: 145mm; }
+.report-date { color: var(--copper); font-size: 11pt; }
+.cover-details { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 9mm; margin-top: 16mm; max-width: 130mm; }
+.cover-detail span { color: #667085; display: block; font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase; }
+.classification { string-set: classification content(); color: var(--risk); font-size: 9pt; font-weight: 700; margin-top: 12mm; }
+.disclaimer { bottom: 24mm; color: #667085; font-size: 7.5pt; left: 24mm; margin: 0; max-width: 125mm; position: absolute; }
+.brand-footer { bottom: 12mm; color: var(--copper); font-size: 7.5pt; left: 24mm; margin: 0; position: absolute; }
+
+.toc {
+  break-after: page;
+  font-family: "PingFang SC", sans-serif;
+}
+
+.toc-title { border-bottom: 3px solid var(--copper); font-size: 22pt; font-weight: 700; margin-bottom: 12mm; padding-bottom: 5mm; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { border-bottom: 0.3pt solid #E4E7EC; padding: 2.2mm 0; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a::after { content: leader(".") target-counter(attr(href), page); color: #667085; }
+
+.report-body > h1:first-child { display: none; }
+h2, h3 { font-family: "PingFang SC", sans-serif; }
+h2 { break-before: page; border-top: 3px solid var(--copper); font-size: 18pt; padding-top: 8mm; }
+h3 { break-after: avoid; color: #344054; font-size: 12pt; }
+p, li { orphans: 3; widows: 3; }
+a { color: #70512C; }
+
+table {
+  border-collapse: collapse;
+  counter-increment: table;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 8pt;
+  table-layout: fixed;
+  width: 100%;
+}
+
+caption { color: #475467; font-weight: 700; padding: 0 0 2mm; text-align: left; }
+caption::before { content: "表 " counter(table) " · "; color: var(--copper); }
+thead { display: table-header-group; }
+tr, figure, blockquote { break-inside: avoid; }
+th, td { border: 0.3pt solid #CBD1D8; overflow-wrap: anywhere; padding: 2mm; vertical-align: top; }
+th { background: #F2F4F7; color: #344054; }
+
+figure { counter-increment: figure; margin: 7mm 0; }
+figure img { display: block; margin: 0 auto 2mm; max-height: 175mm; max-width: 100%; }
+figcaption { color: #475467; font-family: "PingFang SC", sans-serif; font-size: 8pt; text-align: center; }
+figcaption::before { content: "图 " counter(figure) " · "; color: var(--copper); }
+.source-line { color: #667085; font-size: 7.5pt; }
+
+.callout { background: #F7F3ED; border-left: 3px solid var(--copper); padding: 3mm 4mm; }
+.callout-fact { background: #F0F7F5; border-color: var(--fact); }
+.callout-inference { background: #F7F3ED; border-color: var(--copper); }
+.callout-open-question { background: #FBF1F0; border-color: var(--risk); }
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+</style></head><body><section class="cover"><div class="brand-name">lustinus RESEARCH</div><h1>工业视觉质检（虚构示例）</h1><p class="subtitle">由上游示例组装、仅用于固定版式回归的 canonical 研报</p><p class="report-date">2026-07-21</p><div class="cover-details"><div class="cover-detail"><span>Authors</span>虚构研究员甲, 虚构研究员乙</div><div class="cover-detail"><span>Sector</span>虚构制造软件</div><div class="cover-detail"><span>Region</span>虚构区域</div></div><p class="classification">Internal</p><p class="disclaimer">本报告由虚构示例上游组装而成：公司、数据、事件、标准、结论与来源均为虚构或假设，仅用于版式与组装回归，不构成真实市场主张或投资意见。</p><p class="brand-footer">Internal Research</p></section><nav class="toc"><div class="toc-title">目录</div><ol><li><a href="#section-01">研究设定与一页快照</a></li><li><a href="#section-02">行业定义与边界</a></li><li><a href="#section-03">行业简史与产业生命周期</a></li><li><a href="#section-04">技术路线与商业可行性</a></li><li><a href="#section-05">产业链图谱</a></li><li><a href="#section-06">产业趋势、景气度与周期位置</a></li><li><a href="#section-07">关键玩家</a></li><li><a href="#section-08">监管 / 政策 / 标准</a></li><li><a href="#section-09">投资相关问题与反证账本</a></li><li><a href="#section-10">后续工作交接包</a></li><li><a href="#section-extra-01">未核实与待补证据</a></li><li><a href="#section-11">来源索引</a></li></ol></nav><main class="report-body"><h2 id="section-01">研究设定与一页快照</h2>
+<p>本报告全部正文、表格、图示和来源均为虚构或假设，仅用于测试组装与版式；任何文字都不应被理解为真实行业事实。</p>
+<p>本虚构示例假设研究对象为&quot;示例工业视觉质检&quot;，时间、地域、产业边界和判断均仅为组装占位，不描述真实市场。[S1]</p>
+<blockquote class="callout callout-fact">
+<p>虚构事实卡：样例研究口径聚焦制造业缺陷检测，不纳入通用安防视觉、医疗影像和自动驾驶视觉。[S1]</p>
+</blockquote>
+<blockquote class="callout callout-inference">
+<p>虚构推断卡：若客户已从演示转向投资回报率、稳定交付和复用率验证，则行业可能进入商业化早期；这是版式用条件推断，不是现实判断。[S2][推测]</p>
+</blockquote>
+<blockquote class="callout callout-open-question">
+<p>虚构开放问题：低代码平台能否在复杂缺陷场景里减少专家调参，而不是把成本转移到服务团队？该问题只用于检查未知卡的颜色、间距和分页。[S3]</p>
+</blockquote>
+<h3>虚构快照</h3>
+<ul>
+<li>假设需求：样例买方仅在虚构预算池甲中比较方案。[S1]</li>
+<li>假设供给：样例供应方仅包含虚构公司甲、乙、丙。[S2]</li>
+<li>默认假设：中国市场、早期创业投资、未来 3-5 年。[用户关注点]</li>
+<li>假设边界：本页不提供任何真实市场规模、增长率或竞争结论。[S3]</li>
+</ul>
+<h2 id="section-02">行业定义与边界</h2>
+<p>本节虚构地把研究边界限定为样例图像采集、样例缺陷判断和样例人工复核；这些分类只为测试正文层级，不代表真实产业定义。[S1]</p>
+<table><caption>表：虚构研究边界，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>虚构边界项</th>
+<th>样例纳入内容</th>
+<th>样例排除内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任务</td>
+<td>虚构表面检查</td>
+<td>真实质量管理流程</td>
+</tr>
+<tr>
+<td>买方</td>
+<td>虚构工厂甲</td>
+<td>任何现实企业</td>
+</tr>
+<tr>
+<td>地域</td>
+<td>虚构区域</td>
+<td>任何现实国家或地区</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源一，仅用于版式回归。[S1]</em></p>
+<h2 id="section-03">行业简史与产业生命周期</h2>
+<p>本节虚构的阶段划分仅用于版式回归；阶段名称、顺序与切换条件均为假设，不对应真实历史。[S2]</p>
+<table><caption>表：虚构产业生命周期阶段，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>阶段</th>
+<th>时间</th>
+<th>关键变化</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>萌芽期</td>
+<td>2010 前后</td>
+<td>传统机器视觉设备进入部分高标准产线</td>
+<td>[S1]</td>
+</tr>
+<tr>
+<td>试点期</td>
+<td>2015-2020</td>
+<td>深度学习开始进入缺陷检测</td>
+<td>[S3]</td>
+</tr>
+<tr>
+<td>商业化早期</td>
+<td>2020-2025</td>
+<td>工业 AI 创业公司增多</td>
+<td>[S2]</td>
+</tr>
+<tr>
+<td>当前阶段</td>
+<td>2026</td>
+<td>客户从 demo 转向 ROI 和稳定交付</td>
+<td>[推测]</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源二与来源三，仅用于版式回归。[S2][S3]</em></p>
+<h2 id="section-04">技术路线与商业可行性</h2>
+<p>下表所有路线、成熟度、成本、场景和限制均为虚构标签，仅用于验证高密度表格的自动换行、表头重复和页面边界。[S2]</p>
+<table><caption>表：虚构技术路线比较，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>虚构路线</th>
+<th>样例机制</th>
+<th>样例成熟度</th>
+<th>样例成本条件</th>
+<th>样例适用场景</th>
+<th>样例关键限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>传统规则视觉</td>
+<td>基于规则、阈值、特征工程</td>
+<td>高</td>
+<td>固定成本低、变更成本高</td>
+<td>场景迁移弱</td>
+<td>规则维护频繁</td>
+</tr>
+<tr>
+<td>深度学习视觉</td>
+<td>基于监督学习识别缺陷</td>
+<td>中</td>
+<td>标注成本中等</td>
+<td>泛化更强</td>
+<td>依赖样本和标注</td>
+</tr>
+<tr>
+<td>低代码训练平台</td>
+<td>把数据采集、标注、训练、部署流程产品化</td>
+<td>低-中</td>
+<td>训练成本较高</td>
+<td>降低部署门槛</td>
+<td>复杂缺陷能力待验证</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源一、三与四，仅用于版式回归。[S1][S3][S4]</em></p>
+<p>本表不表达任何真实技术优劣、成本水平或商业可行性结论。</p>
+<h2 id="section-05">产业链图谱</h2>
+<p>下图中的环节及其关系全部为虚构，仅用于验证本地矢量图嵌入、图注和来源行是否与图片保持相邻。[S1]</p>
+<figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDEyMDAgNjAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzY3JpcHRpb24iPgogIDx0aXRsZSBpZD0idGl0bGUiPuWbm+adoeiZmuaehOaKgOacr+i3r+e6v+ekuuaEjzwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2NyaXB0aW9uIj7lm5vkuKrmqKrlkJHmjpLliJfnmoTot6/nur/moYbvvIzlhoXlrrnlrozlhajomZrmnoTvvIzku4XnlKjkuo7niYjlvI/lm57lvZLjgII8L2Rlc2M+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjdGM0VEIi8+CiAgPHRleHQgeD0iNzAiIHk9IjkwIiBmaWxsPSIjMjAyNTJCIiBmb250LWZhbWlseT0iUGluZ0ZhbmcgU0MsIE5vdG8gU2FucyBDSksgU0MsIE1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9IjcwMCI+6Jma5p6E5oqA5pyv6Lev57q/5Zu+PC90ZXh0PgogIDx0ZXh0IHg9IjcwIiB5PSIxMzIiIGZpbGw9IiM2NjcwODUiIGZvbnQtZmFtaWx5PSJQaW5nRmFuZyBTQywgTm90byBTYW5zIENKSyBTQywgTWljcm9zb2Z0IFlhSGVpLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIj7ku4XnlKjkuo7mnKzlnLDlm77niYfjgIHpopjms6jkuI7liIbpobXlm57lvZI8L3RleHQ+CgogIDxyZWN0IHg9IjcwIiB5PSIyMjAiIHdpZHRoPSIyMzAiIGhlaWdodD0iMTkwIiByeD0iMTgiIGZpbGw9IiNGMEY3RjUiIHN0cm9rZT0iIzJFNkY2MiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPHRleHQgeD0iMTg1IiB5PSIyOTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMyRTZGNjIiIGZvbnQtZmFtaWx5PSJQaW5nRmFuZyBTQywgTm90byBTYW5zIENKSyBTQywgTWljcm9zb2Z0IFlhSGVpLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI3IiBmb250LXdlaWdodD0iNzAwIj7op4TliJnot6/nur88L3RleHQ+CiAgPHRleHQgeD0iMTg1IiB5PSIzNDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0NzU0NjciIGZvbnQtZmFtaWx5PSJQaW5nRmFuZyBTQywgTm90byBTYW5zIENKSyBTQywgTWljcm9zb2Z0IFlhSGVpLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIj7omZrmnoTmoLfkvovnlLI8L3RleHQ+CgogIDxyZWN0IHg9IjM1MCIgeT0iMjIwIiB3aWR0aD0iMjMwIiBoZWlnaHQ9IjE5MCIgcng9IjE4IiBmaWxsPSIjRjdGM0VEIiBzdHJva2U9IiNBMDZCMkMiIHN0cm9rZS13aWR0aD0iNCIvPgogIDx0ZXh0IHg9IjQ2NSIgeT0iMjkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzA1MTJDIiBmb250LWZhbWlseT0iUGluZ0ZhbmcgU0MsIE5vdG8gU2FucyBDSksgU0MsIE1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNyIgZm9udC13ZWlnaHQ9IjcwMCI+5a2m5Lmg6Lev57q/PC90ZXh0PgogIDx0ZXh0IHg9IjQ2NSIgeT0iMzQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNDc1NDY3IiBmb250LWZhbWlseT0iUGluZ0ZhbmcgU0MsIE5vdG8gU2FucyBDSksgU0MsIE1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCI+6Jma5p6E5qC35L6L5LmZPC90ZXh0PgoKICA8cmVjdCB4PSI2MzAiIHk9IjIyMCIgd2lkdGg9IjIzMCIgaGVpZ2h0PSIxOTAiIHJ4PSIxOCIgZmlsbD0iI0VFRjJGNiIgc3Ryb2tlPSIjNDc1NDY3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8dGV4dCB4PSI3NDUiIHk9IjI5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzM0NDA1NCIgZm9udC1mYW1pbHk9IlBpbmdGYW5nIFNDLCBOb3RvIFNhbnMgQ0pLIFNDLCBNaWNyb3NvZnQgWWFIZWksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjciIGZvbnQtd2VpZ2h0PSI3MDAiPua3seWxgui3r+e6vzwvdGV4dD4KICA8dGV4dCB4PSI3NDUiIHk9IjM0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzQ3NTQ2NyIgZm9udC1mYW1pbHk9IlBpbmdGYW5nIFNDLCBOb3RvIFNhbnMgQ0pLIFNDLCBNaWNyb3NvZnQgWWFIZWksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiPuiZmuaehOagt+S+i+S4mTwvdGV4dD4KCiAgPHJlY3QgeD0iOTEwIiB5PSIyMjAiIHdpZHRoPSIyMzAiIGhlaWdodD0iMTkwIiByeD0iMTgiIGZpbGw9IiNGQkYxRjAiIHN0cm9rZT0iI0EzM0EzMiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPHRleHQgeD0iMTAyNSIgeT0iMjkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjQTMzQTMyIiBmb250LWZhbWlseT0iUGluZ0ZhbmcgU0MsIE5vdG8gU2FucyBDSksgU0MsIE1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNyIgZm9udC13ZWlnaHQ9IjcwMCI+5aSa5qih5oCB6Lev57q/PC90ZXh0PgogIDx0ZXh0IHg9IjEwMjUiIHk9IjM0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzQ3NTQ2NyIgZm9udC1mYW1pbHk9IlBpbmdGYW5nIFNDLCBOb3RvIFNhbnMgQ0pLIFNDLCBNaWNyb3NvZnQgWWFIZWksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiPuiZmuaehOagt+S+i+S4gTwvdGV4dD4KCiAgPHBhdGggZD0iTTMwMCAzMTUgSDMzOCIgc3Ryb2tlPSIjOThBMkIzIiBzdHJva2Utd2lkdGg9IjQiLz4KICA8cGF0aCBkPSJNNTgwIDMxNSBINjE4IiBzdHJva2U9IiM5OEEyQjMiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxwYXRoIGQ9Ik04NjAgMzE1IEg4OTgiIHN0cm9rZT0iIzk4QTJCMyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPHBhdGggZD0iTTMzOCAzMTUgTDMyMiAzMDUgVjMyNSBaIiBmaWxsPSIjOThBMkIzIi8+CiAgPHBhdGggZD0iTTYxOCAzMTUgTDYwMiAzMDUgVjMyNSBaIiBmaWxsPSIjOThBMkIzIi8+CiAgPHBhdGggZD0iTTg5OCAzMTUgTDg4MiAzMDUgVjMyNSBaIiBmaWxsPSIjOThBMkIzIi8+CgogIDx0ZXh0IHg9IjYwMCIgeT0iNTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY3MDg1IiBmb250LWZhbWlseT0iUGluZ0ZhbmcgU0MsIE5vdG8gU2FucyBDSksgU0MsIE1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCI+5omA5pyJ5ZCN56ew44CB5YWz57O75LiO6aG65bqP5Z2H5Li66Jma5p6E77yM5LiN5Luj6KGo55yf5a6e5oqA5pyv5Yik5patPC90ZXh0Pgo8L3N2Zz4K" alt="虚构产业链与路线示意，仅用于版式回归"><figcaption>虚构产业链与路线示意，仅用于版式回归</figcaption></figure>
+<p class="source-line"><em>来源：虚构样例来源一，仅用于版式回归。[S1]</em></p>
+<table><caption>表：虚构产业链环节，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>环节</th>
+<th>价值活动</th>
+<th>关键玩家</th>
+<th>核心壁垒</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上游</td>
+<td>相机、镜头、光源、工控机</td>
+<td>海外硬件龙头、国产硬件厂商</td>
+<td>品控、渠道、稳定性</td>
+<td>[S1]</td>
+</tr>
+<tr>
+<td>中游</td>
+<td>算法平台、检测设备、产线部署</td>
+<td>传统视觉厂商、AI 创业公司</td>
+<td>场景理解、算法、交付</td>
+<td>[推测]</td>
+</tr>
+<tr>
+<td>下游</td>
+<td>3C、汽车零部件、注塑、金属件工厂</td>
+<td>制造企业</td>
+<td>预算和验收标准</td>
+<td>[S5][未核实]</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源一与五，仅用于版式回归。[S1][S5]</em></p>
+<p>图中的环节名称不指向任何真实产品、企业、品牌或市场分类。</p>
+<h2 id="section-06">产业趋势、景气度与周期位置</h2>
+<p>本节不提供真实趋势。为测试段落密度，仅假设&quot;样例需求信号甲&quot;&quot;样例供给信号乙&quot;和&quot;样例预算信号丙&quot;处于不同状态；这些状态没有现实数据支持。[S3]</p>
+<table><caption>表：虚构趋势信号，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>虚构信号</th>
+<th>样例状态</th>
+<th>样例解释</th>
+<th>样例反证条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>需求信号甲</td>
+<td>假设上行</td>
+<td>仅测试绿色词组的普通文本呈现</td>
+<td>若虚构记录甲缺失则撤销</td>
+</tr>
+<tr>
+<td>供给信号乙</td>
+<td>假设平稳</td>
+<td>仅测试长单元格自动换行</td>
+<td>若虚构记录乙冲突则撤销</td>
+</tr>
+<tr>
+<td>预算信号丙</td>
+<td>假设分化</td>
+<td>仅测试表格行高一致性</td>
+<td>若虚构记录丙无效则撤销</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源三，仅用于版式回归。[S3]</em></p>
+<h3>市场规模模型（继承自 market-sizing.csv）</h3>
+<p>下表数值原样继承自虚构 <code>market-sizing.csv</code> 的输入行；汇总行由模型公式计算，不在本报告重述数值。[S1]</p>
+<table><caption>表：虚构市场规模输入，数值继承自 market-sizing.csv</caption>
+<thead>
+<tr>
+<th>模型变量</th>
+<th>保守</th>
+<th>基准</th>
+<th>乐观</th>
+<th>单位</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上位市场规模（TD_MARKET）</td>
+<td>80000000000</td>
+<td>100000000000</td>
+<td>120000000000</td>
+<td>CNY</td>
+<td>[S1]</td>
+</tr>
+<tr>
+<td>细分赛道占比（TD_SHARE）</td>
+<td>0.08</td>
+<td>0.10</td>
+<td>0.12</td>
+<td>ratio</td>
+<td>[S2]</td>
+</tr>
+<tr>
+<td>目标客户数（BU_CUSTOMERS）</td>
+<td>40000</td>
+<td>50000</td>
+<td>60000</td>
+<td>客户</td>
+<td>[S1]</td>
+</tr>
+<tr>
+<td>单客户年支出（A_PRICE）</td>
+<td>80000</td>
+<td>100000</td>
+<td>120000</td>
+<td>CNY/客户/年</td>
+<td>[S2]</td>
+</tr>
+<tr>
+<td>客户渗透率（BU_PENETRATION）</td>
+<td>0.04</td>
+<td>0.05</td>
+<td>0.06</td>
+<td>ratio</td>
+<td>[S2]</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构市场模型与示例行业报告，仅用于版式回归。[S1][S2]</em></p>
+<h2 id="section-07">关键玩家</h2>
+<p>所有玩家名称、分层和数字均为虚构，仅用于测试列表与加粗文本，不对应真实公司。[S1]</p>
+<table><caption>表：虚构玩家分层，数值继承自 Comps/DD 示例</caption>
+<thead>
+<tr>
+<th>公司</th>
+<th>国家/地区</th>
+<th>分层</th>
+<th>最近一年收入</th>
+<th>同比增长</th>
+<th>估值或市值</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>星尘工坊</td>
+<td>中国</td>
+<td>目标项目</td>
+<td>420 万元</td>
+<td>未核实</td>
+<td>未披露</td>
+<td>[S4]</td>
+</tr>
+<tr>
+<td>传统视觉 A</td>
+<td>中国</td>
+<td>可比公司</td>
+<td>3.2 亿元</td>
+<td>8%</td>
+<td>18 亿元</td>
+<td>[S3]</td>
+</tr>
+<tr>
+<td>海外视觉 B</td>
+<td>美国</td>
+<td>海外标杆</td>
+<td>12 亿美元</td>
+<td>4%</td>
+<td>40 亿美元</td>
+<td>[S6][未核实]</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源三、四与六，仅用于版式回归。[S3][S4][S6]</em></p>
+<ul>
+<li><strong>虚构玩家甲</strong>：假设提供样例采集模块；描述仅为版式占位。</li>
+<li><strong>虚构玩家乙</strong>：假设提供样例判断模块；描述仅为版式占位。</li>
+<li><strong>虚构玩家丙</strong>：假设提供样例复核模块；描述仅为版式占位。</li>
+</ul>
+<h2 id="section-08">监管 / 政策 / 标准</h2>
+<p>本节不引用任何真实法规、政策或标准。[S7]</p>
+<table><caption>表：虚构监管与标准，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>类型</th>
+<th>内容</th>
+<th>影响</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>政策</td>
+<td>智能制造相关政策鼓励自动化升级</td>
+<td>提供方向性支持，但不等于客户预算</td>
+<td>[S7][未核实]</td>
+</tr>
+<tr>
+<td>标准</td>
+<td>缺陷检测验收标准通常由客户和行业决定</td>
+<td>项目交付需要适配客户标准</td>
+<td>[推测]</td>
+</tr>
+<tr>
+<td>监管风险</td>
+<td>低</td>
+<td>不涉及强监管审批</td>
+<td>[推测]</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源七，仅用于版式回归。[S7]</em></p>
+<blockquote class="callout callout-open-question">
+<p>虚构合规问题：假设样例系统进入虚构高风险工位时，应补充哪一份虚构验证记录？该问题没有现实法律含义。[S7]</p>
+</blockquote>
+<h2 id="section-09">投资相关问题与反证账本</h2>
+<p>以下问题、证据和反证条件均为虚构，不构成投资建议，也不评价任何现实项目。[S3]</p>
+<table><caption>表：虚构投资问题与反证，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>假设</th>
+<th>当前证据</th>
+<th>机制</th>
+<th>关键反证</th>
+<th>继承主张</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低代码能降低交付成本</td>
+<td>[S4][推测]</td>
+<td>标注、训练和部署标准化后减少算法工程师工时</td>
+<td>项目增加后人均交付工时不降</td>
+<td>C12</td>
+</tr>
+<tr>
+<td>数据闭环形成防守性</td>
+<td>[S3][推测]</td>
+<td>更多真实缺陷数据提升模型与工艺适配</td>
+<td>客户能导出数据并低成本切换供应商</td>
+<td>C18</td>
+</tr>
+<tr>
+<td>市场可以跨场景复制</td>
+<td>[S1][推测]</td>
+<td>共用硬件和训练平台摊薄研发与售后成本</td>
+<td>每个行业都需重做光学、数据和验收</td>
+<td>C21-C25</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源一、三与四，仅用于版式回归。[S1][S3][S4]</em></p>
+<h2 id="section-10">后续工作交接包</h2>
+<p>下列交接项均为虚构任务，只用于验证清单和强调样式。[S3]</p>
+<ul>
+<li>[ ] 虚构任务甲：用 <code>/jvc-comps-dd</code> 对比传统视觉厂商、工业 AI 创业公司和自动化集成商；完成标准为占位字段齐全。</li>
+<li>[ ] 虚构任务乙：用 <code>/jvc-bull-case</code> 与 <code>/jvc-bear-case</code> 整理正反假设；完成标准为占位引用可追踪。</li>
+<li>[ ] 虚构任务丙：用 <code>/jvc-market-sizing</code> 按场景拆变量；完成标准为占位结论可撤销。</li>
+</ul>
+<p>交接包不要求任何现实调查、联系或外部行动。</p>
+<h2 id="section-extra-01">未核实与待补证据</h2>
+<p>本次组装已消费 Track Research、Knowledge Tree、Market Sizing 与 Comps/DD 四类输入；无缺失的可选输入。以下为上游已标注的未核实项，逐项列出需要补的证据，不在本报告新增事实或数字。[S6]</p>
+<table><caption>表：上游未核实项与待补证据清单，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>说法/数字</th>
+<th>当前来源</th>
+<th>需要补的证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低代码视觉正在成为趋势</td>
+<td>[S4]</td>
+<td>第三方报告、客户采用率、竞品产品路线</td>
+</tr>
+<tr>
+<td>海外视觉龙头收入</td>
+<td>[S6]</td>
+<td>年报原文和分部收入</td>
+</tr>
+<tr>
+<td>ROI 验收成为主流</td>
+<td>[S5]</td>
+<td>客户采购访谈、招标文件、复购数据</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源四、五与六，仅用于版式回归。[S4][S5][S6]</em></p>
+<h2 id="section-11">来源索引</h2>
+<table><caption>表：虚构来源索引，仅用于版式回归</caption>
+<thead>
+<tr>
+<th>编号</th>
+<th>标题</th>
+<th>机构或作者</th>
+<th>日期</th>
+<th>链接</th>
+<th>来源类型</th>
+<th>可信度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>虚构样例行业综述</td>
+<td>虚构研究室甲</td>
+<td>2026-07-01（虚构）</td>
+<td>https://example.invalid/fictional-source-1</td>
+<td>行业报告</td>
+<td>中，需补一手数据</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>虚构样例融资新闻</td>
+<td>虚构研究室乙</td>
+<td>2026-07-02（虚构）</td>
+<td>https://example.invalid/fictional-source-2</td>
+<td>融资新闻</td>
+<td>低，只能作为线索</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>虚构样例技术文章</td>
+<td>虚构研究室丙</td>
+<td>2026-07-03（虚构）</td>
+<td>https://example.invalid/fictional-source-3</td>
+<td>技术文章</td>
+<td>中，需补产品文档</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>虚构样例公司材料</td>
+<td>虚构样例公司</td>
+<td>2026-07-04（虚构）</td>
+<td>https://example.invalid/fictional-source-4</td>
+<td>公司自述</td>
+<td>低，未独立验证</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>虚构样例客户访谈</td>
+<td>虚构研究室甲</td>
+<td>2026-07-05（虚构）</td>
+<td>https://example.invalid/fictional-source-5</td>
+<td>访谈</td>
+<td>中，需扩大样本</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>虚构样例年报</td>
+<td>虚构研究室乙</td>
+<td>2026-07-06（虚构）</td>
+<td>https://example.invalid/fictional-source-6</td>
+<td>年报</td>
+<td>高，需核验原文</td>
+</tr>
+<tr>
+<td>S7</td>
+<td>虚构样例政策</td>
+<td>虚构研究室丙</td>
+<td>2026-07-07（虚构）</td>
+<td>https://example.invalid/fictional-source-7</td>
+<td>政策</td>
+<td>高，需核验原文</td>
+</tr>
+</tbody>
+</table>
+<p class="source-line"><em>来源：虚构样例来源索引，仅用于版式回归。</em></p>
+</main></body></html>

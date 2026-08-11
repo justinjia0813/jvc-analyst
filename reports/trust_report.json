@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-08-08",
+  "generated_at": "2026-08-10",
   "mode": "production-governance",
-  "package_sha256": "ba515d9d0a0810f6f32180980244c74f5eb2a9b96a1499204c2daaeab86af091",
-  "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
+  "package_sha256": "63913d375920fe2c5b04d9169a46cf7cbee3ff462eef498ef2c3b7688b8f4d3c",
+  "hash_scope": "manifest, inspired-design.md, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
     "patterns_checked": [
@@ -21,7 +21,10 @@
     "policy_file": "security/network_policy.json",
     "network_capable_scripts": [],
     "notes": [
-      "No research-core, review-kit, research-report renderer, IC memo validator, or IC memo package-check script has network capability."
+      "No research-core, review-kit, research-report renderer, IC memo validator, or IC memo package-check script has network capability.",
+      "The Pre-Screen validator and package check are local-only and have no network capability.",
+      "The Knowledge Tree and Market Sizing validators and package checks are local-only and have no network capability.",
+      "The Research Report assembly validator is local-only and has no network capability."
     ]
   },
   "permission_policy": {
@@ -44,15 +47,20 @@
     "notes": [
       "The deal-flow controller, research core, install check, and review-kit renderer use the Python standard library only.",
       "The IC memo final validator and package check use the Python standard library only.",
+      "The Pre-Screen validator and package check use the Python standard library only.",
+      "The ROI Modeler CSV validator uses the Python standard library only.",
+      "The Knowledge Tree validator uses the Python standard library only; its package check also invokes local Quarto and Poppler tools.",
+      "The Market Sizing validator and package check use the Python standard library only.",
       "All jvc-research-report Python runtime dependencies are version-pinned.",
       "Some existing DOCX and invoice dependencies are not version-pinned.",
-      "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
+      "Homebrew dependencies for invoice OCR are documented but not machine-pinned.",
+      "The Research Report assembly validator uses the Python standard library only."
     ]
   },
   "research_report_evidence": {
     "status": "pass",
-    "fixture": "examples/research-report-example/report.md",
-    "scope": "Local file-backed fictional fixture for deterministic rendering; it contains no real market claims.",
+    "fixture": "examples/research-report-example/research-report.md",
+    "scope": "Local file-backed fictional canonical fixture for deterministic rendering; it contains no real market claims.",
     "controls": [
       "Inputs are local-only and local binary resources are embedded as data URIs.",
       "Remote and absolute resources, path traversal, unsafe SVG resources, and unresolved source IDs are rejected.",
@@ -60,10 +68,10 @@
     ],
     "artifact_check": {
       "page_size": "A4",
-      "page_count": 13,
+      "page_count": 14,
       "pdftotext": "pass: title, canonical sections, handoff, and source index were extracted",
-      "pdftoppm": "pass: 13 of 13 pages rendered",
-      "visual_inspection": "pass: all 13 pages were checked for clipping, overflow, missing glyphs, detached captions, blank pages, and inconsistent page furniture"
+      "pdftoppm": "pass: 14 of 14 pages rendered",
+      "visual_inspection": "pass: main agent inspected all 14 pages on 2026-08-10 via view_image (record: reports/task9-visual/MAIN-VISUAL-INSPECTION.md); no clipping, missing glyphs, missing labels, or cross-page inconsistency; pages 7, 13, and 14 passed"
     },
     "resolved_issues": [
       "The initial fixture reused the route illustration as cover artwork; cover_image was set to null before final inspection."
@@ -85,8 +93,11 @@
       "interface": "cli",
       "help_surface": "none",
       "capabilities": [
-        "file_read"
-      ]
+        "file_read",
+        "file_write",
+        "subprocess"
+      ],
+      "write_scope": "temporary_directories_only"
     },
     {
       "path": "skills/jvc-deal-flow/scripts/dealflowctl.py",
@@ -124,6 +135,27 @@
         "file_write",
         "subprocess"
       ]
+    },
+    {
+      "path": "skills/jvc-prescreen/scripts/validate_output.py",
+      "interface": "cli",
+      "help_surface": "usage",
+      "capabilities": [
+        "file_read"
+      ],
+      "network": false
+    },
+    {
+      "path": "skills/jvc-prescreen/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ],
+      "write_scope": "temporary_directories_only",
+      "network": false
     },
     {
       "path": "scripts/check-v3-foundation.py",
@@ -170,6 +202,14 @@
       ]
     },
     {
+      "path": "skills/jvc-roi-modeler/scripts/validate_csv.py",
+      "interface": "cli",
+      "help_surface": "usage",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
       "path": "skills/jvc-knowledge-tree-builder/scripts/collect_sources.py",
       "interface": "cli",
       "help_surface": "argparse",
@@ -179,12 +219,46 @@
       ]
     },
     {
-      "path": "skills/jvc-knowledge-tree-builder/scripts/check_package.py",
+      "path": "skills/jvc-knowledge-tree-builder/scripts/validate_output.py",
       "interface": "cli",
-      "help_surface": "none",
+      "help_surface": "usage",
       "capabilities": [
         "file_read"
-      ]
+      ],
+      "network": false
+    },
+    {
+      "path": "skills/jvc-knowledge-tree-builder/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ],
+      "write_scope": "temporary_directories_only",
+      "network": false
+    },
+    {
+      "path": "skills/jvc-market-sizing/scripts/validate_csv.py",
+      "interface": "cli",
+      "help_surface": "usage",
+      "capabilities": [
+        "file_read"
+      ],
+      "network": false
+    },
+    {
+      "path": "skills/jvc-market-sizing/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ],
+      "write_scope": "temporary_directories_only",
+      "network": false
     },
     {
       "path": "skills/jvc-research-report/scripts/build_report.py",
@@ -250,8 +324,49 @@
       "help_surface": "none",
       "capabilities": [
         "file_read",
-        "file_write"
+        "file_write",
+        "subprocess"
       ]
+    },
+    {
+      "path": "skills/jvc-research-report/scripts/validate_assembly.py",
+      "interface": "cli",
+      "help_surface": "usage",
+      "capabilities": [
+        "file_read"
+      ],
+      "network": false,
+      "dependency_notes": "Uses the Python standard library only; reuses the IC memo final validator's number normalization without changing IC semantics."
+    },
+    {
+      "path": "scripts/check-docx-filename-rule.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "subprocess"
+      ],
+      "network": false
+    },
+    {
+      "path": "scripts/check-docx-format-consistency.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "subprocess"
+      ],
+      "network": false
+    },
+    {
+      "path": "scripts/check-docx-template-customization.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "subprocess"
+      ],
+      "network": false
     }
   ],
   "warnings": [

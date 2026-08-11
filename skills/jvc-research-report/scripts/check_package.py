@@ -97,9 +97,310 @@ def run_builder(report_path: Path, brand_path: Path, output: Path) -> subprocess
     )
 
 
+def run_validate_assembly(argv: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(Path(__file__).with_name("validate_assembly.py")), *argv],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def check_assembly_contract() -> None:
+    """Require the two-stage assembler contract and the direct publish mode."""
+    skill = (Path(__file__).resolve().parent.parent / "SKILL.md").read_text(encoding="utf-8")
+    contract = (Path(__file__).resolve().parent.parent / "references" / "output-contract.md").read_text(
+        encoding="utf-8"
+    )
+    for required in (
+        "组装",
+        "发布",
+        "validate_assembly.py",
+        "build_report.py",
+        "直接发布",
+    ):
+        assert required in skill, f"SKILL.md missing two-stage wording: {required}"
+    for required in (
+        "来源标识",
+        "继承",
+        "覆盖缺口",
+        "联网",
+    ):
+        assert (
+            required in skill or required in contract
+        ), f"assembly contract missing wording: {required}"
+    for prohibited in ("import requests", "import urllib.request", "import http.client"):
+        source = (Path(__file__).with_name("build_report.py")).read_text(encoding="utf-8")
+        assert prohibited not in source, f"renderer must not access the network: {prohibited}"
+    validator_source = Path(__file__).with_name("validate_assembly.py")
+    assert validator_source.is_file(), "validate_assembly.py is missing"
+    text = validator_source.read_text(encoding="utf-8")
+    for prohibited in ("import requests", "import urllib.request", "import http.client"):
+        assert prohibited not in text, f"assembly validator must be local-only: {prohibited}"
+
+
+def write_assembly_upstreams(root: Path, *, amount: str = "420 万元") -> dict[str, Path]:
+    track = root / "track-research.md"
+    track.write_text(
+        "# 赛道研究（虚构测试上游）\n\n"
+        "行业规模约 {amount}。[S1][推测]\n\n"
+        "客户数量约 500 家。[S2]\n\n"
+        "## 来源索引\n\n"
+        "| ID | 来源 |\n| --- | --- |\n| S1 | 来源甲 |\n| S2 | 来源乙 |\n".format(amount=amount),
+        encoding="utf-8",
+    )
+    knowledge = root / "knowledge-tree"
+    knowledge.mkdir(exist_ok=True)
+    (knowledge / "knowledge_tree.md").write_text(
+        "# 知识树\n\n行业规模继承自赛道研究 [S1]。\n", encoding="utf-8"
+    )
+    (knowledge / "evidence_index.md").write_text(
+        "# 证据索引\n\n## S1\n\n- 有效主张：C1\n", encoding="utf-8"
+    )
+    (knowledge / "open_questions.md").write_text(
+        "# 开放问题\n\n- 复购能否覆盖服务成本？\n", encoding="utf-8"
+    )
+    (knowledge / "nodes.json").write_text('{"nodes": []}\n', encoding="utf-8")
+    (knowledge / "knowledge_graph.mmd").write_text("flowchart LR\n  a --> b\n", encoding="utf-8")
+    sizing = root / "market-sizing.csv"
+    sizing.write_text(
+        "section,row_id,item,year,unit,conservative,base,optimistic,source_or_formula,confidence,notes\n"
+        "top_down,TD,市场规模,2026,CNY,100,200,300,[S1],high,测试\n"
+        "sources,S1,来源甲,2026,,,,,本地,high,\n"
+        "sources,S2,来源乙,2026,,,,,本地,high,\n",
+        encoding="utf-8",
+    )
+    comps = root / "comps-dd.md"
+    comps.write_text(
+        "# 可比公司（虚构测试上游）\n\n"
+        "竞品收入 8% 增长。[S4]\n\n"
+        "## 来源索引\n\n"
+        "| ID | 来源 |\n| --- | --- |\n| S4 | 来源丁 |\n",
+        encoding="utf-8",
+    )
+    return {"track": track, "knowledge": knowledge, "sizing": sizing, "comps": comps}
+
+
+def write_assembly_report(root: Path, *, gap: str = "无缺失输入；待补证据：来源乙口径。[S2]") -> Path:
+    report = root / "research-report.md"
+    report.write_text(
+        "---\n"
+        "title: 测试研报\n"
+        "date: 2026-07-22\n"
+        "---\n"
+        "\n"
+        "## 研究设定与一页快照\n\n"
+        "行业规模约 420 万元。[S1][推测]\n\n"
+        "## 未核实与待补证据\n\n"
+        f"{gap}\n\n"
+        "## 来源索引\n\n"
+        "| ID | 来源 |\n| --- | --- |\n| S1 | 来源甲 |\n| S2 | 来源乙 |\n",
+        encoding="utf-8",
+    )
+    return report
+
+
+def check_validate_assembly(root: Path) -> None:
+    upstreams = write_assembly_upstreams(root)
+    report = write_assembly_report(root)
+    base_argv = [
+        "--track-research",
+        str(upstreams["track"]),
+        "--knowledge-tree",
+        str(upstreams["knowledge"]),
+        "--market-sizing",
+        str(upstreams["sizing"]),
+        "--comps-dd",
+        str(upstreams["comps"]),
+        "--report",
+        str(report),
+    ]
+    faithful = run_validate_assembly(base_argv)
+    assert faithful.returncode == 0, f"faithful assembly failed: {faithful.stderr}"
+
+    new_source = write_assembly_report(root).read_text(encoding="utf-8").replace("[S1]", "[S9]", 1)
+    report.write_text(new_source, encoding="utf-8")
+    bad_source = run_validate_assembly(base_argv)
+    assert bad_source.returncode == 1, f"new source ID accepted: {bad_source.stdout}"
+    assert "source absent from upstream: S9" in bad_source.stderr, bad_source.stderr
+
+    new_number = write_assembly_report(root).read_text(encoding="utf-8").replace("420 万元", "999 万元", 1)
+    report.write_text(new_number, encoding="utf-8")
+    bad_number = run_validate_assembly(base_argv)
+    assert bad_number.returncode == 1, f"new factual number accepted: {bad_number.stdout}"
+    assert "number absent from upstream: 999万元" in bad_number.stderr, bad_number.stderr
+
+    bad_label = write_assembly_report(root).read_text(encoding="utf-8").replace("[推测]", "[创始人自述]", 1)
+    report.write_text(bad_label, encoding="utf-8")
+    unsupported = run_validate_assembly(base_argv)
+    assert unsupported.returncode == 1, f"unsupported claim marker accepted: {unsupported.stdout}"
+    assert "label absent from upstream: [创始人自述]" in unsupported.stderr, unsupported.stderr
+
+    write_assembly_upstreams(root, amount="520 万元")
+    report.write_text(write_assembly_report(root).read_text(encoding="utf-8"), encoding="utf-8")
+    drifted = run_validate_assembly(base_argv)
+    assert drifted.returncode == 1, "assembly check did not compare actual upstream content"
+    assert "number absent from upstream: 420万元" in drifted.stderr, drifted.stderr
+
+    write_assembly_upstreams(root)
+    report.write_text(write_assembly_report(root).read_text(encoding="utf-8"), encoding="utf-8")
+
+    missing_gap = write_assembly_report(root, gap="全部输入已提供。").read_text(encoding="utf-8")
+    report.write_text(missing_gap, encoding="utf-8")
+    no_comps = run_validate_assembly(base_argv[:6] + base_argv[8:])
+    assert no_comps.returncode == 1, "missing optional upstream without visible gap accepted"
+    assert "coverage gap does not name missing input: comps-dd" in no_comps.stderr, no_comps.stderr
+
+    named_gap = write_assembly_report(root, gap="可选输入 Comps/DD 未提供。").read_text(encoding="utf-8")
+    report.write_text(named_gap, encoding="utf-8")
+    named = run_validate_assembly(base_argv[:6] + base_argv[8:])
+    assert named.returncode == 0, f"named coverage gap rejected: {named.stderr}"
+
+    missing_required = run_validate_assembly(base_argv[2:])
+    assert missing_required.returncode == 2, "missing required upstream accepted"
+    assert "track-research" in missing_required.stderr, missing_required.stderr
+
+
+def check_assembly_adversarial(root: Path) -> None:
+    """Task8 adversarial review regression fixtures (items 1a-1h).
+
+    Each fixture writes a real temporary upstream set and runs
+    validate_assembly.py as a subprocess; a wrong exit code fails the gate.
+    """
+    upstreams = write_assembly_upstreams(root)
+    report = write_assembly_report(root)
+    base_argv = [
+        "--track-research",
+        str(upstreams["track"]),
+        "--knowledge-tree",
+        str(upstreams["knowledge"]),
+        "--market-sizing",
+        str(upstreams["sizing"]),
+        "--comps-dd",
+        str(upstreams["comps"]),
+        "--report",
+        str(report),
+    ]
+    faithful = run_validate_assembly(base_argv)
+    assert faithful.returncode == 0, f"adversarial baseline failed: {faithful.stderr}"
+
+    def with_report(text: str) -> Path:
+        path = root / "adversarial.md"
+        path.write_text(text, encoding="utf-8")
+        return path
+
+    # 1a: missing evidence labels, fullwidth markers, unknown keyword labels
+    for label in ("[模型估算]", "[未知/待验证]", "[用户观察]", "[用户假设]"):
+        text = write_assembly_report(root).read_text(encoding="utf-8")
+        text = text.replace("[推测]", label, 1)
+        run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+        assert run.returncode == 1, f"1a label accepted: {label}"
+        assert f"label absent from upstream: {label}" in run.stderr, run.stderr
+
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("[推测]", "【模型估算】", 1)
+    fullwidth = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert fullwidth.returncode == 1, "1a fullwidth label accepted"
+    assert "label absent from upstream: 【模型估算】" in fullwidth.stderr, fullwidth.stderr
+
+    for unknown in ("[自述]", "[已核实]", "[访谈]"):
+        text = write_assembly_report(root).read_text(encoding="utf-8")
+        text = text.replace("[推测]", unknown, 1)
+        run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+        assert run.returncode == 1, f"1a unknown keyword label accepted: {unknown}"
+        assert f"unknown evidence label: {unknown}" in run.stderr, run.stderr
+
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("[推测]", "[无关键字标签]", 1)
+    benign = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert benign.returncode == 0, f"1a benign label rejected: {benign.stderr}"
+
+    # upstream fullwidth label is inheritable in halfwidth form
+    labeled_sizing = root / "market-sizing-label.csv"
+    labeled_sizing.write_text(
+        upstreams["sizing"].read_text(encoding="utf-8").replace("测试", "测试【模型估算】", 1),
+        encoding="utf-8",
+    )
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("[推测]", "[模型估算]", 1)
+    argv = list(base_argv[:-2])
+    argv[argv.index(str(upstreams["sizing"]))] = str(labeled_sizing)
+    inherited = run_validate_assembly(argv + ["--report", str(with_report(text))])
+    assert inherited.returncode == 0, f"1a inherited fullwidth label rejected: {inherited.stderr}"
+
+    # 1b: digit hidden inside a label bracket must participate in number inheritance
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("[推测]", "[模型估算 999]", 1)
+    run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert run.returncode == 1, "1b bracketed digit accepted"
+    assert "number absent from upstream: 999" in run.stderr, run.stderr
+    assert "unknown evidence label: [模型估算 999]" in run.stderr, run.stderr
+
+    # 1c: new number hidden in a source index row description
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("| S1 | 来源甲 |", "| S1 | 来源甲（模型估算 999） |", 1)
+    run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert run.returncode == 1, "1c source-index number accepted"
+    assert "number absent from upstream: 999" in run.stderr, run.stderr
+
+    # 1d: frontmatter only allows the canonical known keys
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("date: 2026-07-22\n", "date: 2026-07-22\n市场规模摘要: 999 亿元\n", 1)
+    run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert run.returncode == 1, "1d unknown frontmatter key accepted"
+    assert "unknown frontmatter key: 市场规模摘要" in run.stderr, run.stderr
+
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("date: 2026-07-22\n", "date: 2026-07-22\ncover_image: null\n", 1)
+    known = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert known.returncode == 0, f"1d known frontmatter key rejected: {known.stderr}"
+
+    # 1f: four-digit year N and N年 are equivalent; 亿/万 conversion stays rejected
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("行业规模约 420 万元", "行业规模约 420 万元（2026 年）", 1)
+    year_ok = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert year_ok.returncode == 0, f"1f year suffix rejected: {year_ok.stderr}"
+
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("行业规模约 420 万元", "行业规模约 0.042 亿元", 1)
+    unit_run = run_validate_assembly(base_argv[:-2] + ["--report", str(with_report(text))])
+    assert unit_run.returncode == 1, "1f unit conversion accepted"
+    assert "number absent from upstream: 0.042亿元" in unit_run.stderr, unit_run.stderr
+    assert "疑似单位表示不一致" in unit_run.stderr, unit_run.stderr
+    assert "420万元" in unit_run.stderr, unit_run.stderr
+
+    # 1g: knowledge-tree directory with a non-UTF-8 file -> actionable error
+    bad_tree = root / "knowledge-bad"
+    shutil.copytree(upstreams["knowledge"], bad_tree)
+    (bad_tree / "binary.bin").write_bytes(b"\xff\xfe\x00binary")
+    argv = list(base_argv[:-2])
+    argv[argv.index(str(upstreams["knowledge"]))] = str(bad_tree)
+    bad_dir = run_validate_assembly(argv + ["--report", str(report)])
+    assert bad_dir.returncode == 2, "1g non-UTF-8 knowledge-tree accepted"
+    assert "cannot read knowledge-tree: binary.bin" in bad_dir.stderr, bad_dir.stderr
+    assert "Traceback" not in bad_dir.stderr, bad_dir.stderr
+
+    # 1h: CSV sources row parsed with csv.reader (quoted comma)
+    quoted_sizing = root / "market-sizing-q.csv"
+    quoted_sizing.write_text(
+        upstreams["sizing"].read_text(encoding="utf-8").replace(
+            "sources,S2,来源乙,2026",
+            'sources,"S7, S8",来源戊己,2026',
+            1,
+        ),
+        encoding="utf-8",
+    )
+    text = write_assembly_report(root).read_text(encoding="utf-8")
+    text = text.replace("行业规模约 420 万元。[S1][推测]", "行业规模约 420 万元。[S7][推测]", 1)
+    argv = list(base_argv[:-2])
+    argv[argv.index(str(upstreams["sizing"]))] = str(quoted_sizing)
+    quoted = run_validate_assembly(argv + ["--report", str(with_report(text))])
+    assert quoted.returncode == 0, f"1h quoted-comma source rejected: {quoted.stderr}"
+
+
 def check_tracked_fixture() -> None:
     repository = Path(__file__).resolve().parents[3]
-    fixture = repository / "examples" / "research-report-example" / "report.md"
+    fixture = repository / "examples" / "research-report-example" / "research-report.md"
     brand = Path(__file__).resolve().parent.parent / "assets" / "brand.yml"
     assert fixture.is_file(), f"tracked fixture missing: {fixture}"
     pdftotext = shutil.which("pdftotext")
@@ -141,9 +442,30 @@ def check_tracked_fixture() -> None:
         for check in ("structure", "source", "render", "bookmark"):
             assert f"{check}: pass" in build_log
 
+    assembly = run_validate_assembly(
+        [
+            "--track-research",
+            str(repository / "examples" / "track-research-example.md"),
+            "--knowledge-tree",
+            str(repository / "examples" / "knowledge-tree-example"),
+            "--market-sizing",
+            str(repository / "examples" / "market-sizing-example.csv"),
+            "--comps-dd",
+            str(repository / "examples" / "comps-dd-example.md"),
+            "--report",
+            str(fixture),
+        ]
+    )
+    assert assembly.returncode == 0, f"tracked assembly failed: {assembly.stderr}"
+
 
 def main() -> None:
+    check_assembly_contract()
     check_tracked_fixture()
+    with TemporaryDirectory() as temporary_directory:
+        check_validate_assembly(Path(temporary_directory))
+    with TemporaryDirectory() as temporary_directory:
+        check_assembly_adversarial(Path(temporary_directory))
     with TemporaryDirectory() as temporary_directory:
         root = Path(temporary_directory)
         report_path = root / "report.md"

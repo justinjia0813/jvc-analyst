@@ -7,7 +7,9 @@ version: "2.0.0"
 
 # JVC Research Core
 
-Maintain one append-only evidence ledger and audit final artifacts for the calling jvc skill.
+本组件是不可直接调用的证据引擎。它只负责证据台账、主张继承、产物审计：为调用方维护追加式记录并执行确定性检查；不搜索、不编排原子 Skill，也不推进业务阶段。
+
+它的三种审查状态仍为 ready、partial、blocked：分别表示通过审查、收窄后不完整交付、停止受影响判断。这些状态描述证据和产物质量，不代表用户批准研究级别升级、进入尽调、提交 IC（Investment Committee，投资决策委员会，负责审议投资项目）或生成干净终版。
 
 ## Required execution
 
@@ -27,5 +29,6 @@ Maintain one append-only evidence ledger and audit final artifacts for the calli
 ## Boundaries
 
 - Do not search the web, choose sources, make investment judgments, or rewrite artifacts.
+- Do not create workflow events, choose the next business stage, or interpret `ready` as approval to advance.
 - Do not fall back to prompt-only completion when this runtime is missing or fails.
 - Read `references/evidence-contract.md` for record fields, independence, conflict, waiver, and audit rules.

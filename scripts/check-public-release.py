@@ -103,6 +103,18 @@ def main(argv: list[str] | None = None) -> int:
                     continue
                 findings.append(f"{relative}: {label} {value!r}")
 
+    # A file on disk that .gitignore hides from the release but that the repo references
+    # would ship a broken package (a fresh clone would not contain it).
+    ignored = subprocess.check_output(
+        ["git", "ls-files", "--others", "--ignored", "--exclude-standard", "-z"], cwd=ROOT
+    ).decode().split("\0")
+    tracked_text = "\n".join(
+        p.read_text(encoding="utf-8", errors="ignore") for p in tracked_files() if p.suffix in {".py", ".sh", ".json", ".md"}
+    )
+    for name in ignored:
+        if name and "__pycache__" not in name and name in tracked_text:
+            findings.append(f"{name}: referenced by tracked files but excluded by .gitignore")
+
     if not deny:
         print(f"warning: deny list not found at {args.deny_list}; private-name check skipped", file=sys.stderr)
     if findings:

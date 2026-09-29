@@ -1,12 +1,12 @@
 .DS_Store
 
 # Local confidential deal materials and generated outputs
-projects/
-tracks/
-output/
-outputs/
+/projects/
+/tracks/
+/output/
+/outputs/
 archive/
-input/
+/input/
 skills/*/data.json
 
 # Runtime / temporary files

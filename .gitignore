@@ -1,0 +1,23 @@
+.DS_Store
+
+# Local confidential deal materials and generated outputs
+projects/
+tracks/
+output/
+outputs/
+archive/
+input/
+skills/*/data.json
+
+# Runtime / temporary files
+*.log
+*.tmp
+*.bak
+__pycache__/
+.venv/
+venv/
+.worktrees/
+
+# User-provided local Word templates
+skills/jvc-meeting-notes/templates/custom.docx
+

@@ -1,0 +1,40 @@
+interface:
+  display_name: "jvc-analyst"
+  short_description: "Local-first VC diligence skill suite for RMB early-stage workflows"
+  default_prompt: "Use the ten primary skills for judgment-first investment analysis from first look to portfolio tracking; internal support is for rendering, knowledge trees and optional evidence audits. Invoice operations require the separate optional installation."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "codex"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths:
+      - "skills/jvc-meeting-notes/SKILL.md"
+      - "skills/jvc-interview-prep/SKILL.md"
+      - "skills/jvc-prescreen/SKILL.md"
+      - "skills/jvc-business-economics/SKILL.md"
+      - "skills/jvc-track-research/SKILL.md"
+      - "skills/jvc-workbook/SKILL.md"
+      - "skills/jvc-thesis-test/SKILL.md"
+      - "skills/jvc-ic-memo/SKILL.md"
+      - "skills/jvc-dd-report-digest/SKILL.md"
+      - "skills/jvc-portfolio-tracking/SKILL.md"
+    support_paths: # installed for internal calls, not slash entries
+      - "skills/jvc-research-report/SKILL.md"
+      - "skills/jvc-knowledge-tree-builder/SKILL.md"
+      - "skills/jvc-research-core/SKILL.md"
+    optional_paths: # not installed by default; ./setup --operations
+      - "skills/jvc-invoice-manager/SKILL.md"
+  execution:
+    context: "local"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source"

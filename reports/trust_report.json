@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "package": "jvc-analyst",
+  "generated_at": "2026-09-29",
+  "mode": "production-governance",
+  "package_sha256": "e361056f59f883c190247ae0439f702555194b5c21c33b801ba782c5507f1ce2",
+  "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
+  "secret_scan": {
+    "status": "pass",
+    "patterns_checked": [
+      "OPENAI_API_KEY",
+      "sk-",
+      "github_pat_",
+      "ghp_",
+      "password",
+      "secret"
+    ]
+  },
+  "network_policy": {
+    "status": "pass",
+    "policy_file": "security/network_policy.json",
+    "network_capable_scripts": [],
+    "notes": [
+      "No research-core, research-report renderer, IC memo validator, or IC memo package-check script has network capability."
+    ]
+  },
+  "permission_policy": {
+    "status": "pass",
+    "policy_file": "security/permission_policy.json",
+    "approved_capabilities": [
+      "file_read",
+      "file_write",
+      "subprocess"
+    ]
+  },
+  "dependency_review": {
+    "status": "warn",
+    "pinned_dependencies": [
+      "markdown-it-py==4.0.0",
+      "Pillow==12.1.1",
+      "PyYAML==6.0.3",
+      "WeasyPrint==68.1"
+    ],
+    "notes": [
+      "The research core and install check use the Python standard library only.",
+      "The IC memo final validator and package check use the Python standard library only.",
+      "All jvc-research-report Python runtime dependencies are version-pinned.",
+      "Some existing DOCX and invoice dependencies are not version-pinned.",
+      "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
+    ]
+  },
+  "research_report_evidence": {
+    "status": "pass",
+    "fixture": "examples/research-report-example/report.md",
+    "scope": "Local file-backed fictional fixture for deterministic rendering; it contains no real market claims.",
+    "controls": [
+      "Inputs are local-only and local binary resources are embedded as data URIs.",
+      "Remote and absolute resources, path traversal, unsafe SVG resources, and unresolved source IDs are rejected.",
+      "report.pdf, report.html, and build-report.txt are staged and published transactionally so a failed build preserves the previous successful set."
+    ],
+    "artifact_check": {
+      "page_size": "A4",
+      "page_count": 13,
+      "pdftotext": "pass: title, canonical sections, handoff, and source index were extracted",
+      "pdftoppm": "pass: 13 of 13 pages rendered",
+      "visual_inspection": "pass: all 13 pages were checked for clipping, overflow, missing glyphs, detached captions, blank pages, and inconsistent page furniture"
+    },
+    "resolved_issues": [
+      "The initial fixture reused the route illustration as cover artwork; cover_image was set to null before final inspection."
+    ],
+    "evidence_limits": "This is deterministic self-check and local visual evidence, not model-executed or blind-review evidence and not proof of public-release readiness."
+  },
+  "script_inventory": [
+    {
+      "path": "scripts/check-governance.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "scripts/check-skill-evals.py",
+      "interface": "cli",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-ic-memo/scripts/validate_final.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-ic-memo/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/check-v3-foundation.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "scripts/check-research-core-install.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/generate-workbook.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "scripts/validate-workbook.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-knowledge-tree-builder/scripts/collect_sources.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "skills/jvc-knowledge-tree-builder/scripts/check_package.py",
+      "interface": "cli",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-research-report/scripts/build_report.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "skills/jvc-research-report/scripts/check_package.py",
+      "interface": "cli",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "skills/jvc-meeting-notes/scripts/generate_meeting_notes.py",
+      "interface": "cli",
+      "help_surface": "argparse",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "skills/jvc-invoice-manager/scripts/process_invoices.py",
+      "interface": "cli",
+      "help_surface": "manual",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "ocr"
+      ]
+    },
+    {
+      "path": "skills/jvc-invoice-manager/scripts/generate_summary.py",
+      "interface": "cli",
+      "help_surface": "manual",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "copy_pdf"
+      ]
+    },
+    {
+      "path": "skills/jvc-research-core/scripts/researchctl.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "skills/jvc-research-core/scripts/check_package.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "scripts/check-atomic-cognition.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/check-asset-scan.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/check-public-release.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read",
+        "subprocess"
+      ]
+    }
+  ],
+  "warnings": [
+    "Invoice scripts use manual sys.argv parsing rather than argparse --help.",
+    "Model-executed routing evidence is missing.",
+    "The rendered research-report fixture is deterministic self-check evidence rather than blind-review evidence.",
+    "Runtime permission probes for packaged adapters are missing because no dist package is generated in this local pass."
+  ],
+  "release_rule": "No high-risk secrets or unrestricted remote inline execution detected. Repository-local production governance can proceed with warnings; do not claim governed public release readiness.",
+  "release_evidence": "README.md",
+  "historical_render_evidence_date": "2026-07-31"
+}

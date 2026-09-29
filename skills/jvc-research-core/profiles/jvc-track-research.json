@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill": "jvc-track-research",
+  "required_record_types": ["scope", "question", "query", "source", "claim"],
+  "current_skill_record_types": ["question", "query", "source", "claim"],
+  "requires_counter_query": true,
+  "minimum_independent_sources": 2,
+  "artifact_policy": {
+    "kind": "markdown",
+    "allowed_suffixes": [".md"],
+    "required_names": [],
+    "required_sheets": []
+  }
+}

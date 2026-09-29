@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img" aria-labelledby="title description">
+  <title id="title">四条虚构技术路线示意</title>
+  <desc id="description">四个横向排列的路线框，内容完全虚构，仅用于版式回归。</desc>
+  <rect width="1200" height="600" fill="#F7F3ED"/>
+  <text x="70" y="90" fill="#20252B" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700">虚构技术路线图</text>
+  <text x="70" y="132" fill="#667085" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="22">仅用于本地图片、题注与分页回归</text>
+
+  <rect x="70" y="220" width="230" height="190" rx="18" fill="#F0F7F5" stroke="#2E6F62" stroke-width="4"/>
+  <text x="185" y="292" text-anchor="middle" fill="#2E6F62" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="27" font-weight="700">规则路线</text>
+  <text x="185" y="344" text-anchor="middle" fill="#475467" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="20">虚构样例甲</text>
+
+  <rect x="350" y="220" width="230" height="190" rx="18" fill="#F7F3ED" stroke="#A06B2C" stroke-width="4"/>
+  <text x="465" y="292" text-anchor="middle" fill="#70512C" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="27" font-weight="700">学习路线</text>
+  <text x="465" y="344" text-anchor="middle" fill="#475467" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="20">虚构样例乙</text>
+
+  <rect x="630" y="220" width="230" height="190" rx="18" fill="#EEF2F6" stroke="#475467" stroke-width="4"/>
+  <text x="745" y="292" text-anchor="middle" fill="#344054" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="27" font-weight="700">深层路线</text>
+  <text x="745" y="344" text-anchor="middle" fill="#475467" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="20">虚构样例丙</text>
+
+  <rect x="910" y="220" width="230" height="190" rx="18" fill="#FBF1F0" stroke="#A33A32" stroke-width="4"/>
+  <text x="1025" y="292" text-anchor="middle" fill="#A33A32" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="27" font-weight="700">多模态路线</text>
+  <text x="1025" y="344" text-anchor="middle" fill="#475467" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="20">虚构样例丁</text>
+
+  <path d="M300 315 H338" stroke="#98A2B3" stroke-width="4"/>
+  <path d="M580 315 H618" stroke="#98A2B3" stroke-width="4"/>
+  <path d="M860 315 H898" stroke="#98A2B3" stroke-width="4"/>
+  <path d="M338 315 L322 305 V325 Z" fill="#98A2B3"/>
+  <path d="M618 315 L602 305 V325 Z" fill="#98A2B3"/>
+  <path d="M898 315 L882 305 V325 Z" fill="#98A2B3"/>
+
+  <text x="600" y="520" text-anchor="middle" fill="#667085" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="20">所有名称、关系与顺序均为虚构，不代表真实技术判断</text>
+</svg>

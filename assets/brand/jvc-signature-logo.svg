@@ -1,0 +1,11 @@
+<svg width="760" height="240" viewBox="0 0 760 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">JVC analyst signature logo</title>
+  <desc id="desc">A signature-style JVC wordmark with an editorial subtitle for the jvc-analyst project.</desc>
+  <rect width="760" height="240" rx="28" fill="#F8F3EA"/>
+  <path d="M92 181C147 168 216 158 284 158C386 158 506 180 668 150" stroke="#A46A50" stroke-width="7" stroke-linecap="round"/>
+  <text x="76" y="141" fill="#161514" font-family="Snell Roundhand, Apple Chancery, Brush Script MT, Segoe Script, cursive" font-size="118" font-weight="500" letter-spacing="0">JVC</text>
+  <text x="330" y="104" fill="#161514" font-family="Georgia, Times New Roman, serif" font-size="43" font-weight="500" letter-spacing="0">analyst</text>
+  <text x="333" y="140" fill="#5F635B" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="500" letter-spacing="0">local-first VC diligence skills</text>
+  <path d="M614 78C621.5 60 638.5 49 658 50C685 51.5 703 73 699 100C696 120.5 681 136.5 657 147C633 136.5 618 120.5 615 100C614 92 613.5 84.5 614 78Z" stroke="#253B32" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M642 92H674M658 76V127" stroke="#253B32" stroke-width="5" stroke-linecap="round"/>
+</svg>

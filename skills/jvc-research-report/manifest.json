@@ -1,0 +1,17 @@
+{
+  "name": "jvc-research-report",
+  "version": "0.1.0",
+  "owner": "jvc-analyst",
+  "updated_at": "2026-07-21",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "context_budget_tier": "production",
+  "review_cadence": "quarterly",
+  "skill_archetype": "production",
+  "target_platforms": ["codex", "claude", "generic", "agent-skills-compatible"],
+  "factory_components": ["references", "scripts", "assets", "templates", "evals", "reports"],
+  "input_files": "file-backed fixture: fixed-format report.md, brand.yml, and local images",
+  "output_contract": ["report.pdf", "report.html", "build-report.txt"],
+  "rollback_boundary": "A failed build leaves the previous successful output files unchanged; package rollback is a Git revert."
+}

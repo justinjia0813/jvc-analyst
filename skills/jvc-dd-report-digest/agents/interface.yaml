@@ -1,0 +1,20 @@
+interface:
+  display_name: "尽调报告消化"
+  short_description: "提炼第三方尽调报告的红旗、口径差异与条款影响"
+  default_prompt: "使用 jvc-dd-report-digest 处理提供的材料，交付结论在前、依据在附录、可直接转发的尽调报告消化。"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets: ["codex", "claude", "generic"]
+  activation:
+    mode: "manual"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source-with-sibling-core"

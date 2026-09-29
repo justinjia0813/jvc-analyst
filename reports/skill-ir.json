@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "package": {
+    "name": "jvc-analyst",
+    "version": "4.0.0",
+    "owner": "jvc-analyst",
+    "maturity_tier": "production",
+    "review_cadence": "quarterly",
+    "target_platforms": [
+      "codex",
+      "claude",
+      "generic"
+    ]
+  },
+  "semantic_contract": {
+    "job_to_be_done": "Help an early-stage VC operator structure local project materials into evidence-first diligence artifacts without replacing investment judgment.",
+    "should_trigger": [
+      "User asks for jvc-prefixed diligence skills",
+      "User asks to structure project decks, interviews, market sizing, comps, return models, IC memo drafts, or invoice archives using this toolkit"
+    ],
+    "should_not_trigger": [
+      "Pure teaching or explanation requests with no reusable output artifact",
+      "Final investment decision making",
+      "Uploading private deal materials to third-party web tools",
+      "General accounting workflows outside jvc-invoice-manager boundaries"
+    ],
+    "trust_boundary": "Local-first repository. Raw deal materials stay local; shipped scripts may read/write local files but do not include network-capable code."
+  },
+  "skills": [
+    {
+      "name": "jvc-meeting-notes",
+      "job": "把访谈逐字稿和用户随笔整理成带三项自查的 Word 纪要",
+      "outputs": [
+        "【YYYY年MM月DD日访谈】{访谈对象}.docx",
+        "（工作版）.docx"
+      ],
+      "near_neighbors": [
+        "jvc-interview-prep",
+        "jvc-prescreen"
+      ],
+      "failure_modes": [
+        "把公司自述改写成客观事实",
+        "转写错名未校正",
+        "交付版混入待验证点"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-interview-prep",
+      "job": "见面前生成按优先级排序、可直接照着问的访谈提纲",
+      "outputs": [
+        "interview-prep-{对象}.md"
+      ],
+      "near_neighbors": [
+        "jvc-meeting-notes",
+        "jvc-thesis-test"
+      ],
+      "failure_modes": [
+        "诱导性提问",
+        "问意愿不问发生过的事",
+        "问题与投资判断无关"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-prescreen",
+      "job": "30 分钟判断一个项目值不值得深入",
+      "outputs": [
+        "01-prescreen.md"
+      ],
+      "near_neighbors": [
+        "jvc-thesis-test",
+        "jvc-interview-prep"
+      ],
+      "failure_modes": [
+        "只列缺口不给判断",
+        "以履历代替能力",
+        "写终局投资建议"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-business-economics",
+      "job": "单位经济、规模约束与现金跑道",
+      "outputs": [
+        "business-economics.md"
+      ],
+      "near_neighbors": [
+        "jvc-workbook",
+        "jvc-portfolio-tracking"
+      ],
+      "failure_modes": [
+        "毛利与单位贡献混写",
+        "固定费用重复扣除",
+        "静态除法漏掉一次性支出"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-track-research",
+      "job": "赛道全景、行业机制或竞争格局研究",
+      "outputs": [
+        "landscape.md",
+        "industry-mechanics.md",
+        "competitive-positioning.md"
+      ],
+      "near_neighbors": [
+        "jvc-workbook",
+        "jvc-research-report"
+      ],
+      "failure_modes": [
+        "以公司清单代替机制",
+        "预测精确拐点",
+        "把公司转述的赢单原因当客户验证"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-workbook",
+      "job": "市场规模、可比公司、投资回报的 Excel 模型",
+      "outputs": [
+        "05-market-sizing.xlsx",
+        "05-comps-dd.xlsx",
+        "05-roi-modeler.xlsx"
+      ],
+      "near_neighbors": [
+        "jvc-track-research",
+        "jvc-business-economics"
+      ],
+      "failure_modes": [
+        "两条路径共用输入却称交叉验证",
+        "市值与一级估值混口径",
+        "用最终持股倒推稀释"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-thesis-test",
+      "job": "投资逻辑的支持、反驳和命门",
+      "outputs": [
+        "04-thesis-test.md",
+        "04-bull-case.md",
+        "04-bear-case.md"
+      ],
+      "near_neighbors": [
+        "jvc-ic-memo",
+        "jvc-prescreen"
+      ],
+      "failure_modes": [
+        "正方删除风险",
+        "反方把缺证据写成失败",
+        "论点不可证伪"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-ic-memo",
+      "job": "十七章投决备忘录预审版与批准后的干净终版",
+      "outputs": [
+        "06-ic-memo-review.md",
+        "06-ic-memo.md",
+        "decision-memo.md"
+      ],
+      "near_neighbors": [
+        "jvc-thesis-test",
+        "jvc-research-report"
+      ],
+      "failure_modes": [
+        "未获批准生成终版",
+        "终版机械删除标签",
+        "风险篇幅少于亮点"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-dd-report-digest",
+      "job": "提炼第三方尽调报告的红旗、口径差异与条款影响",
+      "outputs": [
+        "dd-digest-{报告类型}.md"
+      ],
+      "near_neighbors": [
+        "jvc-meeting-notes",
+        "jvc-ic-memo"
+      ],
+      "failure_modes": [
+        "把报告中管理层口径当第三方事实",
+        "照抄尽调机构的软化措辞",
+        "忽略报告范围限制"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-portfolio-tracking",
+      "job": "被投公司季度简报与投后仪表板更新",
+      "outputs": [
+        "投后-{公司}-{YYYYQn}.md"
+      ],
+      "near_neighbors": [
+        "jvc-business-economics",
+        "jvc-workbook"
+      ],
+      "failure_modes": [
+        "累计数当单季数",
+        "直接覆盖用户仪表板",
+        "无依据调整风险等级"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-research-report",
+      "job": "把已完成的赛道研究 Markdown 渲染为品牌 PDF 和 HTML",
+      "outputs": [
+        "report.pdf",
+        "report.html",
+        "build-report.txt"
+      ],
+      "near_neighbors": [
+        "jvc-track-research"
+      ],
+      "failure_modes": [
+        "改写研究正文",
+        "远程图片",
+        "只看文件存在不看页面"
+      ],
+      "installation_group": "support"
+    },
+    {
+      "name": "jvc-knowledge-tree-builder",
+      "job": "把本地资料文件夹整理成知识树",
+      "outputs": [
+        "knowledge_tree.md",
+        "knowledge_graph.mmd",
+        "nodes.json",
+        "evidence_index.md",
+        "open_questions.md"
+      ],
+      "near_neighbors": [
+        "jvc-track-research"
+      ],
+      "failure_modes": [
+        "相邻文件即视为有关联",
+        "声称完整覆盖",
+        "无来源节点"
+      ],
+      "installation_group": "support"
+    },
+    {
+      "name": "jvc-research-core",
+      "job": "可选的追加式证据台账与确定性审查",
+      "outputs": [
+        "evidence_registry.jsonl",
+        "audit.json",
+        "audit.md"
+      ],
+      "near_neighbors": [
+        "jvc-ic-memo"
+      ],
+      "failure_modes": [
+        "deliver 模式下夸大成熟度",
+        "gate 模式下 blocked 仍形成判断"
+      ],
+      "installation_group": "support"
+    },
+    {
+      "name": "jvc-invoice-manager",
+      "job": "OCR 识别差旅发票，生成报销汇总并归档 PDF",
+      "outputs": [
+        "archive/{YYYY-MM}_报销汇总.xlsx"
+      ],
+      "near_neighbors": [
+        "jvc-portfolio-tracking"
+      ],
+      "failure_modes": [
+        "未复核 OCR 金额",
+        "覆盖原件"
+      ],
+      "installation_group": "operations"
+    }
+  ],
+  "evals": {
+    "trigger_cases": "evals/trigger_cases.json",
+    "output_cases": "evals/output/cases.json",
+    "verification_command": "python3 scripts/check-skill-evals.py",
+    "evidence_level": "deterministic fixture evidence; model-executed evidence is missing evidence"
+  },
+  "reports": {
+    "trust_report": "reports/trust_report.md",
+    "review_studio": "reports/review-studio.md"
+  }
+}

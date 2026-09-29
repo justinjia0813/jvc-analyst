@@ -1,0 +1,25 @@
+interface:
+  display_name: "JVC Research Core"
+  short_description: "Hidden evidence-ledger and audit runtime for jvc research skills"
+  default_prompt: "Use only when an installed jvc skill explicitly routes to this sibling runtime."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "codex"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "support-only"
+    paths:
+      - "skills/jvc-research-core/SKILL.md"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "hidden-sibling-runtime; fail-closed-no-prompt-fallback"
+    claude: "hidden-sibling-runtime; fail-closed-no-prompt-fallback"
+    generic: "hidden-sibling-runtime; fail-closed-no-prompt-fallback"

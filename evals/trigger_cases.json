@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "description": "Route evaluation fixtures for jvc skills. These cases document expected skill activation and near-neighbor boundaries; scripts/check-skill-evals.py validates fixture integrity and source-contract coverage.",
+  "cases": [
+    {
+      "id": "notes-transcript-to-word",
+      "prompt": "把这段管访录音转写稿和我的随笔整理成访谈纪要 Word，要六段式，顺便把错别字和前后矛盾检查一遍。",
+      "expected_skill": "jvc-meeting-notes",
+      "prompt_signals": [
+        "访谈纪要",
+        "六段式",
+        "矛盾"
+      ],
+      "skill_contract_signals": [
+        "三项自查",
+        "交付版",
+        "工作版",
+        "名称对照表"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-interview-prep",
+          "why_not": "访谈已经发生，要整理纪要，不是会前列问题。"
+        },
+        {
+          "skill": "jvc-dd-report-digest",
+          "why_not": "输入是自己的访谈逐字稿，不是第三方尽调报告。"
+        }
+      ]
+    },
+    {
+      "id": "notes-expert-qa",
+      "prompt": "昨天的专家访谈逐字稿整理成问答式纪要，每个问题保留完整回答，附上待验证点。",
+      "expected_skill": "jvc-meeting-notes",
+      "prompt_signals": [
+        "问答式",
+        "待验证点"
+      ],
+      "skill_contract_signals": [
+        "问答式",
+        "待验证点"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-prescreen",
+          "why_not": "不是判断项目值不值得看，而是整理一次访谈。"
+        }
+      ]
+    },
+    {
+      "id": "interview-prep-founder",
+      "prompt": "明天要见创始人，帮我根据这份 BP 和上次纪要列一份访谈提纲，重点问订单真实性和现金。",
+      "expected_skill": "jvc-interview-prep",
+      "prompt_signals": [
+        "访谈提纲",
+        "见创始人"
+      ],
+      "skill_contract_signals": [
+        "过关",
+        "警惕",
+        "问发生过的事"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-meeting-notes",
+          "why_not": "访谈还没发生，需要的是会前问题。"
+        },
+        {
+          "skill": "jvc-thesis-test",
+          "why_not": "要的是可以照着问的问题，不是正反论证。"
+        }
+      ]
+    },
+    {
+      "id": "interview-prep-customer",
+      "prompt": "下周约了两家客户做 reference call，客户访谈怎么问才能验证真的在付费和复购？",
+      "expected_skill": "jvc-interview-prep",
+      "prompt_signals": [
+        "客户访谈怎么问",
+        "reference call"
+      ],
+      "skill_contract_signals": [
+        "试点、合同、使用、验收、付款、复购"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-business-economics",
+          "why_not": "问的是怎么向客户提问，不是算单位经济。"
+        }
+      ]
+    },
+    {
+      "id": "prescreen-deck",
+      "prompt": "帮我看看这个 BP，过一遍值不值得深入，给合伙人一页判断。",
+      "expected_skill": "jvc-prescreen",
+      "prompt_signals": [
+        "帮我看看这个",
+        "值不值得深入"
+      ],
+      "skill_contract_signals": [
+        "一句话判断",
+        "七维度",
+        "最可能不成立的理由"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-thesis-test",
+          "why_not": "还没到拆投资论点的阶段，先做快筛。"
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "不是上会材料。"
+        }
+      ]
+    },
+    {
+      "id": "business-economics-unit",
+      "prompt": "算一下这家公司一条产线交付后到底赚不赚钱，现金能撑多久。",
+      "expected_skill": "jvc-business-economics",
+      "prompt_signals": [
+        "赚不赚钱",
+        "现金能撑多久"
+      ],
+      "skill_contract_signals": [
+        "单位贡献",
+        "现金跑道"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-workbook",
+          "why_not": "要的是单位经济判断，不是市场规模或回报模型的 Excel。"
+        },
+        {
+          "skill": "jvc-portfolio-tracking",
+          "why_not": "这是在看的新项目，不是被投公司的季报。"
+        }
+      ]
+    },
+    {
+      "id": "track-research-landscape",
+      "prompt": "帮我做一份先进封装玻璃基板的赛道研究，行业简史、技术路线、产业链和玩家分层都要。",
+      "expected_skill": "jvc-track-research",
+      "prompt_signals": [
+        "赛道研究",
+        "产业链"
+      ],
+      "skill_contract_signals": [
+        "全景",
+        "landscape.md"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-workbook",
+          "why_not": "要的是行业研究报告，不是可比公司或市场规模 Excel。"
+        },
+        {
+          "skill": "jvc-research-report",
+          "why_not": "研究内容还没写，不是排版已有报告。"
+        }
+      ]
+    },
+    {
+      "id": "track-research-positioning",
+      "prompt": "客户为什么选这家公司而不是竞品或者自己做？帮我分析竞争格局。",
+      "expected_skill": "jvc-track-research",
+      "prompt_signals": [
+        "竞争格局",
+        "客户为什么选"
+      ],
+      "skill_contract_signals": [
+        "竞争格局",
+        "competitive-positioning.md"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-workbook",
+          "why_not": "问的是客户选择机制，不是填可比公司字段表。"
+        }
+      ]
+    },
+    {
+      "id": "workbook-market-sizing",
+      "prompt": "给中国工业视觉质检建一个 TAM/SAM/SOM 市场规模 Excel，自上而下和自下而上都要。",
+      "expected_skill": "jvc-workbook",
+      "prompt_signals": [
+        "市场规模",
+        "TAM"
+      ],
+      "skill_contract_signals": [
+        "market-sizing-template.md",
+        "双路径"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "要的是可复算的 Excel 模型，不是行业叙事。"
+        }
+      ]
+    },
+    {
+      "id": "workbook-returns",
+      "prompt": "按投前 3 亿、投 3000 万，算一下三种退出情景下的 MOIC 和 IRR，逐轮稀释。",
+      "expected_skill": "jvc-workbook",
+      "prompt_signals": [
+        "MOIC",
+        "逐轮稀释"
+      ],
+      "skill_contract_signals": [
+        "roi-modeler-template.md",
+        "逐轮"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-business-economics",
+          "why_not": "问的是投资人回报，不是公司单位经济。"
+        }
+      ]
+    },
+    {
+      "id": "thesis-bear",
+      "prompt": "当一回反方，攻击这个项目，模拟投决会上最难的问题。",
+      "expected_skill": "jvc-thesis-test",
+      "prompt_signals": [
+        "反方",
+        "攻击这个项目"
+      ],
+      "skill_contract_signals": [
+        "反方",
+        "命门",
+        "什么情况下就错了"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-prescreen",
+          "why_not": "已经过了初筛，要的是论点攻防。"
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "不需要十七章上会材料。"
+        }
+      ]
+    },
+    {
+      "id": "ic-memo-review",
+      "prompt": "项目要上投决会了，按十七章生成 IC memo 预审版，先别出终版。",
+      "expected_skill": "jvc-ic-memo",
+      "prompt_signals": [
+        "投决会",
+        "十七章",
+        "预审版"
+      ],
+      "skill_contract_signals": [
+        "06-ic-memo-review.md",
+        "预审通过",
+        "--mode gate"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-thesis-test",
+          "why_not": "要的是正式上会材料，不只是论点。"
+        },
+        {
+          "skill": "jvc-research-report",
+          "why_not": "不是行业研报排版。"
+        }
+      ]
+    },
+    {
+      "id": "dd-report-financial",
+      "prompt": "会计师的财务尽调报告出来了，帮我看下这份尽调，有哪些红旗、和 BP 哪里对不上、条款上怎么处理。",
+      "expected_skill": "jvc-dd-report-digest",
+      "prompt_signals": [
+        "财务尽调",
+        "红旗"
+      ],
+      "skill_contract_signals": [
+        "红旗",
+        "与 BP / 管理层口径不一致",
+        "条款处理"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-meeting-notes",
+          "why_not": "材料是第三方尽调报告，不是访谈逐字稿。"
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "只消化一份报告，不是汇总上会材料。"
+        }
+      ]
+    },
+    {
+      "id": "portfolio-quarterly",
+      "prompt": "被投公司 Q2 的财务报表到了，做一下投后跟踪，对照年度目标，更新投后仪表板。",
+      "expected_skill": "jvc-portfolio-tracking",
+      "prompt_signals": [
+        "投后跟踪",
+        "投后仪表板"
+      ],
+      "skill_contract_signals": [
+        "核心指标",
+        "里程碑",
+        "预警"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-business-economics",
+          "why_not": "这是已投公司的季度跟踪，不是新项目分析。"
+        },
+        {
+          "skill": "jvc-dd-report-digest",
+          "why_not": "输入是公司自己的季报，不是第三方尽调报告。"
+        }
+      ]
+    },
+    {
+      "id": "research-report-fixed-markdown-render",
+      "prompt": "我已经有一份固定章节和 [S1] 来源索引的赛道研究 Markdown，请不要改内容，按 lustinus RESEARCH 版式生成可打印 PDF、HTML 预览和构建报告。",
+      "expected_skill": "jvc-research-report",
+      "prompt_signals": [
+        "固定章节",
+        "不要改内容",
+        "lustinus RESEARCH",
+        "PDF"
+      ],
+      "skill_contract_signals": [
+        "不重写",
+        "report.pdf",
+        "report.html",
+        "build-report.txt",
+        "内部支持"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-track-research",
+          "why_not": "track-research creates research content; this prompt already has finished Markdown and asks only for validation and rendering."
+        },
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "ic-memo synthesizes company diligence; this is an industry-report renderer."
+        }
+      ],
+      "expected_invocation": "internal"
+    },
+    {
+      "id": "explain-market-sizing-terms-no-route",
+      "prompt": "给实习生解释 TAM、SAM、SOM 分别是什么意思，举一个简单例子即可。",
+      "expected_skill": null,
+      "prompt_signals": [
+        "解释",
+        "TAM",
+        "SAM",
+        "SOM"
+      ],
+      "should_not_trigger": [
+        "jvc-workbook"
+      ],
+      "no_route_reason": "This is a teaching request, not a reusable market-sizing workbook task."
+    },
+    {
+      "id": "explain-unit-contribution-no-route",
+      "prompt": "单位贡献是什么意思？简单解释一下，不做项目分析。",
+      "expected_skill": null,
+      "no_route_reason": "纯知识解释，无实际项目交付物",
+      "should_not_trigger": [
+        "jvc-business-economics"
+      ]
+    },
+    {
+      "id": "invoice-operational-boundary",
+      "prompt": "已独立安装运营包。整理这个月差旅发票，OCR 识别 PDF，人工复核后生成报销汇总 Excel，并按项目归档。",
+      "expected_skill": "jvc-invoice-manager",
+      "prompt_signals": [
+        "发票",
+        "OCR",
+        "PDF",
+        "报销汇总 Excel"
+      ],
+      "skill_contract_signals": [
+        "发票整理",
+        "人工确认",
+        "运营辅助",
+        "不进入投资决策流程",
+        "运营边界",
+        "不接入 `jvc-research-core`",
+        "--operations"
+      ],
+      "skill_contract_forbidden_signals": [
+        "## 证据内核（必须）",
+        "init --skill jvc-invoice-manager",
+        "audit --run-dir <研究目录> --skill jvc-invoice-manager"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-portfolio-tracking",
+          "why_not": "发票报销是运营事务，不是被投公司财务跟踪。"
+        }
+      ],
+      "expected_invocation": "operations",
+      "installation_profile": "operations"
+    }
+  ]
+}

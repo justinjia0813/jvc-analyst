@@ -1,0 +1,345 @@
+#!/usr/bin/env bash
+# jvc-analyst setup — register skills with Claude Code / Codex / Agents / OpenClaw / Hermes / Cursor
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SKILLS_DIR="$SCRIPT_DIR/skills"
+
+# User-invocable skills
+USER_SKILLS=(
+  jvc-meeting-notes
+  jvc-interview-prep
+  jvc-prescreen
+  jvc-business-economics
+  jvc-track-research
+  jvc-workbook
+  jvc-thesis-test
+  jvc-ic-memo
+  jvc-dd-report-digest
+  jvc-portfolio-tracking
+)
+
+SUPPORT_COMPONENTS=(
+  jvc-research-core
+  jvc-research-report
+  jvc-knowledge-tree-builder
+)
+
+OPERATIONS_COMPONENTS=(jvc-invoice-manager)
+
+# Retired in 4.0. Setup never deletes them; it only reports leftovers from older installs.
+RETIRED_SKILLS=(
+  jvc-bull-case jvc-bear-case jvc-talk-notes jvc-claim-audit jvc-customer-validation
+  jvc-founder-assessment jvc-financing-milestones jvc-diligence-plan jvc-industry-mechanics
+  jvc-competitive-positioning jvc-market-sizing jvc-comps-dd jvc-roi-modeler
+  jvc-return-underwriting jvc-decision-memo jvc-deal-flow
+)
+
+# Select before preflight or any filesystem writes.
+INSTALL_OPERATIONS=0
+INSTALL_GLOBAL=0
+SHOW_HELP=0
+for option in "$@"; do
+  case "$option" in
+    --operations)
+      [ "$INSTALL_OPERATIONS" -eq 0 ] || { echo "Duplicate option: $option" >&2; exit 2; }
+      INSTALL_OPERATIONS=1
+      ;;
+    --global)
+      [ "$INSTALL_GLOBAL" -eq 0 ] || { echo "Duplicate option: $option" >&2; exit 2; }
+      INSTALL_GLOBAL=1
+      ;;
+    --help)
+      [ "$SHOW_HELP" -eq 0 ] || { echo "Duplicate option: $option" >&2; exit 2; }
+      SHOW_HELP=1
+      ;;
+    *)
+      echo "Unknown option: $option" >&2
+      echo "Usage: ./setup [--global] [--operations]" >&2
+      exit 2
+      ;;
+  esac
+done
+if [ "$SHOW_HELP" -eq 1 ]; then
+  [ "$#" -eq 1 ] || { echo "Usage: ./setup [--global] [--operations]" >&2; exit 2; }
+  echo "Usage: ./setup [--global] [--operations]"
+  echo "Default: primary skills and internal support."
+  echo "--global: register skills under HOME and detected client skill directories."
+  echo "--operations: install only invoice operations; research components are not required."
+  echo "Existing optional installations are never removed by default setup."
+  exit 0
+fi
+if [ "$INSTALL_OPERATIONS" -eq 1 ]; then
+  USER_SKILLS=()
+  SUPPORT_COMPONENTS=()
+  ALL_COMPONENTS=("${OPERATIONS_COMPONENTS[@]}")
+else
+  ALL_COMPONENTS=("${USER_SKILLS[@]}" "${SUPPORT_COMPONENTS[@]}")
+fi
+
+# Platform skill directories
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CODEX_SKILLS="$HOME/.codex/skills"
+AGENTS_SKILLS=".agents/skills"
+OPENCLAW_SKILLS=".openclaw/skills"
+HERMES_SKILLS=".hermes/skills"
+CURSOR_SKILLS=".cursor/skills"
+GLOBAL_BACKUP_ROOT="$HOME/.local/state/jvc-analyst/backups"
+
+# ─── Helpers ──────────────────────────────────────────────────
+
+_link_or_copy() {
+  local src="$1"
+  local dst="$2"
+  local target_parent
+  local target_name
+  local stage_dir
+  local prepared
+  local backup_dir=""
+  local backup_root="${3:-}"
+  local platform
+
+  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+    return 0
+  fi
+
+  platform="$(uname -s)"
+  case "$platform" in
+    MINGW*|MSYS*|CYGWIN*|Windows_NT)
+      if [ -d "$dst" ] && [ ! -L "$dst" ] && diff -qr -- "$src" "$dst" >/dev/null 2>&1; then
+        return 0
+      fi
+      ;;
+  esac
+
+  target_parent="$(dirname "$dst")"
+  target_name="$(basename "$dst")"
+  stage_dir="$(mktemp -d "$target_parent/.${target_name}.stage.XXXXXX")"
+  prepared="$stage_dir/replacement"
+
+  case "$platform" in
+    MINGW*|MSYS*|CYGWIN*|Windows_NT)
+      if ! cp -R "$src" "$prepared"; then
+        rm -rf -- "$stage_dir"
+        return 1
+      fi
+      ;;
+    *)
+      if ! ln -s "$src" "$prepared"; then
+        rm -rf -- "$stage_dir"
+        return 1
+      fi
+      ;;
+  esac
+
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    if [ -n "$backup_root" ]; then
+      mkdir -p "$backup_root"
+      backup_dir="$(mktemp -d "$backup_root/${target_name}.backup.XXXXXX")"
+    else
+      backup_dir="$(mktemp -d "${dst}.backup.XXXXXX")"
+    fi
+    if ! mv "$dst" "$backup_dir/original"; then
+      rmdir "$backup_dir"
+      rm -rf -- "$stage_dir"
+      return 1
+    fi
+    # ponytail: retain each replaced real-directory backup; clean only after user confirmation.
+    echo "  backup: $backup_dir/original"
+  fi
+
+  if mv "$prepared" "$dst"; then
+    rmdir "$stage_dir"
+    return 0
+  fi
+
+  echo "  ERROR failed to publish $dst" >&2
+  if [ -n "$backup_dir" ] && { [ -e "$backup_dir/original" ] || [ -L "$backup_dir/original" ]; }; then
+    if mv "$backup_dir/original" "$dst"; then
+      rmdir "$backup_dir"
+    else
+      echo "  ERROR failed to restore backup from $backup_dir/original" >&2
+    fi
+  fi
+  rm -rf -- "$stage_dir"
+  return 1
+}
+
+register_skill() {
+  local skill_name="$1"
+  local target_dir="$2"
+  local backup_root="${3:-}"
+  local src="$SKILLS_DIR/$skill_name"
+
+  mkdir -p "$target_dir"
+  _link_or_copy "$src" "$target_dir/$skill_name" "$backup_root"
+}
+
+register_global_target() {
+  local label="$1"
+  local target_dir="$2"
+  local physical_dir
+  local component
+
+  if [ -d "$target_dir" ]; then
+    physical_dir="$(cd "$target_dir" && pwd -P)"
+  else
+    physical_dir="$target_dir"
+  fi
+  case " ${GLOBAL_TARGETS:-} " in
+    *" $physical_dir "*) return 0 ;;
+  esac
+  GLOBAL_TARGETS="${GLOBAL_TARGETS:-} $physical_dir"
+  echo "→ $label ($target_dir)"
+  mkdir -p "$target_dir"
+  for component in "${ALL_COMPONENTS[@]}"; do
+    register_skill "$component" "$target_dir" "$GLOBAL_BACKUP_ROOT/$label"
+  done
+  echo "  ✓ ${#ALL_COMPONENTS[@]} components registered"
+  INSTALLED=1
+}
+
+# ─── Main ─────────────────────────────────────────────────────
+
+for component in "${ALL_COMPONENTS[@]}"; do
+  if [ ! -d "$SKILLS_DIR/$component" ]; then
+    echo "ERROR missing source component: $SKILLS_DIR/$component" >&2
+    exit 1
+  fi
+done
+
+echo "jvc-analyst skill installer"
+echo "==========================="
+echo ""
+echo "Source: $SKILLS_DIR"
+echo "Skills: ${#USER_SKILLS[@]} primary skills"
+echo "Support: ${#SUPPORT_COMPONENTS[@]} hidden components"
+echo "Operations: $INSTALL_OPERATIONS selected"
+echo "Global: $INSTALL_GLOBAL selected"
+echo ""
+
+# Detect which platforms exist
+INSTALLED=0
+
+if [ "$INSTALL_GLOBAL" -eq 1 ]; then
+  # The shared HOME-level registry is always present for an explicit global install.
+  GLOBAL_TARGETS=""
+  register_global_target "agents" "$HOME/.agents/skills"
+
+  # Claude/Codex retain their historical command/home detection; other clients
+  # are touched only when their skill directory already exists.
+  if [ -d "$CLAUDE_SKILLS" ] || command -v claude >/dev/null 2>&1; then
+    register_global_target "claude" "$CLAUDE_SKILLS"
+  fi
+  if [ -d "$HOME/.codex" ]; then
+    register_global_target "codex" "$CODEX_SKILLS"
+  fi
+  for client in \
+    "hermes:$HOME/.hermes/skills" \
+    "cursor:$HOME/.cursor/skills" \
+    "openclaw:$HOME/.openclaw/skills" \
+    "opencode:$HOME/.config/opencode/skills" \
+    "pi:$HOME/.pi/agent/skills" \
+    "grok:$HOME/.grok/skills"; do
+    label="${client%%:*}"
+    target_dir="${client#*:}"
+    [ -d "$target_dir" ] && register_global_target "$label" "$target_dir"
+  done
+fi
+
+# Claude Code (global)
+if [ "$INSTALL_GLOBAL" -eq 0 ] && { [ -d "$CLAUDE_SKILLS" ] || command -v claude >/dev/null 2>&1; }; then
+  echo "→ Claude Code ($CLAUDE_SKILLS)"
+  mkdir -p "$CLAUDE_SKILLS"
+  for skill in "${ALL_COMPONENTS[@]}"; do
+    register_skill "$skill" "$CLAUDE_SKILLS"
+  done
+  echo "  ✓ ${#ALL_COMPONENTS[@]} components registered"
+  INSTALLED=1
+fi
+
+# Codex (global)
+if [ "$INSTALL_GLOBAL" -eq 0 ] && [ -d "$HOME/.codex" ]; then
+  echo "→ Codex ($CODEX_SKILLS)"
+  mkdir -p "$CODEX_SKILLS"
+  for skill in "${ALL_COMPONENTS[@]}"; do
+    register_skill "$skill" "$CODEX_SKILLS"
+  done
+  echo "  ✓ ${#ALL_COMPONENTS[@]} components registered"
+  INSTALLED=1
+fi
+
+# Project-local platforms (only if in a git repo)
+if [ "$INSTALL_GLOBAL" -eq 0 ] && git rev-parse --show-toplevel >/dev/null 2>&1; then
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+  for platform_dir in "$AGENTS_SKILLS" "$OPENCLAW_SKILLS" "$HERMES_SKILLS" "$CURSOR_SKILLS"; do
+    full_path="$REPO_ROOT/$platform_dir"
+    parent_dir="$(dirname "$full_path")"
+
+    # Only register if the platform directory parent exists (user has that tool)
+    if [ -d "$parent_dir" ]; then
+      echo "→ $(basename "$parent_dir") ($full_path)"
+      mkdir -p "$full_path"
+      for skill in "${ALL_COMPONENTS[@]}"; do
+        register_skill "$skill" "$full_path"
+      done
+      echo "  ✓ ${#ALL_COMPONENTS[@]} components registered"
+      INSTALLED=1
+    fi
+  done
+fi
+
+echo ""
+
+if [ "$INSTALLED" -eq 0 ]; then
+  echo "No supported platforms detected."
+  echo ""
+  echo "Manual install: copy or symlink only the selected components to your platform skill directory:"
+  for component in "${ALL_COMPONENTS[@]}"; do
+    echo "  skills/$component"
+  done
+  echo "  Claude Code:  ~/.claude/skills/"
+  echo "  Codex:        ~/.codex/skills/"
+  echo "  Agents:       .agents/skills/"
+  echo "  OpenClaw:     .openclaw/skills/"
+  echo "  Hermes:       .hermes/skills/"
+  echo "  Cursor:       .cursor/skills/"
+  exit 1
+fi
+
+echo "Done. Available skills:"
+for skill in "${USER_SKILLS[@]}"; do
+  echo "  /${skill}"
+done
+echo ""
+if [ "$INSTALL_OPERATIONS" -eq 1 ]; then
+  echo "Operations entries:"
+  for skill in "${OPERATIONS_COMPONENTS[@]}"; do
+    echo "  /${skill}"
+  done
+else
+  echo "Try: /jvc-prescreen with a deck to get started."
+  echo "Internal support stays callable by its existing name/path; client menu hiding depends on the adapter."
+  echo "Invoice operations are optional: ./setup --operations"
+  echo "Existing operations installations are preserved; default setup does not uninstall them."
+fi
+
+if [ "$INSTALL_GLOBAL" -eq 1 ]; then
+  echo "Global files are installed; client loading and task execution are separate checks."
+  echo "Reload skills or start a new client session; preserve this source directory."
+fi
+
+LEFTOVERS=""
+for skills_dir in "$CLAUDE_SKILLS" "$CODEX_SKILLS" "$HOME/.agents/skills"; do
+  for skill in "${RETIRED_SKILLS[@]}"; do
+    if [ -e "$skills_dir/$skill" ] || [ -L "$skills_dir/$skill" ]; then
+      LEFTOVERS="$LEFTOVERS\n  $skills_dir/$skill"
+    fi
+  done
+done
+if [ -n "$LEFTOVERS" ]; then
+  echo ""
+  echo "Retired skills still registered (not removed; delete manually if unused):"
+  printf "%b\n" "$LEFTOVERS"
+fi

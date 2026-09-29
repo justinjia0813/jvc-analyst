@@ -1,0 +1,40 @@
+{
+  "name": "jvc-analyst",
+  "version": "4.0.0",
+  "owner": "jvc-analyst",
+  "updated_at": "2026-09-29",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "context_budget_tier": "production",
+  "review_cadence": "quarterly",
+  "target_platforms": [
+    "codex",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "factory_components": [
+    "skills",
+    "templates",
+    "scripts",
+    "evals",
+    "reports",
+    "security"
+  ],
+  "output_contracts": [
+    "Word interview notes with self-review and verification points",
+    "Interview preparation outlines",
+    "Judgment-first Markdown analyses with evidence appendices",
+    "Sector research reports, branded PDF/HTML previews and knowledge trees",
+    "Excel workbooks for market sizing, comps and returns",
+    "Audited IC memo pre-review and user-approved clean Markdown final",
+    "Due diligence report digests",
+    "Portfolio company quarterly briefs and dashboard updates",
+    "Optional evidence ledger with deliver/gate audit modes",
+    "Excel plus PDF invoice archive"
+  ],
+  "rollback_boundary": "Reinstall a previous tagged release; raw project materials and local custom templates are outside the package boundary.",
+  "validation_status": "review-required; autonomous quality not established across the suite",
+  "license": "MIT"
+}

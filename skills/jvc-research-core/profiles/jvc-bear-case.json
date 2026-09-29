@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill": "jvc-bear-case",
+  "required_record_types": ["scope", "question", "source", "claim"],
+  "current_skill_record_types": ["question", "claim"],
+  "requires_counter_query": false,
+  "minimum_independent_sources": 1,
+  "artifact_policy": {
+    "kind": "markdown",
+    "allowed_suffixes": [".md"],
+    "required_names": [],
+    "required_sheets": []
+  }
+}

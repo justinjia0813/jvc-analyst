@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill": "jvc-comps-dd",
+  "required_record_types": ["scope", "question", "query", "source", "claim"],
+  "current_skill_record_types": ["question", "query", "source", "claim"],
+  "requires_counter_query": true,
+  "minimum_independent_sources": 2,
+  "artifact_policy": {
+    "kind": "xlsx",
+    "allowed_suffixes": [".xlsx"],
+    "required_names": [],
+    "required_sheets": ["companies", "segmentation", "sources", "coverage_notes"]
+  }
+}

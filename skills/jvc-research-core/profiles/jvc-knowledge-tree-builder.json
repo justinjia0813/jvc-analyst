@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill": "jvc-knowledge-tree-builder",
+  "required_record_types": ["scope", "question", "source", "claim"],
+  "current_skill_record_types": ["source", "claim"],
+  "requires_counter_query": false,
+  "minimum_independent_sources": 1,
+  "artifact_policy": {
+    "kind": "multi",
+    "allowed_suffixes": [],
+    "required_names": ["knowledge_tree.md", "knowledge_graph.mmd", "nodes.json", "evidence_index.md", "open_questions.md"],
+    "required_sheets": []
+  }
+}

@@ -1,0 +1,20 @@
+interface:
+  display_name: "访谈提纲"
+  short_description: "见创始人、客户、专家前生成按优先级排序的访谈提纲"
+  default_prompt: "使用 jvc-interview-prep 处理提供的材料，交付结论在前、依据在附录、可直接转发的访谈提纲。"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets: ["codex", "claude", "generic"]
+  activation:
+    mode: "manual"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    codex: "native-skill-directory"
+    claude: "native-skill-directory"
+    generic: "neutral-source-with-sibling-core"

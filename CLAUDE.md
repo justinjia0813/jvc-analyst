@@ -28,7 +28,7 @@
 | 尽调与投决 | `/jvc-dd-report-digest` 尽调报告消化、`/jvc-ic-memo` 投决备忘录 |
 | 投后 | `/jvc-portfolio-tracking` 投后跟踪 |
 
-报告排版（`jvc-research-report`）和知识树（`jvc-knowledge-tree-builder`）是赛道研究的内部环节，证据内核（`jvc-research-core`）是可选的审查工具；三者不单独作为入口。用户显式提到 3.0 的旧名称时，告诉用户对应的新入口（见 README 的迁移表）。
+报告排版（`jvc-research-report`）和知识树（`jvc-knowledge-tree-builder`）是赛道研究的内部环节，证据内核（`jvc-research-core`）是可选的审查工具；三者不单独作为入口。
 
 发票整理属于独立运营包，默认研究安装不包含它。用户要处理发票时先确认该工具已选装；未安装则说明 `./setup --operations`，安装授权不等于处理真实票据的授权，不用研究技能代办报销。旧安装不自动卸载。
 

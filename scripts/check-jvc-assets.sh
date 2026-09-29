@@ -94,7 +94,6 @@ require_file "reports/review-studio.md"
 require_text "README.md" "# jvc-analyst"
 require_text "README.md" "## 工具总览"
 require_text "README.md" "## 项目档案目录约定"
-require_text "README.md" "## 从 3.0 迁移"
 require_text "CLAUDE.md" "jvc-analyst"
 reject_path "WORKFLOW.md"
 

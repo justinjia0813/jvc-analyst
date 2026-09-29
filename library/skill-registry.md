@@ -1,6 +1,6 @@
 # Skill Registry
 
-这里记录 `jvc-analyst` 4.0 收录的 skills：10 个主要入口、3 个内部支持组件，另有 1 个独立选装运营工具。3.0 的旧入口与 4.0 的对应关系见 README。
+这里记录 `jvc-analyst` 收录的 skills：10 个主要入口、3 个内部支持组件，另有 1 个独立选装运营工具。
 
 ## Primary skills
 

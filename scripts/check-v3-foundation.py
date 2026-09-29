@@ -52,7 +52,6 @@ def main() -> int:
         "spec/tasks.md",
         "spec/research-plan.md",
         "decision-journal.md",
-        "旧项目迁移",
     ):
         require(signal in readme, f"README.md 缺少 {signal!r}")
 

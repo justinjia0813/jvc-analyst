@@ -1,127 +1,160 @@
 # jvc-analyst
 
-<p align="center">
-  <img src="assets/brand/github-hero.svg" alt="jvc-analyst: local-first venture diligence skills" width="100%">
-</p>
+一套用于早期股权投资工作的 Agent Skills。它们为 AI 助手提供具体的工作步骤、输出格式和检查规则，覆盖看 BP、准备访谈、整理纪要、分析经营、研究行业、建模、消化尽调报告、准备投决材料和投后跟踪。
 
-<p align="center">
-  <a href="#安装"><img alt="Install locally" src="https://img.shields.io/badge/install-local--first-253B32?style=flat-square"></a>
-  <a href="#工具总览"><img alt="Skills" src="https://img.shields.io/badge/skills-10-A46A50?style=flat-square"></a>
-  <a href="#使用原则"><img alt="Judgment-first" src="https://img.shields.io/badge/method-judgment--first-161514?style=flat-square"></a>
-  <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-5F635B?style=flat-square"></a>
-</p>
-
-`jvc-analyst` 是一套给早期股权投资用的 AI 工具箱，以 Agent Skills 的形式运行在 Claude Code、Codex、Cursor 等 AI 助手里，面向中国市场 Pre-seed 到 Series B 的项目。
-
-它把 BP、访谈逐字稿、财务表、尽调报告变成可以直接转给合伙人的初稿：**先给判断，再给依据**；缺数据时给有依据的估算并标注，而不是留白。它不替你做投资决定，所有材料留在本地。
+你提供问题和材料，AI 按对应 Skill 完成分析并生成文件。每个 Skill 可以单独使用，也可以把前一步的结果交给下一步。适用场景以中国市场 Pre-seed 至 Series B 项目为主。
 
 ## 工具总览
 
-10 个 skill 覆盖一个项目从第一次看到投后的日常工作，每个都能单独调用。
-
-| 阶段 | Skill | 什么时候用 | 产出 |
+| Skill | 要解决的问题 | 建议提供的材料 | 交付物 |
 | --- | --- | --- | --- |
-| 看项目 | `/jvc-prescreen` 初筛 | 第一次看 BP，判断值不值得见创始人 | `01-prescreen.md`：一句话判断、七维度、最可能不成立的理由、见面问题 |
-| 访谈 | `/jvc-interview-prep` 访谈提纲 | 见创始人、客户、专家之前 | 按优先级排序的问题，每题标“过关 / 警惕”信号 |
-| | `/jvc-meeting-notes` 访谈纪要 | 访谈之后，整理逐字稿或录音转写稿 | Word 纪要（交付版 + 含待验证点的工作版），自带错别字、逻辑、矛盾自查 |
-| 分析 | `/jvc-business-economics` 商业经济 | 想知道一单赚多少、做大后变好还是变差、现金能撑多久 | `business-economics.md` + 可重跑的计算脚本 |
-| | `/jvc-track-research` 赛道研究 | 新赛道开题、看行业机制、分析竞争格局 | 全景报告 / 行业机制 / 竞争格局，可渲染为 PDF 研报 |
-| | `/jvc-workbook` 建模工作簿 | 需要市场规模、可比公司或投资回报的 Excel | Excel 工作簿 + 一页结论 |
-| | `/jvc-thesis-test` 投资论点 | 把投资逻辑写成可检验的论点，或专门唱反调 | 支持、反驳、“什么情况下就错了”、命门 |
-| 尽调 | `/jvc-dd-report-digest` 尽调报告消化 | 拿到第三方财务、法律、审计尽调报告 | 红旗表、与 BP 口径不一致之处、条款处理建议 |
-| 投决 | `/jvc-ic-memo` 投决备忘录 | 上投决会前 | 十七章预审版 `06-ic-memo-review.md`；你明确“预审通过”后才出终版 `06-ic-memo.md` |
-| 投后 | `/jvc-portfolio-tracking` 投后跟踪 | 被投公司季报、月报到了 | 季度简报 + 投后仪表板更新内容 |
+| `/jvc-prescreen` 初筛 | 这个项目是什么，值不值得继续花时间看？ | BP、项目介绍、已有印象 | 两页以内的 `01-prescreen.md`：核心判断、七维度、主要反对理由和首次见面问题 |
+| `/jvc-interview-prep` 访谈提纲 | 这次会面最该问什么，什么回答会改变判断？ | BP、已有纪要、疑点、访谈对象和时长 | 按优先级排列的问题；每题含验证目标、过关与警惕信号 |
+| `/jvc-meeting-notes` 访谈纪要 | 把原始访谈整理成可回查的记录 | 逐字稿、随笔、日期和访谈对象 | Word 交付版与工作版；支持六段式和问答式，包含错别字、逻辑、矛盾自查 |
+| `/jvc-business-economics` 商业经济 | 每做一单赚多少，规模扩大后会怎样，现金够不够？ | 定价、合同、成本、交付和回款信息 | `business-economics.md` 与可重跑计算；区分毛利、单位贡献、经营贡献和现金 |
+| `/jvc-track-research` 赛道研究 | 行业怎么运转，谁拿走利润，客户为什么选某家公司？ | 赛道定义或项目问题；已有资料可选 | 全景报告、行业机制分析或竞争格局分析；需要时生成 PDF 或知识树 |
+| `/jvc-workbook` 建模工作簿 | 市场有多大、谁可比、交易回报由什么决定？ | 行业口径、可比数据，或投资条款及预测 | 市场规模、可比公司、投资回报三类 Excel；每份附一页结论 |
+| `/jvc-thesis-test` 投资论点 | 哪些论点站得住，什么证据会推翻它们？ | 初筛、访谈、经营分析、行业研究和模型 | 支持、反驳、可观察的证伪条件与验证动作；支持双向、正方和反方 |
+| `/jvc-dd-report-digest` 尽调报告消化 | 第三方报告发现了什么，会怎样影响交易？ | 财务、法律、审计或技术尽调报告；BP 和条款可选 | 红旗表、口径冲突、关键数字、报告版本差异和谈判选项 |
+| `/jvc-ic-memo` 投决备忘录 | 把已有研究整理成可审议的材料 | 前序分析、模型、原始资料和待决事项 | 十七章 `06-ic-memo-review.md`；明确“预审通过”后生成 `06-ic-memo.md`。也支持轻量判断状态综合 |
+| `/jvc-portfolio-tracking` 投后跟踪 | 本期发生了什么变化，偏离哪些目标，需要采取什么行动？ | 本期报表、上期记录、投资时目标、管理层更新 | 季度简报与仪表板更新内容；逐月现金预测、里程碑和风险变化 |
 
-另有一个独立选装的 `/jvc-invoice-manager`，用于差旅发票 OCR 识别与报销归档，不属于投资研究。
+另有三个内部组件：`jvc-research-core` 做证据登记与审查，`jvc-research-report` 排版研报，`jvc-knowledge-tree-builder` 整理本地资料。通常由主 Skill 调用。发票工具 `/jvc-invoice-manager` 独立选装。
+
+## 如何工作
+
+1. **确定问题。** 根据请求选择一个 Skill，读取对应步骤和输出要求。只需要初筛时，就停在初筛。
+2. **读取材料。** 读取你指定的文件和相关历史产物。行业研究可搜索公开资料；财务表、BP 和访谈记录作为本地材料处理。
+3. **形成分析。** 区分事实、公司说法、假设和估算。资料不足时说明依据和条件；无法估算的项目列为待验证问题。
+4. **计算和检查。** 数字实际执行计算。Excel 检查公式、勾稽和输入变化；纪要做文字和逻辑自查；投决预审版做证据审查，终版再检查是否保留原意。
+5. **交付文件。** 结论放在前面，依据和计算过程便于回查。明确剩余缺口和下一步最有价值的问题。
+
+Skill 提供方法和脚本，实际读文件、检索和生成内容由所用 AI 助手执行。输出质量仍受材料、模型和工具能力影响。计算通过不代表商业假设已证实，最终投资决定由使用者作出。
 
 ## 安装
+
+需要支持本地 Agent Skills 的 AI 助手，例如 Claude Code、Codex 或 Cursor。克隆仓库并注册：
 
 ```bash
 git clone https://github.com/justinjia0813/jvc-analyst.git ~/.agents/sources/jvc-analyst
 cd ~/.agents/sources/jvc-analyst
-./setup --global                 # 安装 10 个 skill 和 3 个内部组件
-./setup --global --operations    # 可选：加装发票工具
+./setup --global
 ```
 
-安装器会把 skill 链接到 `/.agents/skills/`，以及本机已存在的客户端目录：Claude Code、Codex、Cursor、Hermes、OpenClaw、OpenCode、Pi、Grok。装完后重开一次 AI 助手的会话即可使用。
+安装器注册 10 个主 Skill 和 3 个内部组件，链接到 `~/.agents/skills/` 及检测到的客户端目录。支持 Claude Code、Codex、Cursor、Hermes、OpenClaw、OpenCode、Pi 和 Grok。完成后重新加载技能或新开会话。
 
-- 源码目录需要保留，各客户端里的 skill 都是指向它的链接。
-- 更新：在源码目录执行 `git pull`；只有新增或删除了 skill 时才需要重跑 `./setup --global`。
-- 安装器不会删除任何已有的 skill；同名目录会先备份到 `/.local/state/jvc-analyst/backups/`。
+源码目录需要保留，客户端使用指向它的链接。同名已有目录会备份到 `~/.local/state/jvc-analyst/backups/`。安装器不会自动清除旧版或额外安装的技能。
 
-## 快速上手
+只加装发票工具：
 
-在 AI 助手里用斜杠命令或自然语言调用：
+```bash
+./setup --global --operations
+```
+
+安装器只注册技能。运行脚本还需要 Python 3.10+；Excel 使用 `openpyxl` 和本机 LibreOffice，Word 使用 `python-docx`。具体依赖由各 Skill 的说明或 `requirements.txt` 指定。研报 PDF 另有排版和字体依赖。缺少依赖时应补齐，不能把未执行的检查写成通过。
+
+更新前保留本地修改，再在源码目录执行 `git pull --ff-only`。新增或删除了技能时重跑 `./setup --global`。已有本地分支与远端分叉时，先处理分支差异，不直接覆盖本地工作。
+
+## 如何使用
+
+请求里最好带上四项：**问题、材料位置、读者、交付范围**。斜杠命令能明确指定 Skill，也可以用自然语言描述任务。
 
 ```text
-/jvc-prescreen 看下 projects/星澜工控/00-source/BP.pdf，给合伙人一页判断
-/jvc-interview-prep 明天见星澜的创始人，60 分钟，重点问订单真实性和现金
-/jvc-meeting-notes 把这份管访转写稿和我的随笔整理成六段式纪要
-帮我算一下这家公司一条产线交付后到底赚不赚钱，现金能撑多久
+/jvc-prescreen 阅读 projects/示例公司/00-source/BP.pdf。
+给合伙人两页以内的初筛，重点看付费客户和交付成本。
+
+/jvc-interview-prep 明天见创始人，60 分钟。
+沿用上次初筛，优先验证订单是否能验收回款。
+
+/jvc-meeting-notes 把这份逐字稿和随笔整理成问答式 Word 纪要。
+保留原始数字、口径冲突和待验证点。
+
+/jvc-workbook 根据融资条款和财务预测做投资回报模型。
+逐轮计算稀释，分别展示三种退出情景，并核对跟投对 IRR 的影响。
+
+/jvc-portfolio-tracking 本季度报表在 portfolio/示例公司/00-source/。
+对照上期和年度目标，重点检查新产线支出与到期还款后的现金缺口。
 ```
 
-按问题选最小组合即可，不需要每次跑完整流程。常见组合：
+材料不完整也可以开始。给出已知范围，例如“只有 BP，先做初筛”或“只有本季报表，没有年度目标”。AI 应区分能回答的问题和仍缺依据的问题。
 
-1. **收到 BP**：`/jvc-prescreen` → 值得见就 `/jvc-interview-prep`。
-2. **访谈之后**：`/jvc-meeting-notes`，工作版里的待验证点就是下一轮的问题。
-3. **新赛道**：`/jvc-track-research`；要数字时接 `/jvc-workbook`。
-4. **核对交易**：`/jvc-business-economics` + `/jvc-workbook` 投资回报 + `/jvc-thesis-test`。
-5. **上会**：`/jvc-ic-memo` 预审版，确认后出终版。
-6. **投后**：每季度 `/jvc-portfolio-tracking`。
+## 建议的工作流
 
-一个虚构项目从初筛走到投后的完整串联，见 [端到端示例](examples/end-to-end-walkthrough.md)；每个 skill 的产出样例在 [`examples/`](examples/)。
+| 场景 | 推荐顺序 | 何时进入下一步 |
+| --- | --- | --- |
+| 第一次收到项目 | 初筛 → 访谈提纲 | 初筛指出了值得验证的问题，并准备安排会面 |
+| 一次访谈结束 | 访谈纪要 → 商业经济或投资论点 → 下一轮提纲 | 用工作版里的冲突和待验证点选择后续任务 |
+| 进入陌生赛道 | 赛道研究 → 市场规模或可比公司工作簿 | 行业定义和口径稳定后再量化；需要发布时追加排版 |
+| 核对交易经济性 | 商业经济 → 投资回报工作簿 → 投资论点 | 看清经营驱动、条款和敏感变量后，再集中验证命门 |
+| 收到第三方尽调 | 尽调报告消化 → 更新相关模型与论点 | 把新发现、数字调整和条件变化回写到受影响的分析 |
+| 准备上投决会 | 汇总已有产物 → IC 预审版 → 处理冲突 → 批准终版 | 关键数字、风险和剩余不确定性得到明确处理 |
+| 定期投后跟踪 | 新报表 + 上期记录 → 投后简报 → 仪表板更新 | 对现金、目标偏差和延迟里程碑确定跟进动作 |
+
+每次选择能回答当前问题的最小组合。前一步的文件是下一步的输入，但旧分析不能替代最新原始证据。数据有更新时，先核对日期、口径和来源，再更新相关判断。
+
+完整串联见 [端到端示例](examples/end-to-end-walkthrough.md)。带公式的 Excel、现金情景及各 Skill 的文字样例见 [examples](examples/README.md)，其中数字均为虚构。
 
 ## 项目档案目录约定
 
-产出默认写进材料所在的项目文件夹；没有项目文件夹时，AI 会先问你放哪。中间文件（计算脚本、转换文本等）统一放在同目录的 `_work/`。
+使用已有项目目录即可。你指定的位置优先；未指定时，产物放在材料所属项目的根目录。原始材料不改动，中间文件放进 `_work/`。同名产物默认加日期后缀保留旧版。
 
 ```text
-projects/{公司}/
-├── 00-source/                  # 原始材料，只读
-├── spec/                       # 可选：研究规格
-│   ├── CONTEXT.md              #   共享语言与判断标准
-│   ├── research-plan.md        #   范围与验收标准
-│   ├── hypotheses.md           #   3–5 条可证伪假设
-│   └── tasks.md                #   验证任务
+projects/示例公司/
+├── 00-source/                         # BP、逐字稿、报表、尽调报告
 ├── 01-prescreen.md
-├── interview-prep-{对象}.md
-├── 【YYYY年MM月DD日访谈】{对象}.docx
+├── interview-prep-创始人.md
+├── 【2026年10月18日访谈】创始人.docx
 ├── business-economics.md
 ├── 04-thesis-test.md
-├── 05-market-sizing.xlsx / 05-comps-dd.xlsx / 05-roi-modeler.xlsx
-├── dd-digest-{报告类型}.md
-├── 06-ic-memo-review.md        # 预审版
-├── 06-ic-memo.md               # 终版
-├── decision-journal.md         # 你自己的决策记录
-└── _work/
-
-tracks/{赛道}/                   # 赛道研究
-portfolio/{公司}/                # 投后跟踪
+├── 05-roi-modeler.xlsx
+├── 05-roi-modeler.md                   # 一页模型结论
+├── dd-digest-财务.md
+├── 06-ic-memo-review.md
+├── 06-ic-memo.md
+└── _work/                             # 转换文本、计算输入与脚本、审查结果
 ```
 
-## 使用原则
+赛道研究可放在 `tracks/赛道/`，投后资料可放在 `portfolio/公司/`。没有现成目录时，AI 会询问存放位置。
 
-- **材料留在本地**：不要把 BP、逐字稿、财务表上传到第三方网页工具。skill 本身不含任何联网脚本，公开资料的检索由 AI 助手完成。
-- **判断在前，依据在后**：正文是结论和关键数字，来源放附录；公司说法标 `[创始人自述]`，推算标 `[估算：依据]`，每份产出写明“最可能错在哪”。
-- **不替你决策**：不会写“建议投资 / 不建议投资”。
-- **产出是初稿**：数字和来源请复核。目前只有商业经济分析在真实项目材料上做过端到端验证，其余 skill 通过了确定性检查，欢迎通过 Issue 反馈。
+## 怎样检查交付物
 
-## 进阶配置
+使用者首先检查三个问题：结论是否回答了原问题，关键数字能否回到原始材料，哪些条件变化会推翻判断。
 
-**自定义 Word 纪要模板**：按优先级依次读取 `--template <路径>`、环境变量 `JVC_DOCX_TEMPLATE`、`skills/jvc-meeting-notes/templates/custom.docx`（已被 git 忽略，适合放机构模板），最后才用内置的中性模板。
+| 交付类型 | 已有检查 | 仍需人工核对 |
+| --- | --- | --- |
+| 初筛、研究、投资论点 | 输出结构、来源标注、反面证据和限定条件 | 来源质量、估算合理性、遗漏的重要事实 |
+| 访谈纪要 | 文字、逻辑、矛盾；交付版与工作版 | 原话的含义、说话人和关键数字 |
+| Excel | 本机实际重算、来源编号、关键公式、支持范围内的业务勾稽、输入变化测试 | 输入真实性、特殊交易条款、敏感性范围是否充分 |
+| 投后现金 | 可用现金、逐月支出、还款、融资情景、首次触零和最低缺口 | 未披露的付款义务、月内支付时点、融资条件 |
+| IC 终版 | 格式、同章节陈述与表格对应、重要条件和风险保留 | 重大判断是否得到批准，剩余风险是否接受 |
 
-**研究分级**：项目越接近投决，需要的工件越多。L0 快筛只要初筛或纪要；L1 加 `spec/CONTEXT.md`、`spec/research-plan.md`、`spec/hypotheses.md`；L2 加 `spec/tasks.md` 和证据；L3（上会前）再加完整证据和 `decision-journal.md`。级别只控制工件多少，不改变上面的使用原则。
+IC 终版的自动检查接受排版与来源标记调整。需要重新措辞的事实或判断，先写回预审版并批准相应表述；自动检查不能证明任意同义改写都保持原意。
 
-**证据内核（可选）**：`jvc-research-core` 维护一条只能追加的证据台账，并对产出做确定性审查。默认不启用；`/jvc-ic-memo` 上会前会以严格模式使用，其他 skill 在你要求 `--rigor` 时启用。
+当前验证以脚本回归和虚构案例为主。仓库已有记录中，商业经济分析做过一次真实材料的端到端验证；整套 Skill 尚未完成系统性的真实项目质量评估。自动检查通过后，仍应复核实际交付文件。
 
-## 开发
+## 材料与数据边界
+
+- 原始文件和生成文件保存在本地。不要把非公开 BP、逐字稿和财务表上传到第三方网页工具。
+- 使用云端 AI 时，模型如何处理读取的内容取决于所用客户端、服务商和账号配置。本地存放文件不等于离线推理。
+- 公司说法、第三方事实、用户观察和模型估算应保持区分。估算写依据，无法判断时明确未知。
+- AI 可以提出研究优先级、交易情景和谈判选项，最终投资决定由人作出。
+
+## 进阶配置与维护
+
+**Word 模板。** 依次读取显式 `--template`、环境变量 `JVC_DOCX_TEMPLATE`、`skills/jvc-meeting-notes/templates/custom.docx`，最后使用内置模板。自定义机构模板不进入版本控制。
+
+**研究级别。** L0 用于轻量初筛或访谈；L1 增加范围和假设；L2 增加验证任务与证据；L3 用于投决前的完整审查。级别影响材料和流程要求。
+
+需要保存研究过程时，L1 使用 `spec/CONTEXT.md`、`spec/research-plan.md` 和 `spec/hypotheses.md`，分别记录背景、范围与假设；L2 增加 `spec/tasks.md` 跟踪验证任务；L3 的人工决定记录在 `decision-journal.md`。初筛不要求先建立这些文件。
+
+**证据内核。** 默认按需使用；用户要求 `--rigor` 时进入严格审查。完整 IC 预审默认使用严格模式，轻量判断状态综合除外。审查结果为 `ready`、`partial` 或 `blocked`；它描述证据状态，不能替代用户批准。
+
+维护检查：
 
 ```bash
-bash scripts/check-review-fixes.sh      # 全部确定性检查，含发布前隐私检查
+bash scripts/check-review-fixes.sh
 ```
 
-发布前隐私检查 `scripts/check-public-release.py` 会拦截本机路径、个人邮箱、密钥、Office 文件作者信息，以及你放在 `/.config/jvc-analyst/private-names.txt` 里的私有名单（该文件不进仓库）。
+检查包括计算回归、文档校验、技能合同、安装模拟及发布前隐私扫描。计算检查需要本机 LibreOffice。详细规则分别见 [Excel 计算验收](skills/jvc-workbook/references/calculation-checks.md)、[投后指标与现金预测](skills/jvc-portfolio-tracking/references/metrics-and-alerts.md) 和 [IC Skill](skills/jvc-ic-memo/SKILL.md)。
 
-## 许可
-
-[MIT](LICENSE)
+许可：[MIT](LICENSE)。

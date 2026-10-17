@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 import sys
+import subprocess
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -58,10 +59,14 @@ def source_contract_files() -> list[Path]:
         elif root.is_dir():
             included.extend(path for path in root.rglob("*") if path.is_file())
 
+    versioned = set(subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT
+    ).decode().split("\0"))
     return sorted(
         path
         for path in included
-        if "__pycache__" not in path.parts and not path.name.endswith(".pyc")
+        if path.relative_to(ROOT).as_posix() in versioned
+        and "__pycache__" not in path.parts and not path.name.endswith(".pyc")
         and not (path.parent.parent.name == "skills" and path.name == "data.json")
     )
 

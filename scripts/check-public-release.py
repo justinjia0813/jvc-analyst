@@ -112,7 +112,8 @@ def main(argv: list[str] | None = None) -> int:
         p.read_text(encoding="utf-8", errors="ignore") for p in tracked_files() if p.suffix in {".py", ".sh", ".json", ".md"}
     )
     for name in ignored:
-        if name and "__pycache__" not in name and name in tracked_text:
+        # Source collectors mention this metadata filename only to exclude it.
+        if name and Path(name).name != ".DS_Store" and "__pycache__" not in name and name in tracked_text:
             findings.append(f"{name}: referenced by tracked files but excluded by .gitignore")
 
     if not deny:

@@ -231,8 +231,9 @@ def check_structured_compatibility(root: Path, source: dict, claim: dict) -> Non
                 workbook = load_workbook(artifact)
                 workbook["sources"].append(["[S1]", "研究状态：partial；合成公司说法未核验"])
                 workbook.save(artifact)
+                # This fixture tests ledger identity reuse, not completed model calculations.
                 subprocess.run([sys.executable, str(ROOT / "scripts/validate-workbook.py"),
-                                str(artifact), str(template)], check=True, capture_output=True)
+                                str(artifact), str(template), "--schema-only"], check=True, capture_output=True)
             else:
                 artifact.write_text("研究状态：partial\n合成公司说法未核验。[S" + suffix + "]\n",
                                     encoding="utf-8")

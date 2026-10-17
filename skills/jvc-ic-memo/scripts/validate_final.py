@@ -2,6 +2,7 @@
 import argparse
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 
@@ -433,7 +434,118 @@ def numbers(text: str) -> set[str]:
     return found
 
 
-def validate(review: str, final: str) -> None:
+def fidelity_sections(text: str, *, review: bool) -> dict[int, list[str]]:
+    """Bind complete statements/table rows to their section, never a bag of numbers.
+
+    This intentionally accepts formatting changes, not arbitrary paraphrases.
+    A new wording must be added to the reviewed text before approval.
+    """
+    sections: dict[int, list[str]] = {}
+    current = None
+    for line in outside_fences(text):
+        if line is None:
+            continue
+        if re.match(r"^##\s+(?:附录|质量报告|来源索引)", line):
+            break
+        match = H2_SECTION.fullmatch(line)
+        if match:
+            current = int(match.group(1))
+            sections[current] = []
+            continue
+        if review and H2.match(line):
+            raise ValueError("fidelity: review business sections must be numbered")
+        if H2.match(line) or H1.match(line):
+            current = None
+        if current is not None:
+            sections[current].append(line)
+
+    def canonical(value: str) -> str:
+        value = unicodedata.normalize("NFKC", value)
+        value = next(pattern for name, pattern in PROHIBITED if name == "source id").sub("", value)
+        value = re.sub(r"\[(?:BP|deck|财务DD|法律DD|访谈)[^\]\n]*\]", "", value, flags=re.I)
+        # Evidence qualifications carry meaning. They must survive as prose.
+        for label, prose in (("公司自述", "公司称"), ("创始人自述", "创始人称"),
+                             ("公司口径", "公司称"), ("模型估算", "按模型估算"),
+                             ("未核实", "尚未核实"), ("第三方事实", "")):
+            value = value.replace(f"[{label}]", prose)
+        value = re.sub(r"^\s*(?:#{1,6}\s+|[-+*]\s+|\d+[.)]\s+)", "", value)
+        value = value.replace("**", "").replace("`", "")
+        value = re.sub(r"\s+", "", value)
+        return value.strip("。！？;；")
+
+    result = {}
+    for section, lines in sections.items():
+        statements = []
+        table_header = None
+        paragraph = []
+
+        def flush():
+            if paragraph:
+                statements.extend(re.split(r"[。！？；;]", "".join(paragraph)))
+                paragraph.clear()
+
+        for line in lines:
+            if review and re.match(r"^\s*[-+*]\s+\[[ xX]\]", line):
+                continue
+            if re.match(r"^\s*证据状态\s*[:：]", line):
+                # A bare metadata label cannot turn an unqualified claim into fact.
+                if review and re.search(r"公司口径|自述|推测|未核实", line):
+                    prior = "".join(paragraph) if paragraph else (statements[-1] if statements else "")
+                    if not re.search(r"公司称|创始人称|据公司|若|假设|预计|可能|尚未|未核实|估算", prior):
+                        raise ValueError("fidelity: review needs inline evidence qualification before final conversion")
+                continue
+            if re.fullmatch(r"\s*(?:\[需要用户提供\]|\[未覆盖\]|此部分缺少输入素材|待确认\s*⚠️?)\s*", line):
+                continue
+            if has_pipe(line):
+                flush()
+                cells = table_cells(line)
+                if cells and all(TABLE_SEPARATOR.fullmatch(c) for c in cells):
+                    continue
+                if table_header is None:
+                    table_header = "|".join(cells)
+                else:
+                    statements.append(table_header + " => " + "|".join(cells))
+            else:
+                table_header = None
+                if not line.strip() or HORIZONTAL_RULE.match(line) or SUBHEADING.match(line):
+                    flush()
+                    if SUBHEADING.match(line):
+                        statements.append(line)
+                else:
+                    paragraph.append(line.strip())
+        flush()
+        result[section] = [canonical(s) for s in statements if canonical(s)]
+    return result
+
+
+def check_fidelity(review: str, final: str) -> None:
+    if any(line is None for line in outside_fences(final)):
+        raise ValueError("fidelity: final statements must not be hidden in fenced code blocks")
+    original = fidelity_sections(review, review=True)
+    candidate = fidelity_sections(final, review=False)
+    def title(text):
+        heading = next((line for line in text.splitlines() if H1.match(line)), "")
+        return re.sub(r"\s+|预审版|终版", "", unicodedata.normalize("NFKC", heading)).casefold()
+    if title(review) != title(final):
+        raise ValueError("fidelity: memo subject/title changed")
+    if not original:
+        raise ValueError("fidelity: review requires numbered sections")
+    for section, statements in original.items():
+        if statements and section not in candidate:
+            raise ValueError(f"fidelity: populated review section {section} omitted")
+    for section, statements in candidate.items():
+        extra = set(statements) - set(original.get(section, []))
+        if extra:
+            raise ValueError(f"fidelity: changed or unreviewed statement in section {section}: {sorted(extra)[0][:100]}; review the exact wording first")
+    missing_risks = set(original.get(3, [])) - set(candidate.get(3, []))
+    if missing_risks:
+        raise ValueError("fidelity: reviewed risk statement omitted")
+    for section, statements in original.items():
+        if statements and statements != candidate.get(section, []):
+            raise ValueError(f"fidelity: statement omitted or reordered in section {section}; retain reviewed context")
+
+
+def validate(review: str, final: str, *, format_only: bool = False) -> None:
     lines = outside_fences(final)
     for name, pattern in PROHIBITED:
         if pattern.search(final):
@@ -443,19 +555,22 @@ def validate(review: str, final: str) -> None:
     new_numbers = sorted(numbers(final) - numbers(review))
     if new_numbers:
         raise ValueError(f"number absent from review: {new_numbers[0]}")
+    if not format_only:
+        check_fidelity(review, final)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate a clean IC memo against its review version.")
     parser.add_argument("--review", required=True, type=Path)
     parser.add_argument("--final", required=True, type=Path)
+    parser.add_argument("--format-only", action="store_true", help="Formatting diagnostics only; cannot authorize final publication")
     args = parser.parse_args()
     try:
-        validate(read_text(args.review, "review"), read_text(args.final, "final"))
+        validate(read_text(args.review, "review"), read_text(args.final, "final"), format_only=args.format_only)
     except ValueError as error:
         print(f"validation failed: {error}", file=sys.stderr)
         return 1
-    print("IC memo final validation passed")
+    print("IC memo format checks passed; fidelity NOT checked" if args.format_only else "IC memo final validation passed (format and statement fidelity)")
     return 0
 
 

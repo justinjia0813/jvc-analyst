@@ -13,10 +13,15 @@ check_workbook() {
   local example="examples/${name}-example.xlsx"
 
   python3 scripts/generate-workbook.py "$template" "$generated"
-  python3 scripts/validate-workbook.py "$generated" "$template"
-  python3 scripts/validate-workbook.py "$example" "$template"
+  python3 scripts/validate-workbook.py "$generated" "$template" --schema-only
+  if [[ "$name" == "comps-dd" ]]; then
+    python3 scripts/validate-workbook.py "$example" "$template"
+  else
+    python3 scripts/validate-workbook.py "$example" "$template" --checks "examples/${name}-example.checks.json"
+  fi
 }
 
 check_workbook "comps-dd"
 check_workbook "market-sizing"
 check_workbook "roi-modeler"
+python3 scripts/check-workbook-calculations.py

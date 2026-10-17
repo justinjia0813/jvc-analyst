@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "input": "exit_scenarios!E3",
+      "before": 5,
+      "after": 6,
+      "outputs": [
+        {
+          "cell": "returns!G3",
+          "before": 3.92,
+          "after": 4.72
+        },
+        {
+          "cell": "returns!H3",
+          "before": 0.31418714098236755,
+          "after": 0.3639184359183454
+        }
+      ]
+    }
+  ]
+}

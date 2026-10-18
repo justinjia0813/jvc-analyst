@@ -35,7 +35,7 @@ def read_headers(workbook_path: Path) -> dict[str, list[str]]:
     return headers
 
 
-def validate(workbook_path: Path, template_path: Path) -> list[str]:
+def validate(workbook_path: Path, template_path: Path, *, schema_only=False, checks_path=None) -> list[str]:
     parse_template = load_parse_template()
     expected = parse_template(template_path)
     actual = read_headers(workbook_path)
@@ -59,6 +59,13 @@ def validate(workbook_path: Path, template_path: Path) -> list[str]:
                 f"expected {expected_headers}, got {actual_headers}"
             )
 
+    if not errors and not schema_only:
+        from workbook_calculation import delivery_checks
+        model = template_path.stem.removesuffix("-template")
+        try:
+            delivery_checks(workbook_path, model, checks_path)
+        except (ValueError, KeyError, TypeError, OSError, ZeroDivisionError, OverflowError) as error:
+            errors.append(str(error))
     return errors
 
 
@@ -68,6 +75,8 @@ def main() -> int:
     )
     parser.add_argument("workbook", type=Path, help="Workbook .xlsx path")
     parser.add_argument("template", type=Path, help="Markdown template path")
+    parser.add_argument("--schema-only", action="store_true", help="Template structure only; not delivery acceptance")
+    parser.add_argument("--checks", type=Path, help="Independent calculation and sensitivity expectations JSON")
     args = parser.parse_args()
 
     if not args.workbook.exists():
@@ -75,13 +84,13 @@ def main() -> int:
     if not args.template.exists():
         parser.error(f"template does not exist: {args.template}")
 
-    errors = validate(args.workbook, args.template)
+    errors = validate(args.workbook, args.template, schema_only=args.schema_only, checks_path=args.checks)
     if errors:
         for error in errors:
             print(error, file=sys.stderr)
         return 1
 
-    print(f"validated {args.workbook}")
+    print(f"{'schema only (not delivery)' if args.schema_only else 'calculation and delivery checks passed'}: {args.workbook}")
     return 0
 
 

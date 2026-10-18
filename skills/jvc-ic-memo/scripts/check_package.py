@@ -43,7 +43,7 @@ CLEAN = """# IC Memo
 
 def run(review: Path, final: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(VALIDATOR), "--review", str(review), "--final", str(final)],
+        [sys.executable, str(VALIDATOR), "--review", str(review), "--final", str(final), "--format-only"],
         text=True,
         capture_output=True,
         check=False,
@@ -72,7 +72,7 @@ def main() -> int:
 
         result = run(review, clean)
         require(result.returncode == 0, f"valid: {result.stderr}")
-        require("IC memo final validation passed" in result.stdout, f"valid: {result.stdout}")
+        require("fidelity NOT checked" in result.stdout, f"valid: {result.stdout}")
 
         bad_cases = {
             "source-id": (CLEAN + "\n[S1]\n", "source id"),
@@ -324,7 +324,8 @@ def main() -> int:
         require(bad_candidate.read_bytes() == candidate_before, "validator modified bad-candidate.md")
         require(published.read_bytes() == published_before, "validator modified published.md")
 
-    print("jvc-ic-memo package check passed")
+    subprocess.run([sys.executable, str(VALIDATOR.with_name("check_fidelity.py"))], check=True)
+    print("jvc-ic-memo package check passed (format plus fidelity regressions)")
     return 0
 
 

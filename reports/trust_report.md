@@ -1,6 +1,6 @@
 # Trust Report
 
-日期：2026-09-29
+日期：2026-10-18
 
 证据边界：这是 production governance（生产治理）的本地 trust report（信任报告），不是 public governed release（受治理的公开发布）的完整安全认证。
 
@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`745ea808c619160dd43cd9ae31bea971bf760f291cd1893dcc6554d990536f7b`
+`d841bcceeadc26bf15d4b4c53e97678b9a2c71d47f6461052527832d6fb8dc28`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
@@ -74,7 +74,13 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | `scripts/check-public-release.py` | argparse CLI | file read, subprocess（git ls-files）；无网络 |
 | `scripts/check-research-core-install.py` | self-check | file read, file write, subprocess；仅在临时目录模拟安装与回滚 |
 | `scripts/generate-workbook.py` | argparse CLI | file read, file write |
-| `scripts/validate-workbook.py` | argparse CLI | file read |
+| `scripts/validate-workbook.py` | argparse CLI | file read, file write, subprocess；仅重算临时副本 |
+| `scripts/workbook_calculation.py` | library | 本地 LibreOffice 重算；公式函数允许清单及外部引用检查 |
+| `scripts/build-workbook-examples.py` | CLI | file read, file write；重建虚构示例 |
+| `scripts/check-workbook-calculations.py` | self-check | file read, file write, subprocess；临时文件回归 |
+| `scripts/check-portfolio-cash.py` | self-check | file read, subprocess；虚构现金情景 |
+| `skills/jvc-portfolio-tracking/scripts/cash_runway.py` | argparse CLI | file read；结果写到标准输出，无网络 |
+| `skills/jvc-ic-memo/scripts/check_fidelity.py` | self-check | file read, file write, subprocess；临时文件回归 |
 | `skills/jvc-knowledge-tree-builder/scripts/collect_sources.py` | argparse CLI | file read, file write |
 | `skills/jvc-knowledge-tree-builder/scripts/check_package.py` | CLI | file read |
 | `skills/jvc-research-report/scripts/build_report.py` | argparse CLI | file read, file write, subprocess |
@@ -86,5 +92,7 @@ Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scrip
 | `skills/jvc-research-core/scripts/check_package.py` | self-check | file read, file write；无网络 |
 
 ## Release Rule
+
+Excel 交付检查需要本机 LibreOffice 和 openpyxl，当前未锁定版本。验证器在调用重算前拒绝外部工作簿引用及未允许的函数；这是应用层检查，不是系统级网络隔离。IC 保真检查仅证明获批表述在支持的排版变化下保留，不能证明任意改写的语义等价。
 
 未发现高风险凭据或不受限的远程内联执行。证据支持仓库内 production governance with warnings（带警告的生产治理），不支持声称完整的公开受治理发布就绪。

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "package": "jvc-analyst",
-  "generated_at": "2026-09-29",
+  "generated_at": "2026-10-18",
   "mode": "production-governance",
-  "package_sha256": "745ea808c619160dd43cd9ae31bea971bf760f291cd1893dcc6554d990536f7b",
+  "package_sha256": "d841bcceeadc26bf15d4b4c53e97678b9a2c71d47f6461052527832d6fb8dc28",
   "hash_scope": "manifest, agents, security, skills, templates, scripts, evals, library, README, CLAUDE, setup; generated reports and local telemetry are excluded",
   "secret_scan": {
     "status": "pass",
@@ -21,7 +21,8 @@
     "policy_file": "security/network_policy.json",
     "network_capable_scripts": [],
     "notes": [
-      "No research-core, research-report renderer, IC memo validator, or IC memo package-check script has network capability."
+      "No research-core, research-report renderer, IC memo validator, or IC memo package-check script has network capability.",
+      "Workbook validation rejects external workbook references and uses a formula-function allowlist before local recalculation. This is an application check, not an operating-system network sandbox."
     ]
   },
   "permission_policy": {
@@ -46,7 +47,8 @@
       "The IC memo final validator and package check use the Python standard library only.",
       "All jvc-research-report Python runtime dependencies are version-pinned.",
       "Some existing DOCX and invoice dependencies are not version-pinned.",
-      "Homebrew dependencies for invoice OCR are documented but not machine-pinned."
+      "Homebrew dependencies for invoice OCR are documented but not machine-pinned.",
+      "Workbook delivery checks use local LibreOffice and openpyxl; both are required and not pinned by this package. The validator recalculates temporary copies and does not modify inputs."
     ]
   },
   "research_report_evidence": {
@@ -138,7 +140,9 @@
       "interface": "cli",
       "help_surface": "argparse",
       "capabilities": [
-        "file_read"
+        "file_read",
+        "file_write",
+        "subprocess"
       ]
     },
     {
@@ -251,6 +255,62 @@
       "help_surface": "--help",
       "capabilities": [
         "file_read",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/workbook_calculation.py",
+      "interface": "library",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/build-workbook-examples.py",
+      "interface": "CLI",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ]
+    },
+    {
+      "path": "scripts/check-workbook-calculations.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "scripts/check-portfolio-cash.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "subprocess"
+      ]
+    },
+    {
+      "path": "skills/jvc-portfolio-tracking/scripts/cash_runway.py",
+      "interface": "argparse",
+      "help_surface": "--help",
+      "capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "path": "skills/jvc-ic-memo/scripts/check_fidelity.py",
+      "interface": "self-check",
+      "help_surface": "none",
+      "capabilities": [
+        "file_read",
+        "file_write",
         "subprocess"
       ]
     }

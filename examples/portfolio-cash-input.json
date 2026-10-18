@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "unit": "万元（虚构情景）",
+  "as_of_month": "2026-09",
+  "cash": 100,
+  "restricted_cash": 20,
+  "milestone_month": "2026-12",
+  "periods": [
+    {"month": "2026-10", "operating_net": 10, "capex": 50, "debt_service": 0, "other_net": 0},
+    {"month": "2026-11", "operating_net": 10, "capex": 0, "debt_service": 70, "other_net": 0},
+    {"month": "2026-12", "operating_net": 10, "capex": 0, "debt_service": 0, "other_net": 0}
+  ],
+  "financing_scenarios": [
+    {"name": "融资按期到账", "condition": "已签协议，假设 11 月完成交割；截止日尚未到账", "inflows": {"2026-11": 60}}
+  ]
+}

@@ -1,7 +1,7 @@
 interface:
   display_name: "投决备忘录"
   short_description: "十七章预审版与批准后的干净终版"
-  default_prompt: "使用 jvc-ic-memo 处理提供的材料，交付结论在前、依据在附录、可直接转发的投决备忘录。"
+  default_prompt: "使用 jvc-ic-memo 先交付带证据的预审版；用户批准后保留获批陈述、条件与风险，通过格式和保真校验后生成终版。"
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets: ["codex", "claude", "generic"]

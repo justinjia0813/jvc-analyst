@@ -1,7 +1,7 @@
 interface:
   display_name: "建模工作簿"
   short_description: "市场规模、可比公司、投资回报 Excel 模型"
-  default_prompt: "使用 jvc-workbook 处理提供的材料，交付结论在前、依据在附录、可直接转发的建模工作簿。"
+  default_prompt: "使用 jvc-workbook 处理提供的材料，完成实际重算、业务勾稽和输入变化检查，交付带公式的工作簿与一页结论。"
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets: ["codex", "claude", "generic"]

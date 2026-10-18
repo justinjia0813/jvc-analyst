@@ -22,6 +22,7 @@
 | currency | 币种 |
 | source_id | 来源编号 |
 | notes | 备注 |
+| investment_year | 首次投资年份；IRR 按年末现金流口径计算，跟投按各轮年份计入 |
 
 ## Sheet: financial_forecast
 
@@ -37,6 +38,7 @@
 | ending_cash | 年末现金 |
 | source_id | 来源编号 |
 | notes | 备注 |
+| opening_cash | 年初可用现金；与估值分开，后续年份承接上年末余额 |
 
 ## Sheet: financing_dilution
 

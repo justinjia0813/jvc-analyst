@@ -36,8 +36,8 @@ version: "4.0.0"
 
    模板：市场规模 `market-sizing-template.md`，可比公司 `comps-dd-template.md`，投资回报 `roi-modeler-template.md`。
 3. 填数、写公式。业务输入只在假设表录入，其他表引用它，结果格保留真实公式。
-4. 结构校验：`python3 "<仓库根>/scripts/validate-workbook.py" "<输出>.xlsx" "<仓库根>/templates/<模板>.md"`。
-5. 动态检查：改一个关键输入，确认结果按预期变化，再改回来。
+4. 读 [计算验收](references/calculation-checks.md)，准备独立基准值和关键输入变化后的预期值。市场规模和回报模型使用 `--checks` 指向预期文件。
+5. 执行 `python3 "<仓库根>/scripts/validate-workbook.py" "<输出>.xlsx" "<仓库根>/templates/<模板>.md" --checks "<project>/_work/model.checks.json"`，实际重算并核对公式、勾稽和动态变化。可比表不要求 `--checks`。缺少重算引擎或任一检查失败时修复后再交付；`--schema-only` 只检查空模板结构，不表示计算验收完成。
 6. 写一页结论：同名 `.md` 文件（例如 `05-market-sizing.md`），结构见下。
 
 ## 一页结论

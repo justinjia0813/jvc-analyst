@@ -1,7 +1,7 @@
 interface:
   display_name: "投后跟踪"
   short_description: "被投公司季度简报与投后仪表板更新"
-  default_prompt: "使用 jvc-portfolio-tracking 处理提供的材料，交付结论在前、依据在附录、可直接转发的投后跟踪。"
+  default_prompt: "使用 jvc-portfolio-tracking 处理提供的材料，逐月核对可用现金、资本开支和还款，把未到账融资单列情景，交付季度简报与跟进问题。"
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets: ["codex", "claude", "generic"]

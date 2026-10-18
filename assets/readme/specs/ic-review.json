@@ -1,0 +1,103 @@
+{
+  "style": "paper",
+  "animation": "flow",
+  "motion_level": "none",
+  "canvas": {
+    "fps": 1,
+    "frames": 2
+  },
+  "signature": "",
+  "density": "airy",
+  "layout": "graph",
+  "direction": "right",
+  "title": {
+    "prefix": "投决材料",
+    "highlight": "预审通过后，才生成终版",
+    "subtitle": "审查状态与用户批准是两个不同条件。"
+  },
+  "nodes": [
+    {
+      "id": "draft",
+      "label": "预审版",
+      "body": "保留来源、冲突\n与证据缺口",
+      "accent": "green"
+    },
+    {
+      "id": "audit",
+      "label": "严格证据审查",
+      "body": "核对资料与引用\n报告证据状态",
+      "accent": "purple"
+    },
+    {
+      "id": "human",
+      "label": "用户预审通过",
+      "body": "partial 时先接受\n剩余不确定性",
+      "accent": "green"
+    },
+    {
+      "id": "fidelity",
+      "label": "终版保真校验",
+      "body": "核对陈述与顺序\n保留条件和风险",
+      "accent": "purple"
+    },
+    {
+      "id": "final",
+      "label": "干净终版",
+      "body": "校验通过后发布\n06-ic-memo.md",
+      "accent": "green"
+    },
+    {
+      "id": "evidence",
+      "label": "补充证据",
+      "body": "blocked 时交付缺口\n补齐后重新审查",
+      "accent": "purple"
+    },
+    {
+      "id": "revise",
+      "label": "修订预审版",
+      "body": "校验不一致时\n先修订、再获批准",
+      "accent": "green"
+    }
+  ],
+  "edges": [
+    {
+      "from": "draft",
+      "to": "audit"
+    },
+    {
+      "from": "audit",
+      "to": "human"
+    },
+    {
+      "from": "human",
+      "to": "fidelity"
+    },
+    {
+      "from": "fidelity",
+      "to": "final"
+    },
+    {
+      "from": "audit",
+      "to": "evidence"
+    },
+    {
+      "from": "evidence",
+      "to": "draft",
+      "kind": "loop",
+      "label": "补齐后再审查",
+      "accent": "purple"
+    },
+    {
+      "from": "fidelity",
+      "to": "revise"
+    },
+    {
+      "from": "revise",
+      "to": "draft",
+      "kind": "loop",
+      "label": "修订后重新预审",
+      "accent": "green"
+    }
+  ],
+  "footer": "ready 不等于用户批准；未通过检查时保留原有终版。"
+}

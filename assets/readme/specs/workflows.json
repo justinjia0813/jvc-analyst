@@ -1,0 +1,214 @@
+{
+  "style": "paper",
+  "animation": "flow",
+  "motion_level": "none",
+  "canvas": {
+    "fps": 1,
+    "frames": 2
+  },
+  "signature": "",
+  "density": "airy",
+  "layout": "swimlane",
+  "title": {
+    "prefix": "推荐工作流",
+    "highlight": "按当前问题选一条路径",
+    "subtitle": "各行可独立使用；这是常用组合，不是必须跑完的流水线。"
+  },
+  "lanes": [
+    {
+      "title": "看项目",
+      "subtitle": "拿到 BP 或项目介绍",
+      "steps": [
+        {
+          "id": "screen",
+          "title": "初筛",
+          "icon": "scan",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "prep",
+          "title": "访谈提纲",
+          "icon": "message",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "notes",
+          "title": "访谈纪要",
+          "icon": "clipboard",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        }
+      ]
+    },
+    {
+      "title": "新赛道",
+      "subtitle": "量化、排版和知识树按需追加",
+      "steps": [
+        {
+          "id": "track",
+          "title": "赛道研究",
+          "icon": "globe",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "market",
+          "title": "市场与可比",
+          "icon": "compare",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "report",
+          "title": "研报 / 知识树",
+          "icon": "file",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        }
+      ]
+    },
+    {
+      "title": "核对交易",
+      "subtitle": "已有经营信息和投资条款",
+      "steps": [
+        {
+          "id": "econ",
+          "title": "商业经济",
+          "icon": "gear",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "returns",
+          "title": "回报工作簿",
+          "icon": "score",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "thesis",
+          "title": "投资论点",
+          "icon": "brain",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        }
+      ]
+    },
+    {
+      "title": "上会准备",
+      "subtitle": "尽调报告到位后按需消化",
+      "steps": [
+        {
+          "id": "dd",
+          "title": "尽调摘要",
+          "icon": "audit",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "ic",
+          "title": "IC 预审",
+          "icon": "file",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "approval",
+          "title": "用户批准",
+          "icon": "human",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "final",
+          "title": "IC 终版",
+          "icon": "check",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        }
+      ]
+    },
+    {
+      "title": "投后跟踪",
+      "subtitle": "新报表与上期记录到位",
+      "steps": [
+        {
+          "id": "quarter",
+          "title": "本期材料",
+          "icon": "folder",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "portfolio",
+          "title": "投后简报",
+          "icon": "clipboard",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        },
+        {
+          "id": "follow",
+          "title": "管理层跟进",
+          "icon": "message",
+          "icon_style": "outline",
+          "icon_motion": "none"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "screen",
+      "to": "prep"
+    },
+    {
+      "from": "prep",
+      "to": "notes"
+    },
+    {
+      "from": "track",
+      "to": "market"
+    },
+    {
+      "from": "market",
+      "to": "report"
+    },
+    {
+      "from": "econ",
+      "to": "returns"
+    },
+    {
+      "from": "returns",
+      "to": "thesis"
+    },
+    {
+      "from": "dd",
+      "to": "ic"
+    },
+    {
+      "from": "ic",
+      "to": "approval"
+    },
+    {
+      "from": "approval",
+      "to": "final"
+    },
+    {
+      "from": "quarter",
+      "to": "portfolio"
+    },
+    {
+      "from": "portfolio",
+      "to": "follow"
+    },
+    {
+      "from": "notes",
+      "to": "prep",
+      "label": "待验证点进入下一轮访谈",
+      "accent": "green"
+    }
+  ],
+  "footer": "第三方尽调的新发现，应回写到相关模型与论点；最终投资决定由人作出。"
+}

@@ -1,0 +1,67 @@
+{
+  "style": "paper",
+  "animation": "flow",
+  "motion_level": "none",
+  "canvas": {
+    "fps": 1,
+    "frames": 2
+  },
+  "signature": "",
+  "density": "airy",
+  "layout": "graph",
+  "direction": "right",
+  "title": {
+    "prefix": "工作方式",
+    "highlight": "从材料到交付",
+    "subtitle": "你提出问题，Skill 定义方法，AI 助手执行。"
+  },
+  "nodes": [
+    {
+      "id": "inputs",
+      "label": "问题与材料",
+      "body": "问题 · 读者 · 交付范围\nBP · 访谈 · 报表",
+      "accent": "green",
+      "x": 340,
+      "y": 238
+    },
+    {
+      "id": "assistant",
+      "label": "AI 助手执行",
+      "body": "选择对应 Skill\n读取步骤与输出要求",
+      "accent": "purple",
+      "x": 870,
+      "y": 238
+    },
+    {
+      "id": "checks",
+      "label": "分析与检查",
+      "body": "按需检索、计算和核对\n保留来源与限定条件",
+      "accent": "green",
+      "x": 870,
+      "y": 438
+    },
+    {
+      "id": "outputs",
+      "label": "可回查的交付物",
+      "body": "分析 · Word · Excel\n下一步验证问题",
+      "accent": "purple",
+      "x": 340,
+      "y": 438
+    }
+  ],
+  "edges": [
+    {
+      "from": "inputs",
+      "to": "assistant"
+    },
+    {
+      "from": "assistant",
+      "to": "checks"
+    },
+    {
+      "from": "checks",
+      "to": "outputs"
+    }
+  ],
+  "footer": "文件保存在本地；使用云端模型时，数据处理取决于客户端和服务商配置。"
+}

@@ -23,6 +23,8 @@
 
 ## 如何工作
 
+[![工作方式：问题与材料交给按 Skill 步骤执行的 AI 助手，经分析和检查后生成可回查的交付物。](assets/readme/how-it-works.png)](assets/readme/how-it-works.svg)
+
 1. **确定问题。** 根据请求选择一个 Skill，读取对应步骤和输出要求。只需要初筛时，就停在初筛。
 2. **读取材料。** 读取你指定的文件和相关历史产物。行业研究可搜索公开资料；财务表、BP 和访谈记录作为本地材料处理。
 3. **形成分析。** 区分事实、公司说法、假设和估算。资料不足时说明依据和条件；无法估算的项目列为待验证问题。
@@ -80,6 +82,8 @@ cd ~/.agents/sources/jvc-analyst
 
 ## 建议的工作流
 
+[![五条可独立选择的工作路径：看项目、新赛道、核对交易、上会准备和投后跟踪；访谈中的待验证点进入下一轮提纲。](assets/readme/workflows.png)](assets/readme/workflows.svg)
+
 | 场景 | 推荐顺序 | 何时进入下一步 |
 | --- | --- | --- |
 | 第一次收到项目 | 初筛 → 访谈提纲 | 初筛指出了值得验证的问题，并准备安排会面 |
@@ -97,6 +101,8 @@ cd ~/.agents/sources/jvc-analyst
 ## 项目档案目录约定
 
 使用已有项目目录即可。你指定的位置优先；未指定时，产物放在材料所属项目的根目录。原始材料不改动，中间文件放进 `_work/`。同名产物默认加日期后缀保留旧版。
+
+[![项目目录分为三类：00-source 中的原始材料、项目根目录的交付物，以及 _work 中的转换、计算和审查记录。](assets/readme/project-files.png)](assets/readme/project-files.svg)
 
 ```text
 projects/示例公司/
@@ -128,6 +134,8 @@ projects/示例公司/
 | 投后现金 | 可用现金、逐月支出、还款、融资情景、首次触零和最低缺口 | 未披露的付款义务、月内支付时点、融资条件 |
 | IC 终版 | 格式、同章节陈述与表格对应、重要条件和风险保留 | 重大判断是否得到批准，剩余风险是否接受 |
 
+[![投决材料流程：预审版经过严格证据审查、用户明确批准和终版保真校验后才能发布；证据阻断或需要删改表述时回到预审。](assets/readme/ic-review.png)](assets/readme/ic-review.svg)
+
 IC 终版的自动检查接受排版与来源标记调整。需要重新措辞的事实或判断，先写回预审版并批准相应表述；自动检查不能证明任意同义改写都保持原意。
 
 当前验证以脚本回归和虚构案例为主。仓库已有记录中，商业经济分析做过一次真实材料的端到端验证；整套 Skill 尚未完成系统性的真实项目质量评估。自动检查通过后，仍应复核实际交付文件。
@@ -156,5 +164,7 @@ bash scripts/check-review-fixes.sh
 ```
 
 检查包括计算回归、文档校验、技能合同、安装模拟及发布前隐私扫描。计算检查需要本机 LibreOffice。详细规则分别见 [Excel 计算验收](skills/jvc-workbook/references/calculation-checks.md)、[投后指标与现金预测](skills/jvc-portfolio-tracking/references/metrics-and-alerts.md) 和 [IC Skill](skills/jvc-ic-memo/SKILL.md)。
+
+图示使用仓库内的静态图片。点击图片可查看矢量版；[图示源文件与维护说明](assets/readme/README.md) 包含可编辑的规格和 Excalidraw 文件。
 
 许可：[MIT](LICENSE)。

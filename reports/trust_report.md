@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`d3d53af82c7ff8bbd41ac86decadc5493c791b1dac833bfaa8c7729fedb42b51`
+`d841bcceeadc26bf15d4b4c53e97678b9a2c71d47f6461052527832d6fb8dc28`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 

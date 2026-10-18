@@ -1,0 +1,58 @@
+{
+  "style": "paper",
+  "animation": "flow",
+  "motion_level": "none",
+  "canvas": {
+    "fps": 1,
+    "frames": 2
+  },
+  "signature": "",
+  "density": "airy",
+  "layout": "graph",
+  "direction": "down",
+  "title": {
+    "prefix": "文件组织",
+    "highlight": "一个项目，三类文件",
+    "subtitle": "使用已有目录，或使用你指定的位置。"
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "label": "项目文件夹",
+      "accent": "purple"
+    },
+    {
+      "id": "source",
+      "label": "原始材料",
+      "body": "00-source/\nBP、报表、逐字稿",
+      "accent": "green"
+    },
+    {
+      "id": "deliver",
+      "label": "交付物",
+      "body": "放在项目根目录\n分析、纪要、模型",
+      "accent": "purple"
+    },
+    {
+      "id": "work",
+      "label": "中间文件",
+      "body": "_work/\n转换、计算、审查记录",
+      "accent": "green"
+    }
+  ],
+  "edges": [
+    {
+      "from": "root",
+      "to": "source"
+    },
+    {
+      "from": "root",
+      "to": "deliver"
+    },
+    {
+      "from": "root",
+      "to": "work"
+    }
+  ],
+  "footer": "原始材料保持不变；同名交付物加日期后缀，保留旧版。"
+}

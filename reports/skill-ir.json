@@ -2,7 +2,7 @@
   "schema_version": 1,
   "package": {
     "name": "jvc-analyst",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "owner": "jvc-analyst",
     "maturity_tier": "production",
     "review_cadence": "quarterly",
@@ -136,11 +136,12 @@
     },
     {
       "name": "jvc-thesis-test",
-      "job": "投资逻辑的支持、反驳和命门",
+      "job": "投资逻辑的支持、反驳、命门和事前验尸",
       "outputs": [
         "04-thesis-test.md",
         "04-bull-case.md",
-        "04-bear-case.md"
+        "04-bear-case.md",
+        "04-pre-mortem.md"
       ],
       "near_neighbors": [
         "jvc-ic-memo",
@@ -150,6 +151,41 @@
         "正方删除风险",
         "反方把缺证据写成失败",
         "论点不可证伪"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-tech-diligence",
+      "job": "硬科技技术宣称的可行性、对标与量产障碍",
+      "outputs": [
+        "03-tech-diligence.md"
+      ],
+      "near_neighbors": [
+        "jvc-dd-report-digest",
+        "jvc-track-research",
+        "jvc-interview-prep"
+      ],
+      "failure_modes": [
+        "把实验室数据当量产能力",
+        "比较测试条件不同的数字",
+        "把专利数量当技术壁垒"
+      ],
+      "installation_group": "primary"
+    },
+    {
+      "name": "jvc-expert-synthesis",
+      "job": "多场访谈的共识、分歧、立场偏差与下一轮问题",
+      "outputs": [
+        "expert-synthesis-{主题}.md"
+      ],
+      "near_neighbors": [
+        "jvc-meeting-notes",
+        "jvc-interview-prep"
+      ],
+      "failure_modes": [
+        "同立场多人说法当强共识",
+        "按人数投票判断谁对",
+        "把判断写进受访者说法"
       ],
       "installation_group": "primary"
     },

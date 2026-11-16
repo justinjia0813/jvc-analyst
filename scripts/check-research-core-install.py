@@ -17,6 +17,8 @@ USER_SKILLS = {
     "jvc-track-research",
     "jvc-workbook",
     "jvc-thesis-test",
+    "jvc-tech-diligence",
+    "jvc-expert-synthesis",
     "jvc-ic-memo",
     "jvc-dd-report-digest",
     "jvc-portfolio-tracking",
@@ -102,7 +104,7 @@ def main() -> None:
         installed_names = {path.name for path in installed.iterdir()}
         require(USER_SKILLS <= installed_names, "not all primary skills were installed")
         require(not (RETIRED_SKILLS & installed_names), "retired skills were installed")
-        require("Skills: 10 primary skills" in result.stdout, "primary count missing")
+        require("Skills: 12 primary skills" in result.stdout, "primary count missing")
         require(not (installed / "jvc-invoice-manager").exists(), "operations installed by default")
         for name in SUPPORT_COMPONENTS:
             require((installed / name / "SKILL.md").is_file(), "missing support: " + name)
@@ -168,7 +170,7 @@ def main() -> None:
         copy_package(global_package)
         global_result = run_setup(global_package, global_home, root, polluted_env, ("--global",))
         require(global_result.returncode == 0, global_result.stderr)
-        require("Skills: 10 primary skills" in global_result.stdout, "global primary count missing")
+        require("Skills: 12 primary skills" in global_result.stdout, "global primary count missing")
         require("Support: 3 hidden components" in global_result.stdout, "global support count missing")
         global_targets = [
             global_home / ".agents/skills",

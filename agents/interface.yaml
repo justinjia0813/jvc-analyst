@@ -1,7 +1,7 @@
 interface:
   display_name: "jvc-analyst"
   short_description: "Local-first VC diligence skill suite for RMB early-stage workflows"
-  default_prompt: "Use the ten primary skills for judgment-first investment analysis from first look to portfolio tracking; internal support is for rendering, knowledge trees and optional evidence audits. Invoice operations require the separate optional installation."
+  default_prompt: "Use the twelve primary skills for judgment-first investment analysis from first look to portfolio tracking; internal support is for rendering, knowledge trees and optional evidence audits. Invoice operations require the separate optional installation."
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets:
@@ -18,6 +18,8 @@ compatibility:
       - "skills/jvc-track-research/SKILL.md"
       - "skills/jvc-workbook/SKILL.md"
       - "skills/jvc-thesis-test/SKILL.md"
+      - "skills/jvc-tech-diligence/SKILL.md"
+      - "skills/jvc-expert-synthesis/SKILL.md"
       - "skills/jvc-ic-memo/SKILL.md"
       - "skills/jvc-dd-report-digest/SKILL.md"
       - "skills/jvc-portfolio-tracking/SKILL.md"

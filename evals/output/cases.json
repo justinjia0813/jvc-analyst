@@ -509,6 +509,60 @@
           "text": "失败不得覆盖上一版成功的三个产物"
         }
       ]
+    },
+    {
+      "id": "tech-diligence-claims",
+      "skill": "jvc-tech-diligence",
+      "artifact_family": "markdown",
+      "assertions": [
+        {
+          "type": "contains",
+          "path": "examples/tech-diligence-example.md",
+          "text": "## 宣称拆解"
+        },
+        {
+          "type": "contains",
+          "path": "examples/tech-diligence-example.md",
+          "text": "## 关键参数对标"
+        },
+        {
+          "type": "contains",
+          "path": "examples/tech-diligence-example.md",
+          "text": "## 成熟度与下一道坎"
+        },
+        {
+          "type": "contains",
+          "path": "examples/tech-diligence-example.md",
+          "text": "## 最可能错在哪"
+        }
+      ]
+    },
+    {
+      "id": "expert-synthesis-divergence",
+      "skill": "jvc-expert-synthesis",
+      "artifact_family": "markdown",
+      "assertions": [
+        {
+          "type": "contains",
+          "path": "examples/expert-synthesis-example.md",
+          "text": "## 受访者一览"
+        },
+        {
+          "type": "contains",
+          "path": "examples/expert-synthesis-example.md",
+          "text": "可能的立场偏差"
+        },
+        {
+          "type": "contains",
+          "path": "examples/expert-synthesis-example.md",
+          "text": "更可信"
+        },
+        {
+          "type": "contains",
+          "path": "examples/expert-synthesis-example.md",
+          "text": "## 下一轮该补的问题"
+        }
+      ]
     }
   ]
 }

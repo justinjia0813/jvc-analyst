@@ -1,6 +1,6 @@
 # Skill Registry
 
-这里记录 `jvc-analyst` 收录的 skills：10 个主要入口、3 个内部支持组件，另有 1 个独立选装运营工具。
+这里记录 `jvc-analyst` 收录的 skills：12 个主要入口、3 个内部支持组件，另有 1 个独立选装运营工具。
 
 ## Primary skills
 
@@ -12,7 +12,9 @@
 | `jvc-business-economics` | 本仓库 | `skills/jvc-business-economics/SKILL.md` | 商业经济分析：单位贡献桥接、规模与垫资、现金跑道与里程碑。 | `/jvc-business-economics` |
 | `jvc-track-research` | 本仓库 | `skills/jvc-track-research/SKILL.md` | 赛道研究：全景、机制、竞争格局三种模式；需要时交给研报渲染或知识树。 | `/jvc-track-research` |
 | `jvc-workbook` | 本仓库 | `skills/jvc-workbook/SKILL.md` | 建模工作簿：市场规模、可比公司、投资回报三种模式，每个工作簿附一页结论。 | `/jvc-workbook` |
-| `jvc-thesis-test` | 本仓库 | `skills/jvc-thesis-test/SKILL.md` | 投资论点：双向、正方或反方三种写法，每条论点有支持、反驳、何时就错了和最快验证方式。 | `/jvc-thesis-test` |
+| `jvc-thesis-test` | 本仓库 | `skills/jvc-thesis-test/SKILL.md` | 投资论点：双向、正方、反方或事前验尸四种写法，每条论点有支持、反驳、何时就错了和最快验证方式。 | `/jvc-thesis-test` |
+| `jvc-tech-diligence` | 本仓库 | `skills/jvc-tech-diligence/SKILL.md` | 技术尽调：拆解技术宣称为参数与测试条件，原理判断、对标最优水平、实验室到量产的成熟度与下一道坎、宣称与证据落差、按影响排序的技术问题。4.1 新增。 | `/jvc-tech-diligence` |
+| `jvc-expert-synthesis` | 本仓库 | `skills/jvc-expert-synthesis/SKILL.md` | 多方访谈交叉比对：按议题整理共识、分歧（原话）与孤证，标注立场偏差和口径差异，判断更可信的一方，生成下一轮问题。4.1 新增。 | `/jvc-expert-synthesis` |
 | `jvc-ic-memo` | 本仓库 | `skills/jvc-ic-memo/SKILL.md` | 投决备忘录：先生成含引用、证据状态、冲突和质量报告的十七章预审版（证据内核 gate 模式）；用户明确预审通过后，再生成干净终版。另有轻量的判断状态综合。 | `/jvc-ic-memo` |
 | `jvc-dd-report-digest` | 本仓库 | `skills/jvc-dd-report-digest/SKILL.md` | 尽调报告消化：财务、法律、审计、业务尽调报告的红旗表、口径差异、版本差异和条款处理选项。 | `/jvc-dd-report-digest` |
 | `jvc-portfolio-tracking` | 本仓库 | `skills/jvc-portfolio-tracking/SKILL.md` | 投后跟踪：对照上期和投资目标的季度简报，按核心指标、里程碑、风险预警三块更新仪表板；可出组合概览。 | `/jvc-portfolio-tracking` |

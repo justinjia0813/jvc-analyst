@@ -65,6 +65,8 @@ skills=(
   jvc-track-research
   jvc-workbook
   jvc-thesis-test
+  jvc-tech-diligence
+  jvc-expert-synthesis
   jvc-ic-memo
   jvc-dd-report-digest
   jvc-portfolio-tracking

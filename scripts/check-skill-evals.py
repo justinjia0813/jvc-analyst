@@ -110,6 +110,8 @@ def check_trigger_cases() -> int:
         ("jvc-portfolio-tracking", "jvc-business-economics"),
         ("jvc-ic-memo", "jvc-thesis-test"),
         ("jvc-invoice-manager", "jvc-portfolio-tracking"),
+        ("jvc-tech-diligence", "jvc-dd-report-digest"),
+        ("jvc-expert-synthesis", "jvc-meeting-notes"),
     }
     groups = {s["name"]: s["installation_group"] for s in load_json("reports/skill-ir.json")["skills"]}
     covered_pairs: set[tuple[str, str]] = set()

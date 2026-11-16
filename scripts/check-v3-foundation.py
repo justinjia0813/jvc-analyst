@@ -17,6 +17,8 @@ EXPECTED_LEVELS = {
     "jvc-track-research": "L1+",
     "jvc-workbook": "L1+",
     "jvc-thesis-test": "L1+",
+    "jvc-tech-diligence": "L1+",
+    "jvc-expert-synthesis": "L1+",
     "jvc-ic-memo": "L3",
     "jvc-dd-report-digest": "L2+",
     "jvc-portfolio-tracking": "不适用",
@@ -39,7 +41,7 @@ def read(relative_path: str) -> str:
 
 def main() -> int:
     manifest = json.loads(read("manifest.json"))
-    require(manifest.get("version") == "4.0.0", "manifest.json 版本必须为 4.0.0")
+    require(manifest.get("version") == "4.1.0", "manifest.json 版本必须为 4.1.0")
 
     claude = read("CLAUDE.md")
     for signal in ("L0 快筛", "L1 初筛", "L2 尽调", "L3 重仓/领投", "砍流程不砍底线"):

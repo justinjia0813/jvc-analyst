@@ -367,6 +367,79 @@
       ]
     },
     {
+      "id": "tech-diligence-anode",
+      "prompt": "这家硅碳负极公司说首效 92%、循环 1500 次，附了两篇论文和一份专利，帮我做技术尽调，看看离量产还差什么。",
+      "expected_skill": "jvc-tech-diligence",
+      "prompt_signals": [
+        "技术尽调",
+        "论文",
+        "专利",
+        "量产"
+      ],
+      "skill_contract_signals": [
+        "宣称拆解",
+        "测试条件",
+        "关键参数对标",
+        "成熟度与下一道坎"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-dd-report-digest",
+          "why_not": "输入是公司的技术宣称和公开论文专利，不是第三方出具的尽调报告。"
+        },
+        {
+          "skill": "jvc-track-research",
+          "why_not": "要判断的是一家公司的技术，不是整个赛道的技术路线全景。"
+        }
+      ]
+    },
+    {
+      "id": "expert-synthesis-demand",
+      "prompt": "这三场专家访谈纪要对固态电池装车时间说法不一致，帮我交叉比对一下共识和分歧，看看该信谁。",
+      "expected_skill": "jvc-expert-synthesis",
+      "prompt_signals": [
+        "专家访谈",
+        "交叉比对",
+        "共识和分歧"
+      ],
+      "skill_contract_signals": [
+        "立场偏差",
+        "孤证",
+        "口径",
+        "下一轮该补的问题"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-meeting-notes",
+          "why_not": "要比对多场访谈的说法，不是整理单场逐字稿。"
+        },
+        {
+          "skill": "jvc-interview-prep",
+          "why_not": "访谈已经发生，要先判断分歧，再决定下一轮问什么。"
+        }
+      ]
+    },
+    {
+      "id": "thesis-pre-mortem",
+      "prompt": "下周上投决会，帮我做个事前验尸：假设这个项目三年后失败了，最可能死在哪。",
+      "expected_skill": "jvc-thesis-test",
+      "prompt_signals": [
+        "事前验尸",
+        "失败"
+      ],
+      "skill_contract_signals": [
+        "事前验尸",
+        "04-pre-mortem.md",
+        "早期信号"
+      ],
+      "near_neighbors": [
+        {
+          "skill": "jvc-ic-memo",
+          "why_not": "要的是失败路径推演，不是整理完整投决材料。"
+        }
+      ]
+    },
+    {
       "id": "invoice-operational-boundary",
       "prompt": "已独立安装运营包。整理这个月差旅发票，OCR 识别 PDF，人工复核后生成报销汇总 Excel，并按项目归档。",
       "expected_skill": "jvc-invoice-manager",

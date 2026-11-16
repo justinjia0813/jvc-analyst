@@ -1,6 +1,6 @@
 # Trust Report
 
-日期：2026-10-18
+日期：2026-11-16
 
 证据边界：这是 production governance（生产治理）的本地 trust report（信任报告），不是 public governed release（受治理的公开发布）的完整安全认证。
 
@@ -19,7 +19,7 @@
 
 ## Source Contract Hash
 
-`d841bcceeadc26bf15d4b4c53e97678b9a2c71d47f6461052527832d6fb8dc28`
+`6cb0106107fbde11a7a9b8ef5e1a80f901afbc449e6dfc21c6c8d0505c8c9e66`
 
 Hash scope: `manifest`、`agents`、`security`、`skills`、`templates`、`scripts`、`evals`、`library`、`README`、`CLAUDE`、`setup`。生成报告和本地 telemetry 不进入 hash。
 
